@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @map("_id")
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]  @relation("UserToOrder")
+  reviews   Review[] @relation("UserToReview")
+}
+
+model Category {
+  id          String    @id @default(uuid()) @map("_id")
+  name        String
+  description String
+  imageUrl    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[] @relation("CategoryToProduct")
+}
+
+model Product {
+  id                 String      @id @default(uuid()) @map("_id")
+  name               String
+  description        String
+  price              Float
+  mainImageUrl       String
+  secondaryImageUrls String[]
+  categoryId         String
+  category           Category    @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  orderItems         OrderItem[] @relation("ProductToOrderItem")
+  reviews            Review[]    @relation("ProductToReview")
+  averageRating      Float       @default(0.0)
+  numberOfRatings    Int         @default(0)
+
+  @@index([categoryId])
+}
+
+model Order {
+  id              String      @id @default(uuid()) @map("_id")
+  userId          String
+  user            User        @relation("UserToOrder", fields: [userId], references: [id])
+  totalPrice      Float
+  shippingAddress String
+  status          String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[] @relation("OrderToOrderItem")
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String   @id @default(uuid()) @map("_id")
+  orderId   String
+  order     Order    @relation("OrderToOrderItem", fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation("ProductToOrderItem", fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Review {
+  id        String   @id @default(uuid()) @map("_id")
+  rating    Int
+  review    String
+  userId    String
+  user      User     @relation("UserToReview", fields: [userId], references: [id])
+  productId String
+  product   Product  @relation("ProductToReview", fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
