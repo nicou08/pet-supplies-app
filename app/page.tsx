@@ -21,9 +21,10 @@ export default function Home() {
             .
           </li>
           <li>
-            Save andd see your changes instantly. Test
-            changeasdfasdfasdfasdfasdfasdfasdfasd
+            Save andd see your changesss instantly. Test GREAGRIOUS pachonasoooo
           </li>
+          <li>El Gran Pachon Mango Coco Pears Pachonaso</li>
+          <li>PachonsitoOOOOOOOOOO el pachon</li>
         </ol>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
