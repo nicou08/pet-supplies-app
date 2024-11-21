@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   app:
@@ -14,15 +14,6 @@ services:
       - /app/node_modules
     depends_on:
       - mongo
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./
-    #       target: /app
-    #       ignore:
-    #         - node_modules/
-    #     - action: rebuild
-    #       path: package.json
 
   mongo:
     image: mongo:latest
