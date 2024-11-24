@@ -1,11 +1,7 @@
 "use client";
 
-import ModeToggle from "@/components/ui/theme-toggle";
+import { ModeToggle } from "@/components/ui/theme-toggle";
 
 export default function RootPage() {
-  return (
-    <div>
-      <ModeToggle />
-    </div>
-  );
+  return <div>whatt</div>;
 }
