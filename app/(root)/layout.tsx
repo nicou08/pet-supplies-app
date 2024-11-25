@@ -1,7 +1,7 @@
-import Header from "@/components/header";
+import Header from "@/components/header/header";
 
-export default function RootLayout({
-  children, // will be a page or nested layout
+export default function MainLayout({
+  children,
 }: {
   children: React.ReactNode;
 }) {
