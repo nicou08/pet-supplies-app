@@ -2,9 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 
-import { PersonIcon } from "@radix-ui/react-icons";
-import { User } from "lucide-react";
-
 interface IconButtonProps {
   icon: React.ReactNode;
   onClick?: () => void;

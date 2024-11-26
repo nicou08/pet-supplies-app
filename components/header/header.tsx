@@ -10,6 +10,7 @@ import {
   BackpackIcon,
   ExitIcon,
 } from "@radix-ui/react-icons";
+import { User, ShoppingCart, Heart, Moon, Sun } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/ui/theme-toggle-2";
@@ -33,7 +34,7 @@ export default function Header() {
           </div>
         </div>
         <div className="text-black basis-1/2 flex items-center justify-center">
-          <div className="w-5/6 bg-[#e1e1e1] dark:bg-neutral-900 rounded-full border border-stone-200 dark:border-neutral-800 shadow-md hover:border hover:border-black">
+          <div className="w-5/6 bg-[#e1e1e1] dark:bg-neutral-900 rounded-full border border-stone-400 dark:border-neutral-800 shadow-md hover:border hover:border-black">
             <Input
               type="text"
               placeholder="Search for products"
@@ -41,10 +42,9 @@ export default function Header() {
             />
           </div>
         </div>
-        <div className="text-black basis-1/4 flex flex-row items-center justify-center gap-2">
-          <IconButton icon={<PersonIcon />} />
-          <IconButton icon={<StarIcon />} />
-          <IconButton icon={<BackpackIcon />} />
+        <div className="text-black basis-1/4 flex flex-row items-center justify-end gap-2">
+          <IconButton icon={<User />} />
+          <IconButton icon={<ShoppingCart />} />
           <ModeToggle />
         </div>
       </div>
