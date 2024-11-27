@@ -33,12 +33,12 @@ export default function Header() {
             />
           </div>
         </div>
-        <div className="text-black basis-1/2 flex items-center justify-center">
-          <div className="w-5/6 bg-[#e1e1e1] dark:bg-neutral-900 rounded-full border border-stone-400 dark:border-neutral-800 shadow-md hover:border hover:border-black">
+        <div className="text-black basis-1/2 flex items-center justify-start">
+          <div className="w-5/6 bg-[#e1e1e1] dark:bg-neutral-900 rounded-none border border-stone-400 dark:border-neutral-800 shadow-md hover:border hover:border-black">
             <Input
               type="text"
               placeholder="Search for products"
-              className="rounded-full placeholder-gray-500 dark:gray-900 dark:caret-stone-200 dark:text-stone-100"
+              className="h-12 rounded-none placeholder-gray-500 dark:gray-900 dark:caret-stone-200 dark:text-stone-100"
             />
           </div>
         </div>

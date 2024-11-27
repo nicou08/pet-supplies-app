@@ -39,14 +39,6 @@ export function HomeCarousel() {
     }
   };
 
-  const handleInteraction = () => {
-    pluginn.current.stop();
-    setTimeout(() => {
-      pluginn.current.reset();
-    }, 2000);
-    console.log("Interaction");
-  };
-
   return (
     <Carousel
       className="w-full bg-red-300"
@@ -55,12 +47,12 @@ export function HomeCarousel() {
       onMouseLeave={handleMouseLeave}
       plugins={[pluginn.current]}
     >
-      <CarouselContent>
+      <CarouselContent className="-ml-0">
         {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex h-[500px] items-center justify-center p-6">
+          <CarouselItem key={index} className="pl-0">
+            <div className="">
+              <Card className="rounded-none">
+                <CardContent className="flex h-[600px] items-center justify-center">
                   <span className="text-4xl font-semibold">{index + 1}</span>
                 </CardContent>
               </Card>
