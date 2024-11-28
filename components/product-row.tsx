@@ -23,7 +23,7 @@ function ProductRowItem({ id, name, image, price }: ProductRowItemProps) {
     <div className="h-72 w-[200px] flex-shrink-0 bg-white rounded-lg">
       <div className="w-full h-44 flex justify-center">
         <Image
-          src="/small-pet-pellets-1.jpg"
+          src={image}
           alt="Product"
           width={150}
           height={150}
@@ -32,7 +32,7 @@ function ProductRowItem({ id, name, image, price }: ProductRowItemProps) {
       </div>
       <div className="w-full px-3">
         <div className="font-normal text-stone-950  flex justify-start">
-          Small Pet Pellets
+          {name}
         </div>
         <div className="font-bold text-black pt-1 text-lg flex justify-start">
           ${price}
@@ -52,7 +52,7 @@ function ProductRowItem({ id, name, image, price }: ProductRowItemProps) {
 
 export function ProductRow() {
   return (
-    <div className="bg-slate-300 w-full rounded-lg h-[390px]">
+    <div className="bg-zinc-300 w-full rounded-lg h-[390px]">
       <div className="text-3xl font-medium py-5 px-5  text-gray-800">
         Top Sellers
       </div>
@@ -71,8 +71,8 @@ export function ProductRow() {
         />
         <ProductRowItem
           id="1"
-          name="Small Pet Pellets"
-          image="/small-pet-pellets-1.jpg"
+          name="Cat food"
+          image="/cat-food-1.jpg"
           price={69.99}
         />
         <ProductRowItem

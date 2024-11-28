@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -39,6 +40,12 @@ export function HomeCarousel() {
     }
   };
 
+  const imageUrls = [
+    "/carousel-dog-2.png",
+    "/carousel-dog-haircut-1-v3.png",
+    "/carousel-gp-1-v2.png",
+  ];
+
   return (
     <Carousel
       className="w-full bg-red-300"
@@ -48,12 +55,19 @@ export function HomeCarousel() {
       plugins={[pluginn.current]}
     >
       <CarouselContent className="-ml-0">
-        {Array.from({ length: 5 }).map((_, index) => (
+        {imageUrls.map((url, index) => (
           <CarouselItem key={index} className="pl-0">
-            <div className="">
+            <div className="relative w-full h-[600px]">
               <Card className="rounded-none">
                 <CardContent className="flex h-[600px] items-center justify-center">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
+                  <div>
+                    <Image
+                      src={url}
+                      alt={`Carousel Image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>
