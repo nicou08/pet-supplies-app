@@ -2,20 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  PersonIcon,
-  HeartIcon,
-  StarIcon,
-  MagnifyingGlassIcon,
-  BackpackIcon,
-  ExitIcon,
-} from "@radix-ui/react-icons";
-import { User, ShoppingCart, Heart, Moon, Sun } from "lucide-react";
+import { User, ShoppingCart, ChevronDown } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/ui/theme-toggle-2";
-
 import { IconButton } from "./icon-button";
+import { CustomDropdownMenu } from "./dropdown-menu";
 import { PageButton } from "./page-button";
 
 export default function Header() {
@@ -48,31 +41,47 @@ export default function Header() {
           <ModeToggle />
         </div>
       </div>
-      <div className="w-full bg-[#e1e1e1] dark:bg-neutral-950">
-        <div className="h-2"></div>
-        <div className="w-full h-6 flex justify-center items-center bg-neutral-700 dark:bg-[#e1e1e1c8] text-white dark:text-black">
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>HOME</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>CATEGORIES</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>DOG</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>CAT</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>SMALL PETS</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>FISH</div>
-          </div>
-          <div className="pr-7 pl-7 cursor-pointer hover:bg-neutral-500">
-            <div>SERVICES</div>
-          </div>
-        </div>
+      <div className="h-2"></div>
+      <div className="z-50 w-full h-12 px-14 flex justify-start items-center bg-neutral-700 dark:bg-[#e1e1e1c8] text-white dark:text-black">
+        <Button className="bg-red-300">Shop by pet</Button>
+
+        <div className="w-10" />
+
+        <CustomDropdownMenu
+          trigger={
+            <div className="flex items-center">
+              Shop <ChevronDown />
+            </div>
+          }
+          items={["Food", "Toys", "Cages", "Fish Tanks"]}
+        />
+
+        <CustomDropdownMenu
+          trigger={
+            <div className="flex items-center">
+              Services <ChevronDown />
+            </div>
+          }
+          items={["Grooming", "Training", "Dog Training", "Vet Consultations"]}
+        />
+
+        <CustomDropdownMenu
+          trigger={
+            <div className="flex items-center">
+              Deals <ChevronDown />
+            </div>
+          }
+          items={["Discounts", "Special Offers", "Clearance Items"]}
+        />
+
+        <CustomDropdownMenu
+          trigger={
+            <div className="flex items-center">
+              New Arrivals <ChevronDown />
+            </div>
+          }
+          items={["Latest Products", "Trending", "Just In"]}
+        />
       </div>
     </div>
   );
