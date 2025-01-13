@@ -4,12 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { User, ShoppingCart, ChevronDown } from "lucide-react";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/ui/theme-toggle-2";
 import { IconButton } from "./icon-button";
+import { MainNavigationMenu } from "./navigation-menu";
 import { CustomDropdownMenu } from "./dropdown-menu";
 import { PageButton } from "./page-button";
+import { Main } from "next/document";
 
 export default function Header() {
   return (
@@ -42,12 +54,12 @@ export default function Header() {
         </div>
       </div>
       <div className="h-2"></div>
-      <div className="z-50 w-full h-12 px-14 flex justify-start items-center bg-neutral-700 dark:bg-[#e1e1e1c8] text-white dark:text-black">
+      <div className="z-50 w-full h-12 px-14 flex justify-start items-center bg-[#e1e1e1] dark:bg-[#e1e1e1c8] text-white dark:text-black">
         <Button className="bg-red-300">Shop by pet</Button>
 
         <div className="w-10" />
 
-        <CustomDropdownMenu
+        {/* <CustomDropdownMenu
           trigger={
             <div className="flex items-center">
               Shop <ChevronDown />
@@ -81,7 +93,9 @@ export default function Header() {
             </div>
           }
           items={["Latest Products", "Trending", "Just In"]}
-        />
+        /> */}
+
+        <MainNavigationMenu />
       </div>
     </div>
   );
