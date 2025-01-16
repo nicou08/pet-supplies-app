@@ -8,7 +8,7 @@ import { User, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HeaderUtilityButtons } from "./HeaderUtilityButtons";
-import { MainNavigationMenu } from "./navigation-menu";
+import { MainNavigationMenu } from "./MainNavigationMenu";
 
 export default function Header() {
   const { theme } = useTheme();

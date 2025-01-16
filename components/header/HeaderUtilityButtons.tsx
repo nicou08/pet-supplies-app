@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { User, ShoppingCart } from "lucide-react";
+
+import { signIn } from "@/auth";
 
 import {
   DropdownMenu,
@@ -34,7 +37,9 @@ export function HeaderUtilityButtons() {
           <DropdownMenuItem>Account</DropdownMenuItem>
           <DropdownMenuItem>Billing</DropdownMenuItem>
           <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/sign-in">Sign In</Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
