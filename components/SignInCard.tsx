@@ -18,8 +18,7 @@ export function SignInCard() {
   };
 
   const handleGithubSignIn = () => {
-    // Implement GitHub sign-in logic here
-    signIn("github");
+    signIn("github", { redirectTo: "/" });
 
     console.log("Sign in with GitHub");
   };
