@@ -27,9 +27,9 @@ export function HeaderUtilAccBtn({ isLoggedIn }: HeaderUtilAccBtnProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Account</DropdownMenuItem>
+          <DropdownMenuItem>Appointments</DropdownMenuItem>
           <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
           {isLoggedIn ? (
             <DropdownMenuItem
               className="p-0"
