@@ -21,7 +21,7 @@ export function MainNavigationMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[450px]">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
               <ListItem href="/docs" title="Food"></ListItem>
               <ListItem href="/docs" title="Toys"></ListItem>
               <ListItem href="/docs" title="Cages"></ListItem>
@@ -32,7 +32,7 @@ export function MainNavigationMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Services</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[450px]">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
               <ListItem href="/docs" title="Grooming"></ListItem>
               <ListItem href="/docs" title="Dog Training"></ListItem>
               <ListItem href="/docs" title="Cat Training"></ListItem>
@@ -43,7 +43,7 @@ export function MainNavigationMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Deals</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[450px]">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
               <ListItem href="/docs" title="Special Offers"></ListItem>
               <ListItem href="/docs" title="Clearance Items"></ListItem>
               <ListItem href="/docs" title="Theme"></ListItem>
@@ -73,7 +73,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent dark:hover:bg-neutral-800 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
           {...props}

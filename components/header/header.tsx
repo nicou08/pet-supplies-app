@@ -31,8 +31,8 @@ export default function Header() {
       <div className="h-2"></div>
 
       {/* Bottom Header Section */}
-      <div className="z-50 w-full h-12 px-14 flex justify-start items-center bg-[#e1e1e1] dark:bg-neutral-950 text-white dark:text-black">
-        <Button className="bg-neutral-700 hover:bg-neutral-500">
+      <div className="z-50 w-full h-12 px-0 2lg:px-4 hidden sm:flex justify-start items-center bg-[#e1e1e1] dark:bg-neutral-950">
+        <Button className="bg-neutral-900 dark:bg-[#e1e1e1] hover:bg-neutral-500 dark:hover:dark:bg-[#e1e1e1d7]">
           <Link href="/pets">Shop by pet</Link>
         </Button>
 
