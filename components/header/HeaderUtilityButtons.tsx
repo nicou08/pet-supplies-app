@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 
+import { HeaderUtilSearch } from "./HeaderUtilSearch";
 import { HeaderUtilAccBtn } from "./HeaderUtilAccBtn";
 import { HeaderUtilCartBtn } from "./HeaderUtilCartBtn";
 import { ModeToggle } from "@/components/ui/theme-toggle-2";
@@ -15,12 +16,16 @@ export async function HeaderUtilityButtons() {
   }
 
   return (
-    <div className="text-black basis-1/4 flex flex-row items-center justify-end gap-2">
-      <HeaderUtilAccBtn isLoggedIn={isSignedIn} />
+    <div className="basis-full 2lg:basis-3/4 flex flex-row items-center gap-2 justify-end sm:justify-start px-3 sm:px-0">
+      <HeaderUtilSearch />
 
-      <HeaderUtilCartBtn />
+      <div className="2lg:basis-1/4 sm:min-w-44 flex flex-row items-center gap-2 justify-end">
+        <HeaderUtilAccBtn isLoggedIn={isSignedIn} />
 
-      <ModeToggle />
+        <HeaderUtilCartBtn />
+
+        <ModeToggle />
+      </div>
     </div>
   );
 }

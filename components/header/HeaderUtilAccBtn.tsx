@@ -21,7 +21,7 @@ export function HeaderUtilAccBtn({ isLoggedIn }: HeaderUtilAccBtnProps) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger className="focus:outline-none  w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black hover:bg-neutral-300 data-[state=open]:bg-neutral-300 dark:text-white cursor-pointer  dark:hover:bg-neutral-900 transition-shadow duration-200">
+        <DropdownMenuTrigger className="focus:outline-none w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black hover:bg-neutral-300 data-[state=open]:bg-neutral-300 dark:text-white cursor-pointer  dark:hover:bg-neutral-900 transition-shadow duration-200">
           <User />
         </DropdownMenuTrigger>
         <DropdownMenuContent>

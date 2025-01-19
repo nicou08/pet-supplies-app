@@ -10,7 +10,11 @@ export default function HomePage() {
       <div className="h-10" />
 
       <div className="w-full flex justify-center">
-        <HomeCarousel />
+        {/* <HomeCarousel /> */}
+        <div className="h-[500px] flex justify-center items-center text-lg">
+          {" "}
+          Hello
+        </div>
       </div>
 
       <div className="h-10" />

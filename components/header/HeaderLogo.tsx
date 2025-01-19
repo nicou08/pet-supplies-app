@@ -8,12 +8,13 @@ export function HeaderLogo() {
   const { theme } = useTheme();
 
   return (
-    <div className="basis-1/4 hidden lg:block  justify-center items-center">
+    <div className="basis-1/4 hidden 2lg:block  justify-center items-center">
       <div className="flex h-full justify-center items-center">
         <div className="relative w-[150px] h-[60px] overflow-hidden">
           <Link href="/">
             <Image
-              src={theme === "dark" ? "/Logo-dark.png" : "/Logo-light.png"}
+              // src={theme === "dark" ? "/Logo-dark.png" : "/Logo-light.png"}
+              src="/Logo-light.png"
               className="absolute top-[41%] transform -translate-y-1/2"
               width={150}
               height={150}
