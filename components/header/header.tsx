@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HeaderLogo } from "./HeaderLogo";
+import { HeaderNavHamburg } from "./HeaderNavHamburg";
 import { HeaderUtilityButtons } from "./HeaderUtilityButtons";
 import { MainNavigationMenu } from "./MainNavigationMenu";
 
@@ -11,20 +12,13 @@ export default function Header() {
     <div>
       {/* Top Header Section */}
       <div className="w-full h-20 flex flex-row bg-[#e1e1e1] dark:bg-neutral-950">
+        {/* Hamburger Menu */}
+        <HeaderNavHamburg />
+
         {/* Logo */}
         <HeaderLogo />
 
-        {/* Search Bar */}
-        {/* <div className="text-black basis-3/4 lg:basis-1/2 flex items-center justify-start">
-          <div className="w-5/6 bg-[#e1e1e1] dark:bg-neutral-900 rounded-none border border-stone-400 dark:border-neutral-800 shadow-md">
-            <Input
-              type="text"
-              placeholder="Search for products"
-              className="h-12 rounded-none placeholder-gray-500 dark:gray-900 dark:caret-stone-200 dark:text-stone-100"
-            />
-          </div>
-        </div> */}
-
+        {/* Utility functions */}
         <HeaderUtilityButtons />
       </div>
 
