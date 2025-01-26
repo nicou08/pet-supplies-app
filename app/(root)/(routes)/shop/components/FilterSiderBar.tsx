@@ -38,7 +38,7 @@ export function FilterSideBar() {
   };
 
   return (
-    <div className="col-span-1 md:col-span-1 ">
+    <div className="col-span-1 md:col-span-1">
       {/* Status */}
       <div className="flex items-center pt-0 pb-3 space-x-3">
         <Switch id="all-types" />
@@ -101,7 +101,7 @@ export function FilterSideBar() {
       </div>
 
       {/* Price Range */}
-      <div className="py-3">
+      <div className="py-3 w-11/12">
         <div className="text-lg font-semibold">Price Range</div>
         <Slider
           id="price-range"
