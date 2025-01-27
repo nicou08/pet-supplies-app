@@ -70,3 +70,62 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Loading Spinner */
+
+.loading-container {
+  display: flex;
+  align-items: center;
+}
+
+.loading-circle {
+  width: 24px;
+  height: 24px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin2 1s linear infinite;
+}
+
+@keyframes spin2 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes spin3 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-dash-circle {
+  width: 40px;
+  height: 40px;
+  border: 4px dashed #3b82f6; /* Use your preferred color */
+  border-radius: 50%;
+  animation: spin3 1.5s linear infinite;
+}

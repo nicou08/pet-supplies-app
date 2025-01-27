@@ -1,4 +1,4 @@
-import { ProductCard, ProductCard2, ProductCard3 } from "./ProductCard";
+import { ProductCard } from "./ProductCard";
 
 const dummyProducts = [
   {
@@ -135,7 +135,7 @@ export function ProductList() {
   return (
     <div className="col-span-3 w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {dummyProducts.map((product, index) => (
-        <ProductCard3 key={index} product={product} />
+        <ProductCard key={index} product={product} />
       ))}
     </div>
   );

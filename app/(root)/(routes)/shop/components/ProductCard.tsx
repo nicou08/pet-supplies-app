@@ -1,16 +1,19 @@
+"use client";
+
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { z } from "zod";
 import { Star, StarHalf, ShoppingCart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 const productCardSchema = z.object({
-  image: z.string().url(), // product image URL
-  name: z.string().min(1), // product name with at least 1 character
-  description: z.string().optional(), // product description (optional)
-  price: z.number().positive(), // product price (must be a positive number)
-  rating: z.number().min(0).max(5), // product rating (between 0 and 5)
+  image: z.string().url(),
+  name: z.string().min(1),
+  description: z.string().optional(),
+  price: z.number().positive(),
+  rating: z.number().min(0).max(5),
 });
 
 type ProductCardValues = z.infer<typeof productCardSchema>;
@@ -20,46 +23,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  return (
-    <div className="border p-4 rounded-md shadow-md">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded-md"
-      />
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">{product.name}</h3>
-        <p className="text-gray-600">{product.description}</p>
-        <div className="mt-2 text-xl font-bold">${product.price}</div>
-        <Button className="mt-4 w-full">Add to Cart</Button>
-      </div>
-    </div>
-  );
-}
-
-export function ProductCard2({ product }: ProductCardProps) {
-  return (
-    <div className="flex border p-4 rounded-md shadow-md">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-1/3 h-48 object-cover rounded-md"
-      />
-      <div className="ml-4 flex flex-col justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">{product.name}</h3>
-          <p className="text-gray-600">{product.description}</p>
-        </div>
-        <div>
-          <div className="mt-2 text-xl font-bold">${product.price}</div>
-          <Button className="mt-4 w-full">Add to Cart</Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function ProductCard3({ product }: ProductCardProps) {
   const fullStars = Math.floor(product.rating);
   const hasHalfStar = product.rating % 1 !== 0;
 
@@ -72,6 +35,7 @@ export function ProductCard3({ product }: ProductCardProps) {
         alt={product.name}
         className="w-full h-48 object-cover rounded-md"
       />
+
       <div className="mt-4">
         <h3 className="text-lg font-semibold">{product.name}</h3>
         <p className="text-gray-600">{product.description}</p>
