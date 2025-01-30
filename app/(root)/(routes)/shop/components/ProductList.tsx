@@ -142,7 +142,29 @@ const dummyProducts = [
   },
 ];
 
-export function ProductList() {
+type FilterState = {
+  petType: string[];
+  productType: string[];
+};
+
+interface ProductListProps {
+  filters: FilterState;
+}
+
+export function ProductList({ filters }: ProductListProps) {
+  //
+  // TOO CHANGE
+  //
+  // const filteredProducts = dummyProducts.filter((product) => {
+  //   const matchesPetType = filters.petType.length
+  //     ? filters.petType.some((type) => product.petType.includes(type))
+  //     : true;
+  //   const matchesProductType = filters.productType.length
+  //     ? filters.productType.includes(product.productType)
+  //     : true;
+  //   return matchesPetType && matchesProductType;
+  // });
+
   return (
     <div className="col-span-3 w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <div className="col-span-4 flex justify-end">

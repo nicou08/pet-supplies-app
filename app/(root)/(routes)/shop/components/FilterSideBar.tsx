@@ -30,7 +30,27 @@ const offers = [
   { id: "clearance", label: "Clearance" },
 ];
 
-export function FilterSideBar() {
+type FilterState = {
+  petType: string[];
+  productType: string[];
+};
+
+type FilterType = keyof FilterState;
+
+interface FilterSideBarProps {
+  filters: FilterState;
+  onFilterChange: (filterType: FilterType, value: string[]) => void;
+}
+
+export function FilterSideBar({ filters, onFilterChange }: FilterSideBarProps) {
+  // Filter Change Checkboxes
+  const handleCheckboxChange = (filterType: FilterType, value: string) => {
+    const newValues = filters[filterType].includes(value)
+      ? filters[filterType].filter((item) => item !== value)
+      : [...filters[filterType], value];
+    onFilterChange(filterType, newValues);
+  };
+
   // Price Range
   const [priceRange, setPriceRange] = useState([0, 100]);
   const handlePriceChange = (value: number[]) => {
