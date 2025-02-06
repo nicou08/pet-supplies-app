@@ -1,59 +1,71 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
-
-// schema.prisma
+// This is Prisma schema file,
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL_LOCAL")
 }
 
 model User {
-  id        String   @id @default(uuid()) @map("_id")
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]  @relation("UserToOrder")
-  reviews   Review[] @relation("UserToReview")
+  id            String    @id @default(uuid())
+  name          String
+  image         String?
+  email         String    @unique
+  emailVerified DateTime?
+  orders        Order[]   @relation("UserToOrder")
+  reviews       Review[]  @relation("UserToReview")
+  accounts      Account[] @relation("UserToAccount")
 }
 
-model Category {
-  id          String    @id @default(uuid()) @map("_id")
-  name        String
-  description String
-  imageUrl    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[] @relation("CategoryToProduct")
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation("UserToAccount", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model ProductType {
+  id       String    @id @default(uuid())
+  name     String
+  products Product[] @relation("ProductToProductType")
+}
+
+model PetType {
+  id       String    @id @default(uuid())
+  name     String
+  products Product[] @relation("ProductToPetType")
 }
 
 model Product {
-  id                 String      @id @default(uuid()) @map("_id")
+  id                 String      @id @default(uuid())
   name               String
   description        String
   price              Float
+  inStock            Boolean
   mainImageUrl       String
   secondaryImageUrls String[]
-  categoryId         String
-  category           Category    @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  productTypeId      String
+  productType        ProductType @relation("ProductToProductType", fields: [productTypeId], references: [id])
+  petTypeId          String
+  petType            PetType     @relation("ProductToPetType", fields: [petTypeId], references: [id])
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
   orderItems         OrderItem[] @relation("ProductToOrderItem")
@@ -61,11 +73,12 @@ model Product {
   averageRating      Float       @default(0.0)
   numberOfRatings    Int         @default(0)
 
-  @@index([categoryId])
+  @@index([productTypeId])
+  @@index([petTypeId])
 }
 
 model Order {
-  id              String      @id @default(uuid()) @map("_id")
+  id              String      @id @default(uuid())
   userId          String
   user            User        @relation("UserToOrder", fields: [userId], references: [id])
   totalPrice      Float
@@ -79,7 +92,7 @@ model Order {
 }
 
 model OrderItem {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   orderId   String
   order     Order    @relation("OrderToOrderItem", fields: [orderId], references: [id])
   productId String
@@ -94,7 +107,7 @@ model OrderItem {
 }
 
 model Review {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid())
   rating    Int
   review    String
   userId    String

@@ -1,0 +1,40 @@
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
+
+// 1. Use middleware directly
+export const { auth: middleware } = NextAuth(authConfig);
+
+// *******************************************************************************************
+
+//export { auth as middleware } from "@/auth";
+
+// export const config = {
+//   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+// };
+
+// export const runtime = "experimental-edge";
+
+// export const config = {
+//   runtime: "nodejs",
+//   unstable_allowDynamic: [
+//     // Allow the specific file causing the issue
+//     "/node_modules/pg/lib/crypto/utils-webcrypto.js",
+
+//     "**/node_modules/pg/**",
+//   ],
+// };
+
+// export const config = {
+//   runtime: "nodejs", // Use Node.js runtime for this API route
+// };
+
+
+
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
+import type { NextRequest } from "next/server";
+
+const { auth } = NextAuth(authConfig);
+export default auth(async function middleware(req: NextRequest) {
+  // Your custom middleware logic goes here
+});

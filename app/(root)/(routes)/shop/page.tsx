@@ -2,10 +2,6 @@ import { Suspense } from "react";
 
 import { ShopContent } from "./components/ShopContent";
 
-import Loading from "./loading";
-import { FilterSideBar } from "./components/FilterSideBar";
-import { ProductList } from "./components/ProductList";
-
 export default function ShopPage() {
   // read docs
   // useSearchParams for URL query string parameters
