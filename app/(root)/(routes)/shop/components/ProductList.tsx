@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown } from "lucide-react";
 
 import { ProductCard } from "./ProductCard";
