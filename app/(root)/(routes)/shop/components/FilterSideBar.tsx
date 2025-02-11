@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,16 +40,31 @@ type FilterType = keyof FilterState;
 interface FilterSideBarProps {
   filters: FilterState;
   onFilterChange: (filterType: FilterType, value: string[]) => void;
+  currentlySelectedFilters: FilterState;
 }
 
-export function FilterSideBar({ filters, onFilterChange }: FilterSideBarProps) {
+export function FilterSideBar({
+  filters,
+  onFilterChange,
+  currentlySelectedFilters,
+}: FilterSideBarProps) {
   // Filter Change Checkboxes
   const handleCheckboxChange = (filterType: FilterType, value: string) => {
-    const newValues = filters[filterType].includes(value)
-      ? filters[filterType].filter((item) => item !== value)
-      : [...filters[filterType], value];
+    //console.log(`Checkbox changed: ${filterType}, ${value}`);
+    const newValues = currentlySelectedFilters[filterType].includes(value)
+      ? currentlySelectedFilters[filterType].filter((item) => item !== value)
+      : [...currentlySelectedFilters[filterType], value];
     onFilterChange(filterType, newValues);
   };
+
+  // Log the filters state
+  useEffect(() => {
+    console.log("TOTAL FILTERS  :", filters);
+  }, [filters]);
+
+  useEffect(() => {
+    console.log("CURRENT FILTERS  :", currentlySelectedFilters);
+  }, [currentlySelectedFilters]);
 
   // Price Range
   const [priceRange, setPriceRange] = useState([0, 100]);
@@ -59,16 +74,56 @@ export function FilterSideBar({ filters, onFilterChange }: FilterSideBarProps) {
 
   return (
     <div className="col-span-1 md:col-span-1">
+      {/* Products Type */}
+      <div className="py-3">
+        <div className="text-xl font-bold">Shop by Types</div>
+        {Array.isArray(filters.productType) &&
+          filters.productType.map((item) => (
+            <div key={item} className="flex items-center pt-3 space-x-2">
+              <Checkbox
+                id={item}
+                checked={currentlySelectedFilters.productType.includes(item)}
+                onCheckedChange={() =>
+                  handleCheckboxChange("productType", item)
+                }
+              />
+              <Label htmlFor={item} className="text-md font-medium">
+                {item}
+              </Label>
+            </div>
+          ))}
+      </div>
+
+      {/* Pets */}
+      <div className="py-3">
+        <div className="text-xl font-bold">Pets</div>
+        <div className="grid grid-cols-2">
+          {Array.isArray(filters.petType) &&
+            filters.petType.map((item) => (
+              <div key={item} className="flex items-center pt-3 space-x-2">
+                <Checkbox
+                  id={item}
+                  checked={currentlySelectedFilters.petType.includes(item)}
+                  onCheckedChange={() => handleCheckboxChange("petType", item)}
+                />
+                <Label htmlFor={item} className="text-md font-medium">
+                  {item}
+                </Label>
+              </div>
+            ))}
+        </div>
+      </div>
+
       {/* Status */}
-      <div className="flex items-center pt-0 pb-3 space-x-3">
+      {/* <div className="flex items-center pt-0 pb-3 space-x-3">
         <Switch id="all-types" />
         <Label htmlFor="all-types" className="text-md font-medium">
           In-Stock
         </Label>
-      </div>
+      </div> */}
 
       {/* Offers */}
-      <div className="py-3">
+      {/* <div className="py-3">
         <div className="text-xl font-bold">Current Offers</div>
         {offers.map((item) => (
           <div key={item.id} className="flex items-center pt-3 space-x-2">
@@ -78,47 +133,7 @@ export function FilterSideBar({ filters, onFilterChange }: FilterSideBarProps) {
             </Label>
           </div>
         ))}
-      </div>
-
-      {/* Products Type */}
-      <div className="py-3">
-        <div className="text-xl font-bold">Shop by Types</div>
-        <div className="flex items-center pt-3 space-x-2">
-          <Checkbox id="all-types" />
-          <Label htmlFor="all-types" className="text-md font-medium">
-            All types
-          </Label>
-        </div>
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center pt-3 space-x-2">
-            <Checkbox key={item.id} id={item.id} />
-            <Label htmlFor={item.id} className="text-md font-medium">
-              {item.label}
-            </Label>
-          </div>
-        ))}
-      </div>
-
-      {/* Pets */}
-      <div className="py-3">
-        <div className="text-xl font-bold">Pets</div>
-        <div className="grid grid-cols-2">
-          <div className="flex items-center pt-3 space-x-2">
-            <Checkbox id="all-types" />
-            <Label htmlFor="all-types" className="text-md font-medium">
-              All Pets
-            </Label>
-          </div>
-          {pets.map((item) => (
-            <div key={item.id} className="flex items-center pt-3 space-x-2">
-              <Checkbox key={item.id} id={item.id} />
-              <Label htmlFor={item.id} className="text-md font-medium">
-                {item.label}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
+      </div> */}
 
       {/* Price Range */}
       <div className="py-3 w-11/12">
