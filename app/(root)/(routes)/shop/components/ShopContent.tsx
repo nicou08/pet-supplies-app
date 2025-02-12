@@ -11,9 +11,16 @@ import { ProductList } from "./ProductList";
 type FilterState = {
   petType: string[];
   productType: string[];
+  offersType: string[];
 };
 
 type FilterType = keyof FilterState;
+
+const offers = [
+  { id: "on-sale", label: "On Sale" },
+  { id: "new-arrivals", label: "New Arrivals" },
+  { id: "clearance", label: "Clearance" },
+];
 
 export function ShopContent() {
   const {
@@ -30,12 +37,14 @@ export function ShopContent() {
   const [filters, setFilters] = useState<FilterState>({
     petType: [],
     productType: [],
+    offersType: offers.map((offer) => offer.id),
   });
 
   const [currentlySelectedFilters, setCurrentlySelectedFilters] =
     useState<FilterState>({
       petType: [],
       productType: [],
+      offersType: [],
     });
 
   useEffect(() => {
@@ -58,6 +67,7 @@ export function ShopContent() {
               return type.name;
             }
           ),
+          offersType: offers.map((offer) => offer.id),
         };
 
         setFilters(newFilters);

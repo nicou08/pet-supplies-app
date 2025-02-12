@@ -7,23 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 
-const items = [
-  { id: "food", label: "Food" },
-  { id: "toys", label: "Toys" },
-  { id: "cages", label: "Cages" },
-  { id: "fish-tanks", label: "Fish Tanks" },
-];
-
-const pets = [
-  { id: "dogs", label: "Dogs" },
-  { id: "cats", label: "Cats" },
-  { id: "guinea-pigs", label: "Guinea Pigs" },
-  { id: "rabbits", label: "Rabbits" },
-  { id: "birds", label: "Birds" },
-  { id: "fish", label: "Fish" },
-  { id: "exotic-pets", label: "Exotic Pets" },
-];
-
 const offers = [
   { id: "on-sale", label: "On Sale" },
   { id: "new-arrivals", label: "New Arrivals" },
@@ -33,6 +16,7 @@ const offers = [
 type FilterState = {
   petType: string[];
   productType: string[];
+  offersType: string[];
 };
 
 type FilterType = keyof FilterState;
@@ -74,6 +58,31 @@ export function FilterSideBar({
 
   return (
     <div className="col-span-1 md:col-span-1">
+      {/* Status */}
+      <div className="flex items-center pt-0 pb-3 space-x-3">
+        <Switch id="all-types" />
+        <Label htmlFor="all-types" className="text-md font-medium">
+          In-Stock
+        </Label>
+      </div>
+
+      {/* Offers */}
+      <div className="py-3">
+        <div className="text-xl font-bold">Current Offers</div>
+        {filters.offersType.map((item) => (
+          <div key={item} className="flex items-center pt-3 space-x-2">
+            <Checkbox
+              id={item}
+              checked={currentlySelectedFilters.offersType.includes(item)}
+              onCheckedChange={() => handleCheckboxChange("offersType", item)}
+            />
+            <Label htmlFor={item} className="text-md font-medium">
+              {item}
+            </Label>
+          </div>
+        ))}
+      </div>
+
       {/* Products Type */}
       <div className="py-3">
         <div className="text-xl font-bold">Shop by Types</div>
@@ -113,27 +122,6 @@ export function FilterSideBar({
             ))}
         </div>
       </div>
-
-      {/* Status */}
-      {/* <div className="flex items-center pt-0 pb-3 space-x-3">
-        <Switch id="all-types" />
-        <Label htmlFor="all-types" className="text-md font-medium">
-          In-Stock
-        </Label>
-      </div> */}
-
-      {/* Offers */}
-      {/* <div className="py-3">
-        <div className="text-xl font-bold">Current Offers</div>
-        {offers.map((item) => (
-          <div key={item.id} className="flex items-center pt-3 space-x-2">
-            <Checkbox key={item.id} id={item.id} />
-            <Label htmlFor={item.id} className="text-md font-medium">
-              {item.label}
-            </Label>
-          </div>
-        ))}
-      </div> */}
 
       {/* Price Range */}
       <div className="py-3 w-11/12">
