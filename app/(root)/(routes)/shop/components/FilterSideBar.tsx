@@ -12,13 +12,17 @@ type FilterState = {
   productType: string[];
   offersType: string[];
   priceRange: number[];
+  inStock: boolean;
 };
 
 type FilterType = keyof FilterState;
 
 interface FilterSideBarProps {
   filters: FilterState;
-  onFilterChange: (filterType: FilterType, value: string[] | number[]) => void;
+  onFilterChange: (
+    filterType: FilterType,
+    value: string[] | number[] | boolean
+  ) => void;
   currentlySelectedFilters: FilterState;
 }
 
@@ -29,12 +33,22 @@ export function FilterSideBar({
 }: FilterSideBarProps) {
   // Filter Change Checkboxes
   const handleCheckboxChange = (filterType: FilterType, value: string) => {
-    if (filterType != "priceRange") {
+    if (filterType != "priceRange" && filterType !== "inStock") {
       const newValues = currentlySelectedFilters[filterType].includes(value)
         ? currentlySelectedFilters[filterType].filter((item) => item !== value)
         : [...currentlySelectedFilters[filterType], value];
       onFilterChange(filterType, newValues);
     }
+  };
+
+  // Price Range Filter Change
+  const handlePriceChange = (value: number[]) => {
+    onFilterChange("priceRange", value);
+  };
+
+  // In-Stock Switch
+  const handleSwitchChange = (value: boolean) => {
+    onFilterChange("inStock", value);
   };
 
   // Log the filters state
@@ -46,16 +60,15 @@ export function FilterSideBar({
     console.log("CURRENT FILTERS  :", currentlySelectedFilters);
   }, [currentlySelectedFilters]);
 
-  // Price Range Filter Change
-  const handlePriceChange = (value: number[]) => {
-    onFilterChange("priceRange", value);
-  };
-
   return (
     <div className="col-span-1 md:col-span-1">
       {/* Status */}
       <div className="flex items-center pt-0 pb-3 space-x-3">
-        <Switch id="all-types" />
+        <Switch
+          id="In-Stock"
+          checked={currentlySelectedFilters.inStock}
+          onCheckedChange={handleSwitchChange}
+        />
         <Label htmlFor="all-types" className="text-md font-medium">
           In-Stock
         </Label>

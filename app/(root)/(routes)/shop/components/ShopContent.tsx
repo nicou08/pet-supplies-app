@@ -13,6 +13,7 @@ type FilterState = {
   productType: string[];
   offersType: string[];
   priceRange: number[];
+  inStock: boolean;
 };
 
 type FilterType = keyof FilterState;
@@ -40,6 +41,7 @@ export function ShopContent() {
     productType: [],
     offersType: offers.map((offer) => offer.label),
     priceRange: [0, 500],
+    inStock: false,
   });
 
   const [currentlySelectedFilters, setCurrentlySelectedFilters] =
@@ -48,6 +50,7 @@ export function ShopContent() {
       productType: [],
       offersType: [],
       priceRange: [0, 500],
+      inStock: false,
     });
 
   useEffect(() => {
@@ -72,6 +75,7 @@ export function ShopContent() {
           ),
           offersType: offers.map((offer) => offer.label),
           priceRange: [0, 500],
+          inStock: false,
         };
 
         setFilters(newFilters);
@@ -82,7 +86,7 @@ export function ShopContent() {
   // Handle Filter Change
   const handleFilterChange = (
     filterType: FilterType,
-    value: string[] | number[]
+    value: string[] | number[] | boolean
   ) => {
     setCurrentlySelectedFilters((prevFilters) => ({
       ...prevFilters,
