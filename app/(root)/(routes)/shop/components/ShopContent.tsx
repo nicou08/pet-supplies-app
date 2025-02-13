@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { usePetTypes } from "@/hooks/usePetTypes";
 import { useProductTypes } from "@/hooks/useProductTypes";
@@ -12,6 +12,7 @@ type FilterState = {
   petType: string[];
   productType: string[];
   offersType: string[];
+  priceRange: number[];
 };
 
 type FilterType = keyof FilterState;
@@ -37,7 +38,8 @@ export function ShopContent() {
   const [filters, setFilters] = useState<FilterState>({
     petType: [],
     productType: [],
-    offersType: offers.map((offer) => offer.id),
+    offersType: offers.map((offer) => offer.label),
+    priceRange: [0, 500],
   });
 
   const [currentlySelectedFilters, setCurrentlySelectedFilters] =
@@ -45,6 +47,7 @@ export function ShopContent() {
       petType: [],
       productType: [],
       offersType: [],
+      priceRange: [0, 500],
     });
 
   useEffect(() => {
@@ -67,7 +70,8 @@ export function ShopContent() {
               return type.name;
             }
           ),
-          offersType: offers.map((offer) => offer.id),
+          offersType: offers.map((offer) => offer.label),
+          priceRange: [0, 500],
         };
 
         setFilters(newFilters);
@@ -76,7 +80,10 @@ export function ShopContent() {
   }, [petTypes, productTypes]);
 
   // Handle Filter Change
-  const handleFilterChange = (filterType: FilterType, value: string[]) => {
+  const handleFilterChange = (
+    filterType: FilterType,
+    value: string[] | number[]
+  ) => {
     setCurrentlySelectedFilters((prevFilters) => ({
       ...prevFilters,
       [filterType]: value,

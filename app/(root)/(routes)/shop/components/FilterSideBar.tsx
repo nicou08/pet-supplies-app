@@ -7,23 +7,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 
-const offers = [
-  { id: "on-sale", label: "On Sale" },
-  { id: "new-arrivals", label: "New Arrivals" },
-  { id: "clearance", label: "Clearance" },
-];
-
 type FilterState = {
   petType: string[];
   productType: string[];
   offersType: string[];
+  priceRange: number[];
 };
 
 type FilterType = keyof FilterState;
 
 interface FilterSideBarProps {
   filters: FilterState;
-  onFilterChange: (filterType: FilterType, value: string[]) => void;
+  onFilterChange: (filterType: FilterType, value: string[] | number[]) => void;
   currentlySelectedFilters: FilterState;
 }
 
@@ -34,11 +29,12 @@ export function FilterSideBar({
 }: FilterSideBarProps) {
   // Filter Change Checkboxes
   const handleCheckboxChange = (filterType: FilterType, value: string) => {
-    //console.log(`Checkbox changed: ${filterType}, ${value}`);
-    const newValues = currentlySelectedFilters[filterType].includes(value)
-      ? currentlySelectedFilters[filterType].filter((item) => item !== value)
-      : [...currentlySelectedFilters[filterType], value];
-    onFilterChange(filterType, newValues);
+    if (filterType != "priceRange") {
+      const newValues = currentlySelectedFilters[filterType].includes(value)
+        ? currentlySelectedFilters[filterType].filter((item) => item !== value)
+        : [...currentlySelectedFilters[filterType], value];
+      onFilterChange(filterType, newValues);
+    }
   };
 
   // Log the filters state
@@ -50,10 +46,9 @@ export function FilterSideBar({
     console.log("CURRENT FILTERS  :", currentlySelectedFilters);
   }, [currentlySelectedFilters]);
 
-  // Price Range
-  const [priceRange, setPriceRange] = useState([0, 100]);
+  // Price Range Filter Change
   const handlePriceChange = (value: number[]) => {
-    setPriceRange(value);
+    onFilterChange("priceRange", value);
   };
 
   return (
@@ -69,18 +64,19 @@ export function FilterSideBar({
       {/* Offers */}
       <div className="py-3">
         <div className="text-xl font-bold">Current Offers</div>
-        {filters.offersType.map((item) => (
-          <div key={item} className="flex items-center pt-3 space-x-2">
-            <Checkbox
-              id={item}
-              checked={currentlySelectedFilters.offersType.includes(item)}
-              onCheckedChange={() => handleCheckboxChange("offersType", item)}
-            />
-            <Label htmlFor={item} className="text-md font-medium">
-              {item}
-            </Label>
-          </div>
-        ))}
+        {Array.isArray(filters.offersType) &&
+          filters.offersType.map((item) => (
+            <div key={item} className="flex items-center pt-3 space-x-2">
+              <Checkbox
+                id={item}
+                checked={currentlySelectedFilters.offersType.includes(item)}
+                onCheckedChange={() => handleCheckboxChange("offersType", item)}
+              />
+              <Label htmlFor={item} className="text-md font-medium">
+                {item}
+              </Label>
+            </div>
+          ))}
       </div>
 
       {/* Products Type */}
@@ -128,17 +124,17 @@ export function FilterSideBar({
         <div className="text-lg font-semibold">Price Range</div>
         <Slider
           id="price-range"
-          min={0}
-          max={100}
+          min={filters.priceRange[0]}
+          max={filters.priceRange[1]}
           step={5}
-          value={priceRange}
+          value={currentlySelectedFilters.priceRange}
           onValueChange={handlePriceChange}
           className="pt-6"
           minStepsBetweenThumbs={1}
         />
         <div className="flex justify-between text-sm mt-2">
-          <span>${priceRange[0]}</span>
-          <span>${priceRange[1]}</span>
+          <span>${currentlySelectedFilters.priceRange[0]}</span>
+          <span>${currentlySelectedFilters.priceRange[1]}</span>
         </div>
       </div>
 
