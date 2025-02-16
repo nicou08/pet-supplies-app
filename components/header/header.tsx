@@ -9,7 +9,7 @@ import { MainNavigationMenu } from "./MainNavigationMenu";
 
 export default function Header() {
   return (
-    <div>
+    <div className="pb-2 bg-[#e1e1e1] dark:bg-neutral-950">
       {/* Top Header Section */}
       <div className="w-full h-20 flex flex-row bg-[#e1e1e1] dark:bg-neutral-950">
         {/* Hamburger Menu */}

@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from "react";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
@@ -61,7 +67,7 @@ export function FilterSideBar({
   }, [currentlySelectedFilters]);
 
   return (
-    <div className="col-span-1 md:col-span-1">
+    <div className="col-span-1 md:col-span-1 border-r border-neutral-700 pt-5 pl-2">
       {/* Status */}
       <div className="flex items-center pt-0 pb-3 space-x-3">
         <Switch
@@ -74,66 +80,8 @@ export function FilterSideBar({
         </Label>
       </div>
 
-      {/* Offers */}
-      <div className="py-3">
-        <div className="text-xl font-bold">Current Offers</div>
-        {Array.isArray(filters.offersType) &&
-          filters.offersType.map((item) => (
-            <div key={item} className="flex items-center pt-3 space-x-2">
-              <Checkbox
-                id={item}
-                checked={currentlySelectedFilters.offersType.includes(item)}
-                onCheckedChange={() => handleCheckboxChange("offersType", item)}
-              />
-              <Label htmlFor={item} className="text-md font-medium">
-                {item}
-              </Label>
-            </div>
-          ))}
-      </div>
-
-      {/* Products Type */}
-      <div className="py-3">
-        <div className="text-xl font-bold">Shop by Types</div>
-        {Array.isArray(filters.productType) &&
-          filters.productType.map((item) => (
-            <div key={item} className="flex items-center pt-3 space-x-2">
-              <Checkbox
-                id={item}
-                checked={currentlySelectedFilters.productType.includes(item)}
-                onCheckedChange={() =>
-                  handleCheckboxChange("productType", item)
-                }
-              />
-              <Label htmlFor={item} className="text-md font-medium">
-                {item}
-              </Label>
-            </div>
-          ))}
-      </div>
-
-      {/* Pets */}
-      <div className="py-3">
-        <div className="text-xl font-bold">Pets</div>
-        <div className="grid grid-cols-2">
-          {Array.isArray(filters.petType) &&
-            filters.petType.map((item) => (
-              <div key={item} className="flex items-center pt-3 space-x-2">
-                <Checkbox
-                  id={item}
-                  checked={currentlySelectedFilters.petType.includes(item)}
-                  onCheckedChange={() => handleCheckboxChange("petType", item)}
-                />
-                <Label htmlFor={item} className="text-md font-medium">
-                  {item}
-                </Label>
-              </div>
-            ))}
-        </div>
-      </div>
-
       {/* Price Range */}
-      <div className="py-3 w-11/12">
+      <div className="py-3 w-full pr-5">
         <div className="text-lg font-semibold">Price Range</div>
         <Slider
           id="price-range"
@@ -151,7 +99,82 @@ export function FilterSideBar({
         </div>
       </div>
 
-      {/* Ratings */}
+      {/* New Variation Test */}
+      <Accordion type="multiple">
+        {/* Offers */}
+        <AccordionItem value="offers">
+          <AccordionTrigger>
+            <div className="text-xl font-bold">Current Offers</div>
+          </AccordionTrigger>
+          <AccordionContent>
+            {Array.isArray(filters.offersType) &&
+              filters.offersType.map((item) => (
+                <div key={item} className="flex items-center pt-3 space-x-2">
+                  <Checkbox
+                    id={item}
+                    checked={currentlySelectedFilters.offersType.includes(item)}
+                    onCheckedChange={() =>
+                      handleCheckboxChange("offersType", item)
+                    }
+                  />
+                  <Label htmlFor={item} className="text-md font-medium">
+                    {item}
+                  </Label>
+                </div>
+              ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Products Type */}
+        <AccordionItem value="productType">
+          <AccordionTrigger>
+            <div className="text-xl font-bold">Shop by Types</div>
+          </AccordionTrigger>
+          <AccordionContent>
+            {Array.isArray(filters.productType) &&
+              filters.productType.map((item) => (
+                <div key={item} className="flex items-center pt-3 space-x-2">
+                  <Checkbox
+                    id={item}
+                    checked={currentlySelectedFilters.productType.includes(
+                      item
+                    )}
+                    onCheckedChange={() =>
+                      handleCheckboxChange("productType", item)
+                    }
+                  />
+                  <Label htmlFor={item} className="text-md font-medium">
+                    {item}
+                  </Label>
+                </div>
+              ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Pets */}
+        <AccordionItem value="petType">
+          <AccordionTrigger>
+            <div className="text-xl font-bold">Pets</div>
+          </AccordionTrigger>
+          <AccordionContent>
+            {Array.isArray(filters.petType) &&
+              filters.petType.map((item) => (
+                <div key={item} className="flex items-center pt-3 space-x-2">
+                  <Checkbox
+                    id={item}
+                    checked={currentlySelectedFilters.petType.includes(item)}
+                    onCheckedChange={() =>
+                      handleCheckboxChange("petType", item)
+                    }
+                  />
+                  <Label htmlFor={item} className="text-md font-medium">
+                    {item}
+                  </Label>
+                </div>
+              ))}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
