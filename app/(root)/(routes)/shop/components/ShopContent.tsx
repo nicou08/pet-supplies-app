@@ -12,6 +12,7 @@ type FilterState = {
   petType: string[];
   productType: string[];
   offersType: string[];
+  brandsType: string[];
   priceRange: number[];
   inStock: boolean;
 };
@@ -24,12 +25,22 @@ const offers = [
   { id: "clearance", label: "Clearance" },
 ];
 
+const brands = [
+  { id: "pawsitive-wellness", label: "Pawsitive Wellness" },
+  { id: "happy-tails-outfitters", label: "Happy Tails Outfitters" },
+  { id: "aquafun-comforts", label: "AquaFun Comforts" },
+  { id: "wildbites", label: "WildBites" },
+  { id: "feathernest-homes", label: "FeatherNest Homes" },
+  { id: "gregarious-co", label: "Gregarious Co." },
+];
+
 export function ShopContent() {
   const {
     petTypes: petTypes,
     isLoading: isPetTypesLoading,
     isError: isPetTypesError,
   } = usePetTypes();
+
   const {
     productTypes: productTypes,
     isLoading: isProductTypesLoading,
@@ -40,6 +51,7 @@ export function ShopContent() {
     petType: [],
     productType: [],
     offersType: offers.map((offer) => offer.label),
+    brandsType: brands.map((brand) => brand.label),
     priceRange: [0, 500],
     inStock: false,
   });
@@ -49,6 +61,7 @@ export function ShopContent() {
       petType: [],
       productType: [],
       offersType: [],
+      brandsType: [],
       priceRange: [0, 500],
       inStock: false,
     });
@@ -74,6 +87,7 @@ export function ShopContent() {
             }
           ),
           offersType: offers.map((offer) => offer.label),
+          brandsType: brands.map((brand) => brand.label),
           priceRange: [0, 500],
           inStock: false,
         };
@@ -103,7 +117,7 @@ export function ShopContent() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 px-4 border-t border-x border-neutral-700">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pr-4 border-t border-x border-neutral-700">
       <FilterSideBar
         filters={filters}
         onFilterChange={handleFilterChange}

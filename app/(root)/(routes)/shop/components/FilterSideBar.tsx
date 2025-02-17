@@ -17,6 +17,7 @@ type FilterState = {
   petType: string[];
   productType: string[];
   offersType: string[];
+  brandsType: string[];
   priceRange: number[];
   inStock: boolean;
 };
@@ -67,9 +68,9 @@ export function FilterSideBar({
   }, [currentlySelectedFilters]);
 
   return (
-    <div className="col-span-1 md:col-span-1 border-r border-neutral-700 pt-5 pl-2">
+    <div className="col-span-1 border-r border-neutral-700 pt-5">
       {/* Status */}
-      <div className="flex items-center pt-0 pb-3 space-x-3">
+      <div className="flex items-center pt-0 pb-3 pl-4 space-x-3">
         <Switch
           id="In-Stock"
           checked={currentlySelectedFilters.inStock}
@@ -81,7 +82,7 @@ export function FilterSideBar({
       </div>
 
       {/* Price Range */}
-      <div className="py-3 w-full pr-5">
+      <div className="py-3 w-full px-4">
         <div className="text-lg font-semibold">Price Range</div>
         <Slider
           id="price-range"
@@ -100,13 +101,13 @@ export function FilterSideBar({
       </div>
 
       {/* New Variation Test */}
-      <Accordion type="multiple">
+      <Accordion type="multiple" defaultValue={["offers"]}>
         {/* Offers */}
-        <AccordionItem value="offers">
+        <AccordionItem value="offers" className="px-4">
           <AccordionTrigger>
-            <div className="text-xl font-bold">Current Offers</div>
+            <div className="text-xl font-bold pl-0">Current Offers</div>
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="pl-0">
             {Array.isArray(filters.offersType) &&
               filters.offersType.map((item) => (
                 <div key={item} className="flex items-center pt-3 space-x-2">
@@ -126,7 +127,7 @@ export function FilterSideBar({
         </AccordionItem>
 
         {/* Products Type */}
-        <AccordionItem value="productType">
+        <AccordionItem value="productType" className="px-4">
           <AccordionTrigger>
             <div className="text-xl font-bold">Shop by Types</div>
           </AccordionTrigger>
@@ -152,7 +153,7 @@ export function FilterSideBar({
         </AccordionItem>
 
         {/* Pets */}
-        <AccordionItem value="petType">
+        <AccordionItem value="petType" className="px-4">
           <AccordionTrigger>
             <div className="text-xl font-bold">Pets</div>
           </AccordionTrigger>
@@ -165,6 +166,30 @@ export function FilterSideBar({
                     checked={currentlySelectedFilters.petType.includes(item)}
                     onCheckedChange={() =>
                       handleCheckboxChange("petType", item)
+                    }
+                  />
+                  <Label htmlFor={item} className="text-md font-medium">
+                    {item}
+                  </Label>
+                </div>
+              ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Brands */}
+        <AccordionItem value="brands" className="px-4">
+          <AccordionTrigger>
+            <div className="text-xl font-bold">Brands</div>
+          </AccordionTrigger>
+          <AccordionContent>
+            {Array.isArray(filters.brandsType) &&
+              filters.brandsType.map((item) => (
+                <div key={item} className="flex items-center pt-3 space-x-2">
+                  <Checkbox
+                    id={item}
+                    checked={currentlySelectedFilters.brandsType.includes(item)}
+                    onCheckedChange={() =>
+                      handleCheckboxChange("brandsType", item)
                     }
                   />
                   <Label htmlFor={item} className="text-md font-medium">
