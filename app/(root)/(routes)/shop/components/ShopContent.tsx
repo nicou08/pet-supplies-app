@@ -7,6 +7,7 @@ import { useProductTypes } from "@/hooks/useProductTypes";
 import Loading from "../loading";
 import { FilterSideBar } from "./FilterSideBar";
 import { ProductList } from "./ProductList";
+import { offers, brands, dummyProducts } from "@/constants";
 
 type FilterState = {
   petType: string[];
@@ -18,21 +19,6 @@ type FilterState = {
 };
 
 type FilterType = keyof FilterState;
-
-const offers = [
-  { id: "on-sale", label: "On Sale" },
-  { id: "new-arrivals", label: "New Arrivals" },
-  { id: "clearance", label: "Clearance" },
-];
-
-const brands = [
-  { id: "pawsitive-wellness", label: "Pawsitive Wellness" },
-  { id: "happy-tails-outfitters", label: "Happy Tails Outfitters" },
-  { id: "aquafun-comforts", label: "AquaFun Comforts" },
-  { id: "wildbites", label: "WildBites" },
-  { id: "feathernest-homes", label: "FeatherNest Homes" },
-  { id: "gregarious-co", label: "Gregarious Co." },
-];
 
 export function ShopContent() {
   const {
@@ -123,7 +109,10 @@ export function ShopContent() {
         onFilterChange={handleFilterChange}
         currentlySelectedFilters={currentlySelectedFilters}
       />
-      <ProductList filters={filters} />
+      <ProductList
+        filters={currentlySelectedFilters}
+        products={dummyProducts}
+      />
     </div>
   );
 }
