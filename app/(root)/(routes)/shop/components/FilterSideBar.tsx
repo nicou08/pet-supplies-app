@@ -68,7 +68,7 @@ export function FilterSideBar({
   }, [currentlySelectedFilters]);
 
   return (
-    <div className="col-span-1 border-r border-neutral-700 pt-5">
+    <div className="col-span-1 border-r border-neutral-700 py-5">
       {/* Status */}
       <div className="flex items-center pt-0 pb-3 pl-4 space-x-3">
         <Switch

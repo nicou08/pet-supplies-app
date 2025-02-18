@@ -103,7 +103,7 @@ export function ShopContent() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pr-4 border-t border-x border-neutral-700">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pr-4 min-h-[calc(100vh-145px)] h-full ">
       <FilterSideBar
         filters={filters}
         onFilterChange={handleFilterChange}
