@@ -86,8 +86,8 @@ export function ProductList({ filters, products }: ProductListProps) {
   });
 
   return (
-    <div className="col-span-4 w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-4">
-      <div className="col-span-4 flex justify-end">
+    <div className="col-span-4 w-full py-4">
+      <div className="flex justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -110,9 +110,12 @@ export function ProductList({ filters, products }: ProductListProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {sortedProducts.map((product, index) => (
-        <ProductCard key={index} product={product} />
-      ))}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+        {sortedProducts.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
     </div>
   );
 }

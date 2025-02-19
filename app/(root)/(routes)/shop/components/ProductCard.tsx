@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Star, StarHalf, ShoppingCart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const productCardSchema = z.object({
   image: z.string().url(),
@@ -14,6 +15,11 @@ const productCardSchema = z.object({
   description: z.string().optional(),
   price: z.number().positive(),
   rating: z.number().min(0).max(5),
+  inStock: z.boolean(),
+  offersType: z.string(),
+  productType: z.string(),
+  petType: z.string(),
+  brandType: z.string(),
 });
 
 type ProductCardValues = z.infer<typeof productCardSchema>;
@@ -25,49 +31,55 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const fullStars = Math.floor(product.rating);
   const hasHalfStar = product.rating % 1 !== 0;
-
+  //bg-[#e1e1e1] dark:bg-neutral-950
   return (
-    <div className="border p-4 rounded-md shadow-md">
-      <Image
-        width={500}
-        height={500}
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded-md"
-      />
-
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">{product.name}</h3>
-        <p className="text-gray-600">{product.description}</p>
-        <div className="flex items-center mt-2">
-          <div className="relative">
-            <div className="flex gap-1">
-              {Array.from({ length: 5 }, (_, i) => (
-                <Star
-                  key={i}
-                  strokeWidth={1}
-                  className="w-5 h-5 text-gray-300"
-                />
-              ))}
-            </div>
-            <div className="flex gap-1 absolute top-0">
-              {Array.from({ length: fullStars }, (_, i) => (
-                <Star
-                  key={i}
-                  fill="yellow"
-                  strokeWidth={0}
-                  className="w-5 h-5"
-                />
-              ))}
-              {hasHalfStar && (
-                <StarHalf fill="yellow" strokeWidth={0} className="w-5 h-5" />
-              )}
-            </div>
-          </div>
-          <span className="ml-2 text-gray-600">({product.rating})</span>
+    <div className="pb-4 overflow-hidden max-h-[390px]">
+      <div className="relative">
+        <Image
+          width={500}
+          height={500}
+          src={product.image || "/placeholder.svg"}
+          alt={product.name}
+          className="w-full h-64 object-cover"
+        />
+        {product.offersType === "On Sale" && (
+          <Badge className="absolute top-3 left-3 bg-white text-black rounded-full">
+            {product.offersType}
+          </Badge>
+        )}
+      </div>
+      <div className="px-4 py-2">
+        <h3 className="font-bold text-lg">{product.name}</h3>
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          {product.brandType}
         </div>
-        <div className="mt-2 text-xl font-bold">${product.price}</div>
-        <Button className="mt-4 w-full">Add to Cart</Button>
+
+        <div className="flex items-center gap-1">
+          {Array.from({ length: fullStars }, (_, i) => (
+            <Star
+              key={i}
+              strokeWidth={0}
+              className="w-4 h-4 text-yellow-400 fill-current"
+            />
+          ))}
+          {hasHalfStar && (
+            <StarHalf
+              strokeWidth={0}
+              className="w-4 h-4 text-yellow-400 fill-current"
+            />
+          )}
+          <div className="text-sm">{product.rating.toFixed(1)}</div>
+        </div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-2xl font-bold">
+            ${product.price.toFixed(2)}
+          </span>
+          {!product.inStock && (
+            <Badge variant={product.inStock ? "default" : "secondary"}>
+              {product.inStock ? "In Stock" : "Sold out"}
+            </Badge>
+          )}
+        </div>
       </div>
     </div>
   );
