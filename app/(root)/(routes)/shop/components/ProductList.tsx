@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
+import { Product } from "@/types/product";
 import { ProductCard } from "./ProductCard";
 import {
   DropdownMenu,
@@ -25,37 +26,25 @@ type FilterState = {
 
 interface ProductListProps {
   filters: FilterState;
-  products: any[];
+  products: Product[];
 }
 
 export function ProductList({ filters, products }: ProductListProps) {
-  //
-  // TOO CHANGE
-  //
-  // const filteredProducts = dummyProducts.filter((product) => {
-  //   const matchesPetType = filters.petType.length
-  //     ? filters.petType.some((type) => product.petType.includes(type))
-  //     : true;
-  //   const matchesProductType = filters.productType.length
-  //     ? filters.productType.includes(product.productType)
-  //     : true;
-  //   return matchesPetType && matchesProductType;
-  // });
-
   const [sortOption, setSortOption] = useState("Best Match");
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = (products || []).filter((product) => {
     const matchesPetType = filters.petType.length
-      ? filters.petType.includes(product.petType)
+      ? filters.petType.includes(product.petType.name)
       : true;
     const matchesProductType = filters.productType.length
-      ? filters.productType.includes(product.productType)
+      ? filters.productType.includes(product.productType.name)
       : true;
     const matchesOffersType = filters.offersType.length
-      ? filters.offersType.includes(product.offersType)
+      ? product.offersType !== null &&
+        filters.offersType.includes(product.offersType)
       : true;
     const matchesBrandsType = filters.brandsType.length
-      ? filters.brandsType.includes(product.brandType)
+      ? filters.brandsType.includes(product.brand.name)
       : true;
     const matchesPriceRange =
       product.price >= filters.priceRange[0] &&
@@ -79,7 +68,7 @@ export function ProductList({ filters, products }: ProductListProps) {
       case "Price High-Low":
         return b.price - a.price;
       case "Highest Rated":
-        return b.rating - a.rating;
+        return b.averageRating - a.averageRating;
       default:
         return 0; // Best Match (default order)
     }

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { z } from "zod";
 import { Star, StarHalf, ShoppingCart } from "lucide-react";
 
+import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -25,12 +26,12 @@ const productCardSchema = z.object({
 type ProductCardValues = z.infer<typeof productCardSchema>;
 
 interface ProductCardProps {
-  product: ProductCardValues;
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const fullStars = Math.floor(product.rating);
-  const hasHalfStar = product.rating % 1 !== 0;
+  const fullStars = Math.floor(product.averageRating);
+  const hasHalfStar = product.averageRating % 1 !== 0;
   //bg-[#e1e1e1] dark:bg-neutral-950
   return (
     <div className="pb-4 overflow-hidden max-h-[390px]">
@@ -38,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Image
           width={500}
           height={500}
-          src={product.image || "/placeholder.svg"}
+          src={product.mainImageUrl || "/placeholder.svg"}
           alt={product.name}
           className="w-full h-64 object-cover"
         />
@@ -51,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="px-4 py-2">
         <h3 className="font-bold text-lg">{product.name}</h3>
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-          {product.brandType}
+          {product.brand.name}
         </div>
 
         <div className="flex items-center gap-1">
@@ -68,7 +69,7 @@ export function ProductCard({ product }: ProductCardProps) {
               className="w-4 h-4 text-yellow-400 fill-current"
             />
           )}
-          <div className="text-sm">{product.rating.toFixed(1)}</div>
+          <div className="text-sm">{product.averageRating.toFixed(1)}</div>
         </div>
         <div className="flex justify-between items-center mb-2">
           <span className="text-2xl font-bold">

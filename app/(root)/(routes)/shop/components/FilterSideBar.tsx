@@ -59,13 +59,13 @@ export function FilterSideBar({
   };
 
   // Log the filters state
-  useEffect(() => {
-    console.log("TOTAL FILTERS  :", filters);
-  }, [filters]);
+  // useEffect(() => {
+  //   console.log("TOTAL FILTERS  :", filters);
+  // }, [filters]);
 
-  useEffect(() => {
-    console.log("CURRENT FILTERS  :", currentlySelectedFilters);
-  }, [currentlySelectedFilters]);
+  // useEffect(() => {
+  //   console.log("CURRENT FILTERS  :", currentlySelectedFilters);
+  // }, [currentlySelectedFilters]);
 
   return (
     <div className="col-span-1 border-r border-neutral-700 py-5">
