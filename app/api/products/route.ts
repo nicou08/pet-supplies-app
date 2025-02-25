@@ -39,7 +39,8 @@ export async function GET(request: Request) {
       },
     });
 
-    //console.log("ROUTE HANDLER: Fetched products from database:", products);
+    // if (products)
+    //   console.log("ROUTE HANDLER: Fetched products from database:", products);
 
     // Validate the data using Zod
     const result = productSchema.array().safeParse(products);
@@ -52,7 +53,7 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json({ products });
+    return NextResponse.json(result.data);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
