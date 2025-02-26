@@ -30,13 +30,18 @@ export function HeaderUtilCartBtn() {
     0
   );
 
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      openCart();
+    } else {
+      closeCart();
+    }
+  };
+
   return (
     <>
-      <Sheet open={isCartOpen} onOpenChange={closeCart}>
-        <SheetTrigger
-          onClick={openCart}
-          className="focus:outline-none  w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black hover:bg-neutral-300 data-[state=open]:bg-neutral-300 dark:text-white cursor-pointer  dark:hover:bg-neutral-900 transition-shadow duration-200"
-        >
+      <Sheet open={isCartOpen} onOpenChange={handleOpenChange}>
+        <SheetTrigger className="focus:outline-none  w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black hover:bg-neutral-300 data-[state=open]:bg-neutral-300 dark:text-white cursor-pointer  dark:hover:bg-neutral-900 transition-shadow duration-200">
           <ShoppingCart />
         </SheetTrigger>
         <SheetContent>
