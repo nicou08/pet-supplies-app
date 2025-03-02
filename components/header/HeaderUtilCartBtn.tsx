@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
+import Checkout from "./checkout";
 import {
   Sheet,
   SheetContent,
@@ -68,9 +70,11 @@ export function HeaderUtilCartBtn() {
           )}
           <div className="mt-4">
             <p className="text-lg font-bold">Total: ${totalPrice.toFixed(2)}</p>
-            <Button className="w-full bg-blue-500 text-white py-2 rounded">
-              Checkout
-            </Button>
+            <Link href="/checkout">
+              <Button className="w-full bg-blue-500 text-white py-2 rounded">
+                Checkout
+              </Button>
+            </Link>
           </div>
         </SheetContent>
       </Sheet>
