@@ -1,7 +1,14 @@
 "use client";
 
 import { FormEvent, useState, useEffect, useRef } from "react";
-import { MessageSquare, X, Send, Loader2, Minimize } from "lucide-react";
+import {
+  MessageSquare,
+  X,
+  Send,
+  Loader2,
+  ArrowUp,
+  Minimize,
+} from "lucide-react";
 
 import {
   Card,
@@ -12,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
@@ -65,15 +73,24 @@ export function AIAssistant() {
     setTimeout(() => {
       const aiMessage: Message = {
         id: messages.length + 2,
-        content: "This is AI response",
+        content:
+          "For your Guinea Pig, I recommend Premium Timothy Hay, Ultra Comfort Guinea Pig Hideout, and Vitamin C Supplements.",
         sender: "assistant",
         timestamp: new Date(),
       };
 
       setMessages((prevMessages) => [...prevMessages, aiMessage]);
       setIsLoading(false);
-    }, 1500);
+    }, 3000);
   };
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = "auto"; // Reset height before calculating scrollHeight
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+    }
+  }, [input]);
 
   return (
     <div>
@@ -85,68 +102,94 @@ export function AIAssistant() {
         <MessageSquare size={24} />
       </Button>
       {isOpen && (
-        <Card className="fixed bottom-24 right-8 w-[480px] h-[600px] z-50 border border-neutral-700 overflow-hidden">
-          <CardHeader className="bg-slate-300 py-3">
-            <div className="flex justify-between items-center">
-              <CardTitle className="font-medium text-black text-lg">
-                Pet Assistant
-              </CardTitle>
-              <Button
-                onClick={() => setIsOpen(false)}
-                className="p-0 h-7 w-7 bg-transparent hover:bg-slate-400 border border-slate-400 rounded shadow-xl"
-              >
-                <X size={18} />
-              </Button>
-            </div>
-          </CardHeader>
-
-          <CardContent className="text-xl px-0">
-            <ScrollArea
-              className="flex w-full h-[484px] px-5 "
-              ref={scrollAreaRef}
-            >
-              <div className="h-4" />
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex py-1 ${
-                    message.sender === "assistant"
-                      ? "justify-start"
-                      : "justify-end"
-                  }`}
+        <div className="fixed bottom-24 right-8 w-[480px] h-[600px]">
+          <Card className="flex flex-col justify-between w-full h-full z-50 border border-neutral-700 overflow-hidden">
+            <CardHeader className="bg-slate-300 py-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="font-medium text-black text-lg">
+                  Pet Assistant
+                </CardTitle>
+                <Button
+                  onClick={() => setIsOpen(false)}
+                  className="p-0 h-7 w-7 bg-transparent hover:bg-slate-400 border border-slate-400 rounded shadow-xl"
                 >
-                  <div className="items-center p-2 bg-slate-600 max-w-[70%] rounded-lg text-base text-white">
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              <div className="h-4" />
-            </ScrollArea>
-          </CardContent>
+                  <X size={18} />
+                </Button>
+              </div>
+            </CardHeader>
 
-          <CardFooter className="absolute bottom-0 w-full h-16 pt-4 border-t border-neutral-700">
-            <form className="flex gap-2 w-full" onSubmit={handleMessageSend}>
-              <Input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="flex-1 p-2 border border-neutral-700 rounded-lg"
-                placeholder="Ask about pet supplies..."
-              />
-              <Button
-                type="submit"
-                className="bg-blue-600 text-white p-2 rounded-lg h-9 w-9"
-                disabled={isLoading}
+            <CardContent className="text-xl px-0 pb-0 flex-grow overflow-hidden bg-red-300">
+              <ScrollArea
+                className="flex w-full px-5 h-full bg-blue-300 "
+                ref={scrollAreaRef}
               >
-                {isLoading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <Send size={18} />
+                <div className="h-4" />
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex py-2 ${
+                      message.sender === "assistant"
+                        ? "justify-start"
+                        : "justify-end"
+                    }`}
+                  >
+                    <div className="items-center px-3 py-1 bg-slate-600 max-w-[75%] rounded-lg text-base text-white">
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[70%] rounded-lg px-3 py-2 bg-muted">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 rounded-full bg-current animate-bounce" />
+                        <div
+                          className="w-2 h-2 rounded-full bg-current animate-bounce"
+                          style={{ animationDelay: "0.2s" }}
+                        />
+                        <div
+                          className="w-2 h-2 rounded-full bg-current animate-bounce"
+                          style={{ animationDelay: "0.4s" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </Button>
-            </form>
-          </CardFooter>
-        </Card>
+
+                <div className="h-4" />
+              </ScrollArea>
+            </CardContent>
+
+            <CardFooter className="w-full py-3 px-4 border-t border-neutral-700">
+              <form
+                className="flex justify-center items-center border border-neutral-700 rounded-lg w-full"
+                onSubmit={handleMessageSend}
+              >
+                <Textarea
+                  ref={textAreaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="flex-1 p-2 max-h-80 border-0 resize-none rounded-l-lg rounded-r-none focus-visible:ring-0"
+                  placeholder="Ask about pet supplies..."
+                />
+                <div className="flex justify-end px-3 py-3">
+                  <Button
+                    size="icon"
+                    type="submit"
+                    className="bg-blue-600 text-white p-0 rounded-lg h-8 w-8"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <ArrowUp className="!w-5 !h-5" />
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </CardFooter>
+          </Card>
+        </div>
       )}
     </div>
   );
