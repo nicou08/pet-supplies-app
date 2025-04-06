@@ -1,28 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState, useEffect, useRef } from "react";
-import {
-  MessageSquare,
-  X,
-  Send,
-  Loader2,
-  ArrowUp,
-  Minimize,
-} from "lucide-react";
+import { MessageSquare, X, Loader2, ArrowUp } from "lucide-react";
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar } from "@/components/ui/avatar";
 
 type Message = {
   id: number;
@@ -94,6 +85,7 @@ export function AIAssistant() {
 
   return (
     <div>
+      {/* Button to open the chat window */}
       <Button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg"
@@ -101,14 +93,18 @@ export function AIAssistant() {
       >
         <MessageSquare size={24} />
       </Button>
+
+      {/* Chat window */}
       {isOpen && (
         <div className="fixed bottom-24 right-8 w-[480px] h-[600px]">
           <Card className="flex flex-col justify-between w-full h-full z-50 border border-neutral-700 overflow-hidden">
+            {/* Header of the chat window */}
             <CardHeader className="bg-slate-300 py-3">
               <div className="flex justify-between items-center">
                 <CardTitle className="font-medium text-black text-lg">
                   Pet Assistant
                 </CardTitle>
+                {/* Button to close the chat window */}
                 <Button
                   onClick={() => setIsOpen(false)}
                   className="p-0 h-7 w-7 bg-transparent hover:bg-slate-400 border border-slate-400 rounded shadow-xl"
@@ -118,12 +114,14 @@ export function AIAssistant() {
               </div>
             </CardHeader>
 
-            <CardContent className="text-xl px-0 pb-0 flex-grow overflow-hidden bg-red-300">
+            {/* Content area of the chat window */}
+            <CardContent className="text-xl px-0 pb-0 flex-grow overflow-hidden">
               <ScrollArea
-                className="flex w-full px-5 h-full bg-blue-300 "
+                className="flex w-full px-5 h-full"
                 ref={scrollAreaRef}
               >
                 <div className="h-4" />
+                {/* Render each message */}
                 {messages.map((message) => (
                   <div
                     key={message.id}
@@ -169,6 +167,12 @@ export function AIAssistant() {
                   ref={textAreaRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault(); // Prevent default behavior of adding a new line
+                      handleMessageSend(e); // Trigger the message send function
+                    }
+                  }}
                   className="flex-1 p-2 max-h-80 border-0 resize-none rounded-l-lg rounded-r-none focus-visible:ring-0"
                   placeholder="Ask about pet supplies..."
                 />

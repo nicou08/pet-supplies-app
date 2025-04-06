@@ -16,45 +16,62 @@ import {
 
 export function MainNavigationMenu() {
   return (
-    <NavigationMenu>
-      <NavigationMenuList className="text-black dark:text-white">
+    <NavigationMenu className="">
+      <NavigationMenuList className="text-black dark:text-white space-x-0">
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="rounded-none">
+            Pets
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/docs" title="Food"></ListItem>
-              <ListItem href="/docs" title="Toys"></ListItem>
-              <ListItem href="/docs" title="Cages"></ListItem>
-              <ListItem href="/docs" title="Fish Tanks"></ListItem>
+              <ListItem href="/pets/dog" title="Dog" />
+              <ListItem href="/shop" title="Cat" />
+              <ListItem href="/shop" title="Guinea Pig" />
+              <ListItem href="/shop" title="Hamster" />
+              <ListItem href="/shop" title="Rabbit" />
+              <ListItem href="/shop" title="Fish" />
+              <ListItem href="/shop" title="Bird" />
+              <ListItem href="/shop" title="Food" />
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="rounded-none">
+            Products
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
+              <ListItem href="/shop" title="Food"></ListItem>
+              <ListItem href="/shop" title="Toys"></ListItem>
+              <ListItem href="/shop" title="Cages"></ListItem>
+              <ListItem href="/shop" title="Fish Tanks"></ListItem>
+              <ListItem href="/shop" title="Beddings"></ListItem>
+              <ListItem href="/shop" title="Leashes"></ListItem>
+              <ListItem href="/shop" title="Hideouts"></ListItem>
+              <ListItem href="/shop" title="Shit Trays"></ListItem>
+              <ListItem href="/shop" title="Pharmaceuticals"></ListItem>
+              <ListItem href="/shop" title="Utilities"></ListItem>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className="rounded-none">
+            Services
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
               <ListItem href="/docs" title="Grooming"></ListItem>
-              <ListItem href="/docs" title="Dog Training"></ListItem>
-              <ListItem href="/docs" title="Cat Training"></ListItem>
+              <ListItem href="/docs" title="Training"></ListItem>
               <ListItem href="/docs" title="Vet Consultaions"></ListItem>
+              <ListItem href="/docs" title="Pet+"></ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Deals</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/docs" title="Special Offers"></ListItem>
-              <ListItem href="/docs" title="Clearance Items"></ListItem>
-              <ListItem href="/docs" title="Theme"></ListItem>
-              <ListItem href="/docs" title="Vet Consultaions"></ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/deals" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              New Arrivals
+              Deals
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
