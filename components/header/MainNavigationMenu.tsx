@@ -41,16 +41,37 @@ export function MainNavigationMenu() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/shop" title="Food"></ListItem>
-              <ListItem href="/shop" title="Toys"></ListItem>
-              <ListItem href="/shop" title="Cages"></ListItem>
-              <ListItem href="/shop" title="Fish Tanks"></ListItem>
-              <ListItem href="/shop" title="Beddings"></ListItem>
-              <ListItem href="/shop" title="Leashes"></ListItem>
-              <ListItem href="/shop" title="Hideouts"></ListItem>
-              <ListItem href="/shop" title="Shit Trays"></ListItem>
-              <ListItem href="/shop" title="Pharmaceuticals"></ListItem>
-              <ListItem href="/shop" title="Utilities"></ListItem>
+              <ListItem href="/shop?productType=food" title="Food"></ListItem>
+              <ListItem href="/shop?productType=toys" title="Toys"></ListItem>
+              <ListItem href="/shop?productType=cages" title="Cages"></ListItem>
+              <ListItem
+                href="/shop?productType=fish-tanks"
+                title="Fish Tanks"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=beddings"
+                title="Beddings"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=leashes"
+                title="Leashes"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=hideouts"
+                title="Hideouts"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=shit-trays"
+                title="Shit Trays"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=pharmaceuticals"
+                title="Pharmaceuticals"
+              ></ListItem>
+              <ListItem
+                href="/shop?productType=utilities"
+                title="Utilities"
+              ></ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

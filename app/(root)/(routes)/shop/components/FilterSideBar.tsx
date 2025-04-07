@@ -26,6 +26,9 @@ type FilterType = keyof FilterState;
 
 interface FilterSideBarProps {
   filters: FilterState;
+  filterNameMap: {
+    [key: string]: string;
+  };
   onFilterChange: (
     filterType: FilterType,
     value: string[] | number[] | boolean
@@ -35,6 +38,7 @@ interface FilterSideBarProps {
 
 export function FilterSideBar({
   filters,
+  filterNameMap,
   onFilterChange,
   currentlySelectedFilters,
 }: FilterSideBarProps) {
@@ -145,7 +149,7 @@ export function FilterSideBar({
                     }
                   />
                   <Label htmlFor={item} className="text-md font-medium">
-                    {item}
+                    {filterNameMap[item]}
                   </Label>
                 </div>
               ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { usePetTypes } from "@/hooks/usePetTypes";
 import { useProductTypes } from "@/hooks/useProductTypes";
@@ -33,6 +34,13 @@ type FilterType = keyof FilterState;
  *
  */
 export function ShopContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [productTypeMap, setProductTypeMap] = useState<{
+    [key: string]: string;
+  }>({});
+
   // Fetch pet types using the custom hook
   const {
     petTypes,
@@ -53,12 +61,6 @@ export function ShopContent() {
     isLoading: isProductsLoading,
     isError: isProductsError,
   } = useProducts();
-
-  useEffect(() => {
-    if (products) {
-      console.log("SHOPCONTENT Fetched products from database:", products);
-    }
-  }, [products]);
 
   // State for storing the filter options
   const [filters, setFilters] = useState<FilterState>({
@@ -90,6 +92,19 @@ export function ShopContent() {
         Array.isArray(petTypes.petTypes) &&
         Array.isArray(productTypes.productTypes)
       ) {
+        // Map product types name to displayName
+        const productTypeMapTemp: { [key: string]: string } = {};
+
+        productTypes.productTypes.forEach(
+          (productType: { id: string; name: string; displayName: string }) => {
+            productTypeMapTemp[productType.name] = productType.displayName;
+          }
+        );
+
+        setProductTypeMap(productTypeMapTemp);
+        console.log("Product Type Map:", productTypeMapTemp);
+
+        // Add filters
         const newFilters = {
           petType: petTypes.petTypes.map(
             (type: { id: string; name: string }) => {
@@ -112,6 +127,38 @@ export function ShopContent() {
     }
   }, [petTypes, productTypes]);
 
+  // Preload the filters from the URL query parameters
+  useEffect(() => {
+    const queryProductType = searchParams.get("productType");
+    if (queryProductType) {
+      console.log("Query product type:", queryProductType);
+      handleFilterChange("productType", [queryProductType]);
+    }
+
+    /**
+     * Possible solution is to do this in FilterSideBar component
+     */
+
+    // const newFilters: FilterState = {
+    //   petType: query.petType ? (query.petType as string).split(",") : [],
+    //   productType: query.productType
+    //     ? (query.productType as string).split(",")
+    //     : [],
+    //   offersType: query.offersType
+    //     ? (query.offersType as string).split(",")
+    //     : [],
+    //   brandsType: query.brandsType
+    //     ? (query.brandsType as string).split(",")
+    //     : [],
+    //   priceRange: query.priceRange
+    //     ? (query.priceRange as string).split(",").map(Number)
+    //     : [0, 500],
+    //   inStock: query.inStock === "true",
+    // };
+
+    // setCurrentlySelectedFilters(newFilters);
+  }, [searchParams]);
+
   /**
    * Handle filter change event.
    *
@@ -127,6 +174,29 @@ export function ShopContent() {
       [filterType]: value,
     }));
   };
+
+  // Update the URL when filters change
+  // const handleFilterChange = (
+  //   filterType: FilterType,
+  //   value: string[] | number[] | boolean
+  // ) => {
+  //   setCurrentlySelectedFilters((prevFilters) => {
+  //     const updatedFilters = { ...prevFilters, [filterType]: value };
+
+  //     // Update the URL query parameters
+  //     const queryParams = new URLSearchParams();
+  //     Object.entries(updatedFilters).forEach(([key, val]) => {
+  //       if (Array.isArray(val)) {
+  //         queryParams.set(key, val.join(","));
+  //       } else {
+  //         queryParams.set(key, String(val));
+  //       }
+  //     });
+  //     router.push(`?${queryParams.toString()}`);
+
+  //     return updatedFilters;
+  //   });
+  // };
 
   // Render loading state if any of the data is still loading
   if (isPetTypesLoading || isProductTypesLoading || isProductsLoading) {
@@ -144,6 +214,7 @@ export function ShopContent() {
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pr-4 min-h-[calc(100vh-145px)] h-full ">
       <FilterSideBar
         filters={filters}
+        filterNameMap={productTypeMap}
         onFilterChange={handleFilterChange}
         currentlySelectedFilters={currentlySelectedFilters}
       />

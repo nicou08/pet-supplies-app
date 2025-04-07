@@ -43,9 +43,10 @@ model Account {
 }
 
 model ProductType {
-  id       String    @id @default(uuid())
-  name     String
-  products Product[] @relation("ProductToProductType")
+  id          String    @id @default(uuid())
+  name        String
+  displayName String?
+  products    Product[] @relation("ProductToProductType")
 }
 
 model PetType {
