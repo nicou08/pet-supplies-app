@@ -37,6 +37,7 @@ export function ShopContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [defaultFilters, setDefaultFilters] = useState<string[]>(["offers"]);
   const [productTypeMap, setProductTypeMap] = useState<{
     [key: string]: string;
   }>({});
@@ -102,7 +103,7 @@ export function ShopContent() {
         );
 
         setProductTypeMap(productTypeMapTemp);
-        console.log("Product Type Map:", productTypeMapTemp);
+        //console.log("Product Type Map:", productTypeMapTemp);
 
         // Add filters
         const newFilters = {
@@ -133,6 +134,9 @@ export function ShopContent() {
     if (queryProductType) {
       console.log("Query product type:", queryProductType);
       handleFilterChange("productType", [queryProductType]);
+
+      // Add productType to query filters
+      setDefaultFilters((prevFilters) => [...prevFilters, "productType"]);
     }
 
     /**
@@ -215,6 +219,7 @@ export function ShopContent() {
       <FilterSideBar
         filters={filters}
         filterNameMap={productTypeMap}
+        defaultFilters={defaultFilters}
         onFilterChange={handleFilterChange}
         currentlySelectedFilters={currentlySelectedFilters}
       />

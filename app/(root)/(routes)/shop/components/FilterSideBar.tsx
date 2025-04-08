@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   Accordion,
@@ -29,6 +30,7 @@ interface FilterSideBarProps {
   filterNameMap: {
     [key: string]: string;
   };
+  defaultFilters: string[];
   onFilterChange: (
     filterType: FilterType,
     value: string[] | number[] | boolean
@@ -39,9 +41,12 @@ interface FilterSideBarProps {
 export function FilterSideBar({
   filters,
   filterNameMap,
+  defaultFilters,
   onFilterChange,
   currentlySelectedFilters,
 }: FilterSideBarProps) {
+  const searchParams = useSearchParams();
+
   // Filter Change Checkboxes
   const handleCheckboxChange = (filterType: FilterType, value: string) => {
     if (filterType != "priceRange" && filterType !== "inStock") {
@@ -105,7 +110,7 @@ export function FilterSideBar({
       </div>
 
       {/* New Variation Test */}
-      <Accordion type="multiple" defaultValue={["offers"]}>
+      <Accordion type="multiple" defaultValue={defaultFilters}>
         {/* Offers */}
         <AccordionItem value="offers" className="px-4">
           <AccordionTrigger>
