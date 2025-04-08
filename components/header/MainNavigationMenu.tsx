@@ -45,7 +45,7 @@ export function MainNavigationMenu() {
               <ListItem href="/shop?productType=toys" title="Toys"></ListItem>
               <ListItem href="/shop?productType=cages" title="Cages"></ListItem>
               <ListItem
-                href="/shop?productType=fish-tanks"
+                href="/shop?productType=fish-tank"
                 title="Fish Tanks"
               ></ListItem>
               <ListItem
@@ -61,7 +61,7 @@ export function MainNavigationMenu() {
                 title="Hideouts"
               ></ListItem>
               <ListItem
-                href="/shop?productType=shit-trays"
+                href="/shop?productType=litter-box"
                 title="Shit Trays"
               ></ListItem>
               <ListItem

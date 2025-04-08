@@ -37,6 +37,8 @@ export function ShopContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [generalLoading, setGeneralLoading] = useState(true);
+
   const [defaultFilters, setDefaultFilters] = useState<string[]>(["offers"]);
   const [productTypeMap, setProductTypeMap] = useState<{
     [key: string]: string;
@@ -137,8 +139,10 @@ export function ShopContent() {
 
       // Add productType to query filters
       setDefaultFilters((prevFilters) => [...prevFilters, "productType"]);
+      console.log("Default filters:", defaultFilters);
     }
 
+    setGeneralLoading(false);
     /**
      * Possible solution is to do this in FilterSideBar component
      */
@@ -203,7 +207,12 @@ export function ShopContent() {
   // };
 
   // Render loading state if any of the data is still loading
-  if (isPetTypesLoading || isProductTypesLoading || isProductsLoading) {
+  if (
+    isPetTypesLoading ||
+    isProductTypesLoading ||
+    isProductsLoading ||
+    generalLoading
+  ) {
     console.log("Loading data...");
     return <Loading />;
   }
