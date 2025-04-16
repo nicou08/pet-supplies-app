@@ -81,10 +81,10 @@ export function MainNavigationMenu() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/docs" title="Grooming"></ListItem>
-              <ListItem href="/docs" title="Training"></ListItem>
-              <ListItem href="/docs" title="Vet Consultaions"></ListItem>
-              <ListItem href="/docs" title="Pet+"></ListItem>
+              <ListItem href="/services" title="Grooming"></ListItem>
+              <ListItem href="/services" title="Training"></ListItem>
+              <ListItem href="/services" title="Vet Consultaions"></ListItem>
+              <ListItem href="/services" title="Pet+"></ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

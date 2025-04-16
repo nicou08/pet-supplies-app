@@ -146,25 +146,6 @@ export function ShopContent() {
     /**
      * Possible solution is to do this in FilterSideBar component
      */
-
-    // const newFilters: FilterState = {
-    //   petType: query.petType ? (query.petType as string).split(",") : [],
-    //   productType: query.productType
-    //     ? (query.productType as string).split(",")
-    //     : [],
-    //   offersType: query.offersType
-    //     ? (query.offersType as string).split(",")
-    //     : [],
-    //   brandsType: query.brandsType
-    //     ? (query.brandsType as string).split(",")
-    //     : [],
-    //   priceRange: query.priceRange
-    //     ? (query.priceRange as string).split(",").map(Number)
-    //     : [0, 500],
-    //   inStock: query.inStock === "true",
-    // };
-
-    // setCurrentlySelectedFilters(newFilters);
   }, [searchParams]);
 
   /**
