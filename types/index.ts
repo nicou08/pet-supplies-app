@@ -1,3 +1,4 @@
+import { User } from "lucide-react";
 import { z } from "zod";
 
 export const appointmentInfoSchema = z.object({
@@ -5,6 +6,7 @@ export const appointmentInfoSchema = z.object({
   pet: z.object({
     name: z.string(),
     type: z.string(),
+    typeId: z.string().uuid(),
     age: z.number(),
   }),
   provider: z.object({
@@ -14,7 +16,55 @@ export const appointmentInfoSchema = z.object({
   }),
   date: z.date(),
   time: z.string(),
+  notes: z.string(),
+});
+
+// Schema for API request to create appointment
+export const createAppointmentSchema = z.object({
+  //userId: z.string().uuid(),
+  petTypeId: z.string().uuid(),
+  petName: z.string(),
+  petAge: z.number(),
+  appointmentDate: z.date(),
+  appointmentTime: z.string(),
+  appointmentType: z.string(),
+  appointmentStatus: z.string().default("pending"),
+  appointmentNotes: z.string().optional(),
+  appointmentProviderId: z.string(),
+});
+
+export const appointmentDisplaySchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  petType: z.object({
+    id: z.string().uuid(),
+    displayName: z.string(),
+  }),
+  petName: z.string(),
+  petAge: z.number(),
+  appointmentDate: z.date(),
+  appointmentTime: z.string(),
+  appointmentType: z.string(),
+  appointmentStatus: z.string().default("pending"),
+  appointmentNotes: z.string().optional(),
+  appointmentProvider: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    role: z.array(z.string()),
+  }),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const createReviewSchema = z.object({
+  rating: z.number().min(1).max(5),
+  review: z.string().min(5).max(500),
+  productId: z.string().uuid(),
+  userId: z.string().uuid(),
 });
 
 // Infer the TypeScript type from the schema
 export type AppointmentInfo = z.infer<typeof appointmentInfoSchema>;
+export type CreateAppointmentInfo = z.infer<typeof createAppointmentSchema>;
+export type AppointmentDisplay = z.infer<typeof appointmentDisplaySchema>;
+export type CreateReviewInfo = z.infer<typeof createReviewSchema>;

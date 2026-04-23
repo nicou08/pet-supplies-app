@@ -27,12 +27,19 @@ export async function GET(
         brand: true,
         productType: true,
         petType: true,
+        petTypes: {
+          include: {
+            petType: true,
+          },
+        },
       },
     });
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
+
+    console.log("Fetched product from database:", product);
 
     // Validate the data using Zod
     const result = detailedProductSchema.safeParse(product);

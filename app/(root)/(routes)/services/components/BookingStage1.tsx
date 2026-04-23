@@ -11,7 +11,7 @@ type Service = {
 
 type BookingStage1Props = {
   Services: Service[];
-  onUpdateBookingData: (field: string, value: string) => void;
+  onUpdateBookingData: (field: string, value: any) => void;
   selectedService: string;
 };
 
@@ -25,6 +25,7 @@ export function BookingStage1({
     green: "bg-green-200",
     purple: "bg-purple-200",
   };
+
   return (
     <div>
       <div className="font-bold text-lg pb-7">Select Appointment Type</div>
@@ -33,13 +34,21 @@ export function BookingStage1({
           <Button
             key={index}
             //variant={selectedService === service.name ? "default" : "outline"}
-            className={`${
-              bgColorMap[service.bgColor]
-            } flex flex-col justify-start items-start h-48 py-5 px-8 gap-0 ${
-              selectedService === service.name ? "border-4 border-red-300" : ""
-            }`}
+            className={`flex flex-col justify-start items-start h-48 py-5 px-8 gap-0 ${
+              selectedService === service.name
+                ? "bg-neutral-400 hover:bg-neutral-400"
+                : `${bgColorMap[service.bgColor]} hover:${
+                    bgColorMap[service.bgColor]
+                  } hover:shadow-lg dark:hover:shadow-white/25`
+            } active:scale-95 transition-transform duration-100 `}
             onClick={() => {
               onUpdateBookingData("serviceType", service.name);
+              // Reset the provider data
+              onUpdateBookingData("provider", {
+                id: "",
+                name: "",
+                specialty: [],
+              });
             }}
           >
             <div className="text-4xl pb-5">{service.icon}</div>

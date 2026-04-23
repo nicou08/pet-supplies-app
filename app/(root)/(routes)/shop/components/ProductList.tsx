@@ -27,15 +27,34 @@ type FilterState = {
 interface ProductListProps {
   filters: FilterState;
   products: Product[];
+  onMobileFilterChange: (open: boolean) => void;
+  isFilterChanging: boolean;
 }
 
-export function ProductList({ filters, products }: ProductListProps) {
+export function ProductList({
+  filters,
+  products,
+  onMobileFilterChange,
+  isFilterChanging,
+}: ProductListProps) {
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
   const [sortOption, setSortOption] = useState("Best Match");
 
   const filteredProducts = (products || []).filter((product) => {
-    const matchesPetType = filters.petType.length
-      ? filters.petType.includes(product.petType.name)
+    // const matchesPetType = filters.petType.length
+    //   ? filters.petType.includes(product.petType.name)
+    //   : true;
+    // const matchesPetType = filters.petType.length
+    //   ? product.petTypes.some((pt) => filters.petType.includes(pt.name))
+    //   : true;
+
+    // Use IDs and a Set for faster lookups
+    const selectedPetTypeIds = new Set(filters.petType);
+    const matchesPetType = selectedPetTypeIds.size
+      ? product.petTypes.some((pt) => selectedPetTypeIds.has(pt.name))
       : true;
+
     const matchesProductType = filters.productType.length
       ? filters.productType.includes(product.productType.name)
       : true;
@@ -74,9 +93,21 @@ export function ProductList({ filters, products }: ProductListProps) {
     }
   });
 
+  // Mobile filter toggle
+  const handleMobileFilterToggle = () => {
+    setMobileFilterOpen(!mobileFilterOpen);
+    onMobileFilterChange(!mobileFilterOpen);
+  };
+
   return (
-    <div className="col-span-4 w-full py-4">
-      <div className="flex justify-end">
+    <div className="px-4 sm:px-0 col-span-4 w-full py-4">
+      <div className="flex justify-between">
+        <div className="block 2lg:hidden">
+          <Button variant="outline" onClick={() => onMobileFilterChange(true)}>
+            Filter
+          </Button>
+        </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -100,10 +131,48 @@ export function ProductList({ filters, products }: ProductListProps) {
         </DropdownMenu>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4">
         {sortedProducts.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
+      </div> */}
+
+      {/* <div
+        className="
+          grid
+          gap-1
+          grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 2lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4
+          py-4
+        "
+      >
+        {sortedProducts.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div> */}
+
+      <div
+        className={`
+          grid
+          gap-1
+          grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 2lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4
+          py-4
+          ${
+            isFilterChanging ? "opacity-50 transition-opacity duration-300" : ""
+          }
+        `}
+      >
+        {isFilterChanging
+          ? // Show skeleton loading placeholders when filtering
+            Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-[350px] bg-stone-200 dark:bg-neutral-800 rounded-lg animate-pulse"
+              ></div>
+            ))
+          : // Show actual products when not filtering
+            sortedProducts.map((product, index) => (
+              <ProductCard key={index} product={product} />
+            ))}
       </div>
     </div>
   );

@@ -16,21 +16,29 @@ const BookingInfoSection = ({
 }) => {
   return (
     <div className="flex flex-col gap-3">
-      <div className="font-bold text-white">{bookingInfoTitle}</div>
-      <div className="text-xl text-white">{bookingInfoData}</div>
+      <div className="font-bold text-neutral-800 dark:text-white">
+        {bookingInfoTitle}
+      </div>
+      <div className="text-md text-neutral-800 dark:text-white">
+        {bookingInfoData}
+      </div>
     </div>
   );
 };
 
 export function BookingStage6({
   bookingData,
+  onUpdateBookingData,
 }: {
   bookingData: AppointmentInfo;
+  onUpdateBookingData: (field: string, value: any) => void;
 }) {
+  const [notes, setNotes] = useState<string>("");
+
   return (
     <div>
-      <div className="text-2xl font-medium pb-10">Appointment Summary</div>
-      <div className="grid grid-cols-2 gap-10 bg-neutral-900 p-8 rounded-lg">
+      <div className="text-xl font-bold pb-10">Appointment Summary</div>
+      <div className="grid grid-cols-2 gap-10 bg-neutral-300 dark:bg-neutral-950 p-8 rounded-lg">
         <BookingInfoSection
           bookingInfoTitle="Appointment Type"
           bookingInfoData={bookingData.serviceType}
@@ -53,10 +61,13 @@ export function BookingStage6({
 
       <div className="h-10" />
 
-      <div className="text-xl pb-2 pl-2">Additional Notes</div>
+      <div className="text-lg pb-2 pl-2">Additional Notes</div>
       <Textarea
         placeholder="Add any special instructions or notes for the provider..."
-        className="w-full h-32"
+        className="bg-neutral-300 dark:bg-neutral-950 text-neutral-800 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 w-full h-32 resize-none"
+        spellCheck={false}
+        value={bookingData.notes}
+        onChange={(e) => onUpdateBookingData("notes", e.target.value)}
       />
     </div>
   );

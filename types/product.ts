@@ -1,4 +1,6 @@
-import { z } from "zod";
+import { petData } from "@/constants/petData";
+import { getDisplayName } from "next/dist/shared/lib/utils";
+import { number, z } from "zod";
 
 export const productSchema = z.object({
   id: z.string().uuid(),
@@ -16,10 +18,13 @@ export const productSchema = z.object({
     id: z.string().uuid(),
     name: z.string().min(1),
   }),
-  petType: z.object({
-    id: z.string().uuid(),
-    name: z.string().min(1),
-  }),
+  petTypes: z.array(
+    z.object({
+      id: z.string().uuid(),
+      name: z.string().min(1),
+      displayName: z.string().min(1).optional(),
+    })
+  ),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -34,6 +39,7 @@ export const detailedProductSchema = z.object({
   offersType: z.string().nullable(),
   inStock: z.boolean(),
   averageRating: z.number().min(0).max(5),
+  numberOfRatings: z.number().int().nonnegative(),
   brand: z.object({
     id: z.string().uuid(),
     name: z.string().min(1),
@@ -41,11 +47,24 @@ export const detailedProductSchema = z.object({
   productType: z.object({
     id: z.string().uuid(),
     name: z.string().min(1),
+    displayName: z.string().min(1),
   }),
   petType: z.object({
     id: z.string().uuid(),
     name: z.string().min(1),
+    displayName: z.string().min(1),
   }),
+  petTypes: z.array(
+    z.object({
+      productId: z.string().uuid(),
+      petTypeId: z.string().uuid(),
+      petType: z.object({
+        id: z.string().uuid(),
+        name: z.string().min(1),
+        displayName: z.string().min(1).optional(),
+      }),
+    })
+  ),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

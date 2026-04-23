@@ -5,6 +5,9 @@ import Link from "next/link";
 import { HomeCarousel } from "@/components/home-carousel";
 import { ProductRow } from "@/components/product-row";
 import { InteractiveRow } from "@/components/interactive-row";
+import { PetRow } from "@/components/pets-row";
+import { AppointmentRow } from "@/components/appointment-row";
+import { AccordionInfo } from "@/components/accordion-info";
 
 export default function HomePage() {
   return (
@@ -13,13 +16,14 @@ export default function HomePage() {
 
       <div className="w-full flex justify-center">
         {/* <HomeCarousel /> */}
-        <div className="h-[500px] flex justify-center items-center text-lg">
+        {/* <div className="h-[500px] flex justify-center items-center text-lg">
           {" "}
           Hello
           <Link href="/shop" className="h-10 px-5 bg-fuchsia-700">
             SHOP
           </Link>
-        </div>
+        </div> */}
+        <HomeCarousel />
       </div>
 
       <div className="h-10" />
@@ -31,6 +35,18 @@ export default function HomePage() {
       <ProductRow />
 
       <div className="h-10" />
+
+      <PetRow />
+
+      <div className="h-14" />
+
+      <AppointmentRow />
+
+      <div className="h-14" />
+
+      <AccordionInfo />
+
+      {/* Placeholder for additional content */}
       <div className="h-[1000px]"></div>
     </div>
   );

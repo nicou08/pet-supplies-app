@@ -1,92 +1,258 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {
+  Utensils,
+  PillBottle,
+  Link2,
+  Container,
+  BedDouble,
+  Toilet,
+  ToyBrick,
+  Settings,
+  Fish,
+  Tent,
+  PawPrint,
+} from "lucide-react";
 
-import { useProductTypes } from "@/hooks/useProductTypes";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { usePetProducts } from "@/hooks/usePetProducts";
 
 type PetContentProps = {
   petId: string;
 };
 
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  utensils: Utensils,
+  capsule: PillBottle,
+  "link-2": Link2,
+  container: Container,
+  "bed-double": BedDouble,
+  toilet: Toilet,
+  "toy-brick": ToyBrick,
+  tool: Settings,
+  fish: Fish,
+  tent: Tent,
+  pawprint: PawPrint,
+};
+
 export function PetContent({ petId }: PetContentProps) {
-  const {
-    productTypes,
-    isLoading: productTypeLoading,
-    isError: productTypeError,
-  } = useProductTypes();
   const {
     products,
     isLoading: petProductsLoading,
     isError: petProductsError,
-    status,
   } = usePetProducts(petId);
 
-  const [petProductTypes, setPetProductTypes] = useState([]);
+  // Group products by productType
+  // const productsByType = useMemo(() => {
+  //   if (!products) return {};
+  //   return products.reduce((acc: Record<string, any[]>, product: any) => {
+  //     const type = product.productType?.name || "Other";
+  //     if (!acc[type]) acc[type] = [];
+  //     acc[type].push(product);
+  //     return acc;
+  //   }, {});
+  // }, [products]);
 
-  if (productTypeLoading) {
-    return <div className="text-3xl">Loading...</div>;
-  }
+  // const productTypes = useMemo(() => {
+  //   if (!products) return [];
+  //   const map = new Map();
+  //   products.forEach((product: any) => {
+  //     const pt = product.productType;
+  //     if (pt && !map.has(pt.id)) {
+  //       map.set(pt.id, {
+  //         id: pt.id,
+  //         name: pt.name,
+  //         displayName: pt.displayName,
+  //         icon: pt.icon,
+  //         description: pt.description,
+  //       });
+  //     }
+  //   });
+  //   return Array.from(map.values());
+  // }, [products]);
 
-  if (productTypes) {
-    //console.log("PETCONTENT Fetched product types:", productTypes);
-    console.log("PETCONTENT Fetched products:", typeof productTypes);
-  }
-
-  useEffect(() => {
-    if (products) {
-      const uniqueProductTypes = products.reduce((acc: any, product: any) => {
-        const productType = product.productType.name;
-        if (!acc.includes(productType)) {
-          acc.push(productType);
-        }
-        return acc;
-      }, []);
-
-      setPetProductTypes(uniqueProductTypes);
-    }
+  const productsByType = useMemo(() => {
+    if (!products) return {};
+    return products.reduce((acc: Record<string, any[]>, product: any) => {
+      const typeKey = product.productType?.name ?? "Other";
+      (acc[typeKey] ||= []).push(product);
+      return acc;
+    }, {});
   }, [products]);
 
-  return (
-    <div className="bg-green-700">
-      <div className="bg-red-300 flex justify-center text-3xl">
-        Shop by Category
-      </div>
-      <div className="bg-blue-600 flex justify-center gap-5">
-        {productTypes.productTypes.map(
-          (productType: { id: string; name: string }) => (
-            <Link
-              key={productType.id}
-              href={`/pets/dog#${productType.name.toLocaleLowerCase()}`}
-              className="text-lg"
-            >
-              {productType.name}
-            </Link>
-          )
-        )}
-      </div>
-      {petProductTypes.length > 0 ? (
-        <div className="bg-yellow-300 flex justify-center text-3xl">
-          {petProductTypes.map((productType: string) => (
-            <Link
-              key={productType}
-              href={`/pets/dog#${productType.toLocaleLowerCase()}`}
-              className="text-lg"
-            >
-              {productType}
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-yellow-300 flex justify-center text-3xl">
-          No products available for this pet type.
-        </div>
-      )}
+  const productTypes = useMemo(() => {
+    if (!products) return [];
+    const map = new Map<string, any>();
+    products.forEach((product: any) => {
+      const pt = product.productType;
+      if (pt && !map.has(pt.id)) {
+        map.set(pt.id, {
+          id: pt.id,
+          name: pt.name,
+          displayName: pt.displayName,
+          icon: pt.icon,
+          description: pt.description,
+        });
+      }
+    });
+    return Array.from(map.values());
+  }, [products]);
 
-      <div className="h-[2400px]"></div>
-      <div id="food">Hello</div>
-      <div className="h-[1400px] bg-yellow-700"></div>
+  const productTypeNames = useMemo(
+    () => Object.keys(productsByType),
+    [productsByType]
+  );
+
+  useEffect(() => {
+    if (productTypes) {
+      console.log("USEMEMO productTypes", productTypes);
+    }
+  }, [productTypes]);
+
+  if (petProductsLoading) {
+    return <div className="text-3xl text-center py-10">Loading...</div>;
+  }
+
+  if (petProductsError) {
+    return (
+      <div className="text-3xl text-center py-10 text-red-600">
+        Failed to load products.
+      </div>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <div className="text-3xl text-center py-10 text-gray-700">
+        No products available for this pet.
+      </div>
+    );
+  }
+  if (products) console.log("Fetched products for pet:", products);
+
+  return (
+    <div className="w-full max-w-5xl mx-auto py-8">
+      <h2 className="text-lg md:text-2xl font-semibold text-center mb-6">
+        Shop by Categories
+      </h2>
+      {/* Horizontal Line */}
+      {/* <div className="border-t border-gray-300 mb-6" /> */}
+
+      {/* Tabs for product types */}
+      <div className="flex justify-center">
+        <Tabs defaultValue={productTypeNames[0]} className="w-full">
+          <TabsList className="w-full flex justify-center bg-transparent mb-10 h-auto">
+            {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto gap-4 bg-transparent justify-center max-w-3xl bg-green-300 mx-auto"> */}
+            {/*<div
+              className="grid grid-cols-[repeat(auto-fit,144px)] md:grid-cols-[repeat(auto-fit,192px)] 
+              max-w-sm xxs:max-w-md 2xs:max-w-xl md:max-w-3xl lg:max-w-5xl gap-y-4 gap-x-6 md:gap-x-10 
+              h-auto justify-center mx-auto bg-red-300"
+            > */}
+            <div
+              className="
+                relative w-full -mx-4 px-4 pb-5 pt-2
+                overflow-x-auto
+                scroll-smooth
+                scrollbar-thin
+                [&::-webkit-scrollbar]:h-2
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:rounded-full
+                [&::-webkit-scrollbar-thumb]:bg-neutral-300
+                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700
+              "
+            >
+              <div
+                className="
+                  flex flex-nowrap gap-4 w-max mx-auto
+                  snap-x snap-mandatory
+                  scroll-px-4
+                "
+              >
+                {productTypes.map((productType) => {
+                  const IconComponent = iconMap[productType.icon] || PawPrint;
+                  return (
+                    <TabsTrigger
+                      key={productType.id}
+                      value={productType.name}
+                      className="
+                        flex-none
+                        w-40 md:w-48
+                        snap-start
+                        flex flex-col items-center
+                        p-3 md:p-4 rounded-xl cursor-pointer transition-all
+                        data-[state=active]:ring-2 data-[state=active]:ring-blue-500
+                        data-[state=active]:bg-stone-100 dark:data-[state=active]:bg-stone-950
+                        bg-stone-100 dark:bg-stone-800 hover:shadow-md
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
+                      "
+                    >
+                      <IconComponent className="w-7 h-7 md:w-8 md:h-8" />
+                      <h3 className="font-bold text-xs md:text-sm mt-2 text-center line-clamp-2">
+                        {productType.displayName}
+                      </h3>
+                      <p className="hidden md:block text-xs mt-1 dark:data-[state=inactive]:text-gray-500 dark:data-[state=active]:text-white line-clamp-2">
+                        {productType.description}
+                      </p>
+                    </TabsTrigger>
+                  );
+                })}
+              </div>
+            </div>
+          </TabsList>
+          {productTypeNames.map((type) => (
+            <TabsContent key={type} value={type} className="w-full">
+              <div
+                className="
+                  grid
+                  gap-1
+                  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+                "
+              >
+                {productsByType[type].map((product) => (
+                  <div
+                    key={product.id}
+                    className="
+                      bg-neutral-300 dark:bg-neutral-900
+                      rounded-lg shadow
+                      flex flex-col items-start
+                      px-2
+                      overflow-hidden
+                      transition
+                      pb-4
+                    "
+                  >
+                    <div className="flex justify-center w-full">
+                      <img
+                        src={product.mainImageUrl || "/placeholder.svg"}
+                        alt={product.name}
+                        className="w-28 h-28 sm:w-48 sm:h-48 object-contain mb-2"
+                      />
+                    </div>
+                    <div className="font-bold text-sm sm:text-base mb-1 text-center line-clamp-2">
+                      {product.name}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 mb-1 text-center text-xs">
+                      {product.brand?.name}
+                    </div>
+
+                    <div className="font-semibold text-base sm:text-lg mb-2">
+                      ${product.price?.toFixed(2)}
+                    </div>
+                    <Link
+                      href={`/products/${product.id}`}
+                      className="mt-auto px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-xs"
+                    >
+                      View Product
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }

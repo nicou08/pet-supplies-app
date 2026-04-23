@@ -9,7 +9,7 @@ import { MainNavigationMenu } from "./MainNavigationMenu";
 
 export default function Header() {
   return (
-    <div className="pb-2 bg-[#e1e1e1] dark:bg-neutral-950 border-b border-neutral-700">
+    <div className="pb-0 sm:pb-2 bg-[#e1e1e1] dark:bg-neutral-950 border-b border-neutral-700">
       {/* Top Header Section */}
       <div className="w-full h-20 flex flex-row bg-[#e1e1e1] dark:bg-neutral-950">
         {/* Hamburger Menu */}
@@ -22,7 +22,7 @@ export default function Header() {
         <HeaderUtilityButtons />
       </div>
 
-      <div className="h-2"></div>
+      <div className="h-0 sm:h-2"></div>
 
       {/* Bottom Header Section */}
       <div className="z-50 w-full h-12 px-0 2lg:px-4 hidden sm:flex justify-start items-center bg-[#e1e1e1] dark:bg-neutral-950">

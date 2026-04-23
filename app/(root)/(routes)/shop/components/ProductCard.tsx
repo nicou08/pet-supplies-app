@@ -28,29 +28,46 @@ export function ProductCard({ product }: ProductCardProps) {
   const hasHalfStar = product.averageRating % 1 !== 0;
   //bg-[#e1e1e1] dark:bg-neutral-950
   return (
-    <Link href={`/products/${product.id}`}>
-      <div className="pb-4 overflow-hidden max-h-[390px]">
-        <div className="relative">
+    <Link href={`/products/${product.id}`} className="block h-full">
+      <div className="flex flex-col h-[350px] bg-stone-100 dark:bg-neutral-950 rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden mb-5">
+        {/* Image */}
+        <div className="relative w-full h-48 bg-white dark:bg-neutral-900 flex-shrink-0">
           <Image
-            width={500}
-            height={500}
             src={product.mainImageUrl || "/placeholder.svg"}
             alt={product.name}
-            className="w-full h-64 object-cover"
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 400px"
+            priority={false}
           />
           {product.offersType === "On Sale" && (
-            <Badge className="absolute top-3 left-3 bg-white text-black rounded-full">
+            <Badge className="absolute top-3 left-3 bg-white text-black rounded-full shadow">
               {product.offersType}
             </Badge>
           )}
         </div>
-        <div className="px-4 py-2">
-          <h3 className="font-bold text-lg">{product.name}</h3>
-          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+
+        {/* Content */}
+        <div className="flex flex-col flex-1 px-4 py-2">
+          {/* Title */}
+          <h3
+            className="font-bold text-lg leading-5 mb-1 line-clamp-2"
+            title={product.name}
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {product.name}
+          </h3>
+          {/* Brand */}
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1 truncate">
             {product.brand.name}
           </div>
-
-          <div className="flex items-center gap-1">
+          {/* Rating */}
+          <div className="flex items-center gap-1 mb-2">
             {Array.from({ length: fullStars }, (_, i) => (
               <Star
                 key={i}
@@ -66,15 +83,16 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
             <div className="text-sm">{product.averageRating.toFixed(1)}</div>
           </div>
-          <div className="flex justify-between items-center mb-2">
+          {/* Spacer */}
+          <div className="flex-1" />
+          {/* Price & Stock */}
+          <div className="flex justify-between items-center mt-2">
             <span className="text-2xl font-bold">
               ${product.price.toFixed(2)}
             </span>
-            {!product.inStock && (
-              <Badge variant={product.inStock ? "default" : "secondary"}>
-                {product.inStock ? "In Stock" : "Sold out"}
-              </Badge>
-            )}
+            <Badge variant={product.inStock ? "default" : "secondary"}>
+              {product.inStock ? "In Stock" : "Sold out"}
+            </Badge>
           </div>
         </div>
       </div>

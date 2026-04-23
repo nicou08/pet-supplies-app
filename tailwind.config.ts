@@ -10,7 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        xxs: "375px",
+        xs: "470px",
+        "2xs": "530px",
+        "2sm": "700px",
+        "1.5md": "800px",
+        "2md": "900px",
         "2lg": "1100px",
+        "1.5xl": "1400px",
       },
       colors: {
         background: "hsl(var(--background))",

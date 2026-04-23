@@ -1,66 +1,123 @@
+"use client";
+
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 import {
   PawPrint,
   Bone,
   Scissors,
   CircleDollarSign,
   ShoppingBasket,
+  Stethoscope,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 interface InteractiveItemProps {
   title: string;
   description: string;
   icon: React.ReactNode;
+  route: string;
 }
 
-function InteractiveItem({ title, description, icon }: InteractiveItemProps) {
+function InteractiveItem({
+  title,
+  description,
+  icon,
+  route,
+}: InteractiveItemProps) {
   return (
-    <div className="h-32 w-[370px] bg-stone-300 px-6 cursor-pointer rounded-sm hover:border-2 hover:border-black border-2 border-transparent flex text-lg text-stone-800">
-      <div className="basis-2/3 h-full pt-6">
-        <div className="font-bold text-2xl">{title}</div>
-        <div className="font-normal pt-1 pb-8 text-md">{description}</div>
-      </div>
-      <div className="h-full flex items-center justify-center pb-1 pl-4 basis-1/3">
-        {icon}
-      </div>
-    </div>
+    <Button
+      asChild
+      className="h-auto lg:h-32 w-full bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-400 px-0 cursor-pointer rounded-sm flex text-lg text-stone-800 items-stretch"
+    >
+      <Link href={route} className="flex w-full h-full">
+        <div className="flex flex-col justify-center w-3/4 min-w-0 px-6">
+          <div className="font-bold text-lg lg:text-2xl whitespace-normal">
+            {title}
+          </div>
+          <div className="font-normal py-1 text-base md:text-lg break-words whitespace-normal min-w-0">
+            {description}
+          </div>
+        </div>
+        <div className="flex items-center justify-center w-1/4 pr-2">
+          {icon}
+        </div>
+      </Link>
+    </Button>
   );
 }
 
 function InteractiveItemSignIn() {
   return (
-    <div className="h-32 w-[370px] bg-neutral-700 cursor-pointer rounded-sm flex text-lg py-4 px-6 text-white">
-      <div className="basis-2/3">
-        <div className="font-bold text-2xl">Sign In</div>
-        <div className="font-normal pt-1 pb-8 text-md">
-          To earn savings, rewards, and more!
+    <Button
+      asChild
+      className="h-auto lg:h-32 w-full bg-neutral-700 hover:bg-neutral-600 px-0 cursor-pointer rounded-sm flex text-lg text-white items-stretch"
+    >
+      <Link href="/sign-in" className="flex w-full h-full">
+        <div className="flex flex-col justify-center w-3/4 min-w-0 px-6">
+          <div className="font-bold text-lg lg:text-2xl truncate">Sign In</div>
+          <div className="font-normal py-1 text-base md:text-lg break-words whitespace-normal min-w-0">
+            To earn savings, rewards, and more!
+          </div>
         </div>
-      </div>
-      <div className="h-full flex items-center justify-center pb-2 pl-4 basis-1/3">
-        <Bone size={50} />
-      </div>
-    </div>
+        <div className="flex items-center justify-center w-1/4 pr-2">
+          <Bone className="!w-8 !h-8 md:!w-12 md:!h-12" />
+        </div>
+      </Link>
+    </Button>
+  );
+}
+
+function InteractiveItemConsultVet() {
+  return (
+    <Button
+      asChild
+      className="h-auto lg:h-32 w-full bg-blue-800 hover:bg-blue-700 dark:hover:bg-blue-900 px-0 cursor-pointer rounded-sm flex text-lg text-stone-800 items-stretch"
+    >
+      <Link
+        href="/services?serviceType=veterinary"
+        className="flex w-full h-full"
+      >
+        <div className="flex flex-col justify-center w-3/4 min-w-0 px-6 text-blue-50">
+          <div className="font-bold text-lg lg:text-2xl whitespace-normal">
+            Consult a Vet
+          </div>
+          <div className="font-normal py-1 text-base md:text-lg break-words whitespace-normal min-w-0">
+            Get expert advice for your pet
+          </div>
+        </div>
+        <div className="flex items-center justify-center w-1/4 pr-2">
+          <Stethoscope className="!w-8 !h-8 md:!w-12 md:!h-12 text-blue-50" />
+        </div>
+      </Link>
+    </Button>
   );
 }
 
 export function InteractiveRow() {
+  const { data: session } = useSession();
   return (
-    <div className="flex flex-row justify-between">
-      <InteractiveItemSignIn />
+    <div className="px-4 md:px-0 grid grid-cols-2 2xl:grid-cols-4 gap-2 md:gap-6">
+      {session ? <InteractiveItemConsultVet /> : <InteractiveItemSignIn />}
       <InteractiveItem
         title="Book Grooming"
         description="Trim ya dawg"
-        icon={<Scissors size={50} />}
+        icon={<Scissors className="!w-8 !h-8 md:!w-12 md:!h-12" />}
+        route="/services?serviceType=grooming"
       />
       <InteractiveItem
         title="New Arrivals"
         description="View our latest products"
-        icon={<ShoppingBasket size={50} />}
+        icon={<ShoppingBasket className="!w-8 !h-8 md:!w-12 md:!h-12" />}
+        route="/new-arrivals"
       />
       <InteractiveItem
         title="Sales"
         description="Get the best deals"
-        icon={<CircleDollarSign size={50} />}
+        icon={<CircleDollarSign className="!w-8 !h-8 md:!w-12 md:!h-12" />}
+        route="/sales"
       />
     </div>
   );

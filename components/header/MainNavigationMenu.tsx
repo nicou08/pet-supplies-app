@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePetTypes } from "@/hooks/usePetTypes";
+import { useProductTypes } from "@/hooks/useProductTypes";
 
 import { cn } from "@/lib/utils";
 import {
@@ -15,92 +17,81 @@ import {
 } from "@/components/ui/navigation-menu";
 
 export function MainNavigationMenu() {
+  const { petTypes, isLoading: petTypesLoading } = usePetTypes();
+  const { productTypes, isLoading: productTypesLoading } = useProductTypes();
+
   return (
-    <NavigationMenu className="">
+    <NavigationMenu>
       <NavigationMenuList className="text-black dark:text-white space-x-0">
+        {/* Pets Dropdown */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Pets
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/pets/dog" title="Dog" />
-              <ListItem href="/shop" title="Cat" />
-              <ListItem href="/shop" title="Guinea Pig" />
-              <ListItem href="/shop" title="Hamster" />
-              <ListItem href="/shop" title="Rabbit" />
-              <ListItem href="/shop" title="Fish" />
-              <ListItem href="/shop" title="Bird" />
-              <ListItem href="/shop" title="Food" />
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+              {petTypesLoading && <li>Loading...</li>}
+              {petTypes &&
+                Array.isArray(petTypes) &&
+                petTypes.map((pet: any) => (
+                  <ListItem
+                    key={pet.id}
+                    href={`/pets/${pet.name}`}
+                    title={pet.displayName}
+                  />
+                ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        {/* Products Dropdown */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Products
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/shop?productType=food" title="Food"></ListItem>
-              <ListItem href="/shop?productType=toys" title="Toys"></ListItem>
-              <ListItem href="/shop?productType=cages" title="Cages"></ListItem>
-              <ListItem
-                href="/shop?productType=fish-tank"
-                title="Fish Tanks"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=beddings"
-                title="Beddings"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=leashes"
-                title="Leashes"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=hideouts"
-                title="Hideouts"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=litter-box"
-                title="Shit Trays"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=pharmaceuticals"
-                title="Pharmaceuticals"
-              ></ListItem>
-              <ListItem
-                href="/shop?productType=utilities"
-                title="Utilities"
-              ></ListItem>
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+              {productTypesLoading && <li>Loading...</li>}
+              {productTypes &&
+                Array.isArray(productTypes) &&
+                productTypes.map((type: any) => (
+                  <ListItem
+                    key={type.id}
+                    href={`/shop?productType=${type.name}`}
+                    title={type.displayName}
+                  />
+                ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        {/* Services Dropdown (unchanged) */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Services
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2">
-              <ListItem href="/services" title="Grooming"></ListItem>
-              <ListItem href="/services" title="Training"></ListItem>
-              <ListItem href="/services" title="Vet Consultaions"></ListItem>
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+              <ListItem
+                href="/services?serviceType=grooming"
+                title="Grooming"
+              ></ListItem>
+              <ListItem
+                href="/services?serviceType=training"
+                title="Training"
+              ></ListItem>
+              <ListItem
+                href="/services?serviceType=veterinary"
+                title="Vet Consultaions"
+              ></ListItem>
               <ListItem href="/services" title="Pet+"></ListItem>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <Link href="/deals" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Deals
-            </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
-
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">

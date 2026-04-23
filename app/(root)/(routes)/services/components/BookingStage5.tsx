@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 interface BookingStage5Props {
   onUpdateBookingData: (field: string, value: any) => void;
+  selectedTime: string;
 }
 
 const generateTimeSlots = () => {
@@ -26,7 +27,10 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-export function BookingStage5({ onUpdateBookingData }: BookingStage5Props) {
+export function BookingStage5({
+  onUpdateBookingData,
+  selectedTime,
+}: BookingStage5Props) {
   const timeSlots = generateTimeSlots();
 
   return (
@@ -38,13 +42,16 @@ export function BookingStage5({ onUpdateBookingData }: BookingStage5Props) {
         {timeSlots.slice(0, 12).map((slot, index) => (
           <Button
             key={index}
-            className={``}
+            className={`${
+              selectedTime === slot
+                ? "bg-neutral-500 hover:bg-neutral-500"
+                : "bg-neutral-700 hover:bg-neutral-700"
+            } active:scale-95 transition-transform duration-100`}
             onClick={() => {
-              //console.log("Selected Time Slot:", slot);
               onUpdateBookingData("time", slot);
             }}
           >
-            <div className="text-xl font-normal">{slot}</div>
+            <div className="text-xl text-white font-normal">{slot}</div>
           </Button>
         ))}
       </div>
@@ -56,13 +63,16 @@ export function BookingStage5({ onUpdateBookingData }: BookingStage5Props) {
         {timeSlots.slice(14).map((slot, index) => (
           <Button
             key={index}
-            className={``}
+            className={`${
+              selectedTime === slot
+                ? "bg-neutral-500 hover:bg-neutral-500"
+                : "bg-neutral-700 hover:bg-neutral-700"
+            } active:scale-95 transition-transform duration-100`}
             onClick={() => {
-              console.log("Selected Time Slot:", slot);
               onUpdateBookingData("time", slot);
             }}
           >
-            <div className="text-xl font-normal">{slot}</div>
+            <div className="text-xl text-white font-normal">{slot}</div>
           </Button>
         ))}
       </div>

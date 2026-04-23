@@ -51,9 +51,30 @@ export function HeaderUtilAccBtn({
             )}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Appointments</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem className="p-0" asChild>
+            <Link
+              href="/appointments"
+              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+            >
+              Appointments
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="p-0" asChild>
+            <Link
+              href="/settings#billing"
+              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+            >
+              Billing
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="p-0" asChild>
+            <Link
+              href="/settings"
+              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+            >
+              Settings
+            </Link>
+          </DropdownMenuItem>
           {isLoggedIn ? (
             <DropdownMenuItem
               className="p-0"

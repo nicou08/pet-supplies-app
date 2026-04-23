@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       },
     });
 
-    return NextResponse.json({ productTypes });
+    return NextResponse.json(productTypes);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,73 +10,102 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { on } from "events";
 
-type Pet = {
+type petTypeInfo = {
   id: string;
   name: string;
-  type: string;
-  age: string;
+  displayName: string;
 };
 
 interface BookingStage2Props {
+  petTypes: petTypeInfo[]; // petTypeInfo[];
   onUpdateBookingData: (field: string, value: any) => void;
+  name: string;
+  type: string;
+  typeId: string;
+  age: number | undefined;
 }
 
-export function BookingStage2({ onUpdateBookingData }: BookingStage2Props) {
-  const [petDetails, setPetDetails] = useState({
-    name: "",
-    type: "",
-    age: "",
-  });
-
-  useEffect(() => {
-    console.log("PETDETAULS", petDetails);
-    if (petDetails.name && petDetails.type && petDetails.age) {
-      // Call the function to update booking data
-      onUpdateBookingData("pet", petDetails);
-    }
-  }, [petDetails]);
+export function BookingStage2({
+  petTypes,
+  onUpdateBookingData,
+  name,
+  type,
+  typeId,
+  age,
+}: BookingStage2Props) {
+  // useEffect(() => {
+  //   console.log("PETDETAULS NAME", name);
+  //   console.log("PETDETAULS TYPE", type);
+  //   console.log("PETDETAULS AGE", age);
+  //   //console.log("PROPS PETTYPES", petTypes);
+  // }, [onUpdateBookingData]);
 
   return (
     <div className="">
       <div className="font-bold text-lg pb-7">Pet Information</div>
       <div className="flex flex-col w-md gap-4 w-[400px]">
         <Input
+          //className="bg-neutral-300 text-neutral-800 placeholder:text-gray-500"
+          className="bg-neutral-700 text-white placeholder:text-gray-400"
           type="text"
           placeholder="Pet Name"
-          value={petDetails.name}
+          value={name}
           onChange={(e) =>
-            setPetDetails({ ...petDetails, name: e.target.value })
+            onUpdateBookingData("pet", {
+              name: e.target.value,
+              type,
+              typeId,
+              age,
+            })
           }
         />
         <Select
-          onValueChange={(value) =>
-            setPetDetails({ ...petDetails, type: value })
-          }
+          value={type}
+          onValueChange={(value) => {
+            const selectedPetType = petTypes.find(
+              (petType) => petType.displayName === value
+            );
+
+            if (!selectedPetType) return;
+
+            console.log("Selected Pet Type:", selectedPetType);
+
+            onUpdateBookingData("pet", {
+              name,
+              type: value,
+              typeId: selectedPetType.id,
+              age,
+            });
+          }}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
             <SelectValue placeholder="Pet Type" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Dog">Dog</SelectItem>
-            <SelectItem value="Cat">Cat</SelectItem>
-            <SelectItem value="Guinea Pig">Guinea Pig</SelectItem>
-            <SelectItem value="Rabbit">Rabbit</SelectItem>
-            <SelectItem value="Bird">Bird</SelectItem>
-            <SelectItem value="Fish">Fish</SelectItem>
-            <SelectItem value="Reptile">Reptile</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
+          <SelectContent className="bg-[#e1e1e1] dark:bg-neutral-950">
+            {petTypes.map((petType: petTypeInfo) => (
+              <SelectItem key={petType.id} value={petType.displayName}>
+                {petType.displayName}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <Select
+          value={age ? age.toString() : ""}
           onValueChange={(value) =>
-            setPetDetails({ ...petDetails, age: value })
+            onUpdateBookingData("pet", {
+              name,
+              type,
+              typeId,
+              age: parseInt(value, 10),
+            })
           }
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
             <SelectValue placeholder="Age of Pet" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-[#e1e1e1] dark:bg-neutral-950">
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>

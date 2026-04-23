@@ -30,22 +30,28 @@ interface FilterSideBarProps {
   filterNameMap: {
     [key: string]: string;
   };
+  petNameMap: {
+    [key: string]: string;
+  };
   defaultFilters: string[];
   onFilterChange: (
     filterType: FilterType,
     value: string[] | number[] | boolean
   ) => void;
   currentlySelectedFilters: FilterState;
+  mobileFilterOpen?: boolean;
 }
 
 export function FilterSideBar({
   filters,
   filterNameMap,
+  petNameMap,
   defaultFilters,
   onFilterChange,
   currentlySelectedFilters,
+  mobileFilterOpen,
 }: FilterSideBarProps) {
-  const searchParams = useSearchParams();
+  //const searchParams = useSearchParams();
 
   // Filter Change Checkboxes
   const handleCheckboxChange = (filterType: FilterType, value: string) => {
@@ -77,7 +83,7 @@ export function FilterSideBar({
   // }, [currentlySelectedFilters]);
 
   return (
-    <div className="col-span-1 border-r border-neutral-700 py-5">
+    <div className="col-span-1 border-r-0 2lg:border-r border-neutral-700 py-5">
       {/* Status */}
       <div className="flex items-center pt-0 pb-3 pl-4 space-x-3">
         <Switch
@@ -178,7 +184,7 @@ export function FilterSideBar({
                     }
                   />
                   <Label htmlFor={item} className="text-md font-medium">
-                    {item}
+                    {petNameMap[item] ? `${petNameMap[item]}` : ""}
                   </Label>
                 </div>
               ))}

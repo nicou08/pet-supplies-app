@@ -19,6 +19,7 @@ export function HeaderLogo() {
               width={150}
               height={150}
               alt="Pet Supplies Logo"
+              priority
             />
           </Link>
         </div>

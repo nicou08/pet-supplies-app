@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Session } from "next-auth";
+import { useSession } from "next-auth/react";
+import { CheckCircle } from "lucide-react";
 
 import { BookingStage1 } from "./BookingStage1";
 import { BookingStage2 } from "./BookingStage2";
@@ -19,19 +25,54 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { AppointmentInfo } from "@/types";
-import { appointmentsTypeInfo, staffInfo } from "@/constants/data";
+import { useStaff } from "@/hooks/useStaff";
+import { usePetTypes } from "@/hooks/usePetTypes";
 
-export function BookingForm() {
+import { AppointmentInfo, CreateAppointmentInfo } from "@/types";
+import { appointmentsTypeInfo } from "@/constants/data";
+
+type StaffInfo = {
+  id: string;
+  name: string;
+  role: string[];
+};
+
+export function BookingForm({ session }: { session: Session }) {
+  //const { data: session } = useSession();
+  const router = useRouter();
+  const [bookingStatus, setBookingStatus] = useState<
+    "form" | "loading" | "success"
+  >("form");
+  const searchParams = useSearchParams();
+  const queryServiceType = searchParams.get("serviceType");
+
   const [currentStage, setCurrentStage] = useState(1);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const {
+    staff: staffInfo,
+    isLoading: staffLoading,
+    isError: staffError,
+  } = useStaff();
+
+  const {
+    petTypes: petTypesInfo,
+    isLoading: petTypesLoading,
+    isError: petTypesError,
+  } = usePetTypes();
 
   const progressPercentage = (currentStage - 1) * 20;
 
   const [bookingData, setBookingData] = useState<AppointmentInfo>({
-    serviceType: "",
+    serviceType: queryServiceType
+      ? queryServiceType.charAt(0).toUpperCase() + queryServiceType.slice(1)
+      : "",
     pet: {
       name: "",
       type: "",
+      typeId: "",
       age: 0,
     },
     provider: {
@@ -41,31 +82,18 @@ export function BookingForm() {
     },
     date: new Date(),
     time: "",
+    notes: "",
   });
-
-  // Filter staff based on the selected service type
-  const filteredStaff = useMemo(() => {
-    if (bookingData.serviceType === "Veterinary") {
-      return staffInfo.filter((staff) =>
-        staff.speciality.includes("Veterinarian")
-      );
-    }
-    if (bookingData.serviceType === "Grooming") {
-      return staffInfo.filter((staff) => staff.speciality.includes("Groomer"));
-    }
-    if (bookingData.serviceType === "Training") {
-      return staffInfo.filter((staff) => staff.speciality.includes("Trainer"));
-    }
-    return staffInfo.filter((staff) =>
-      staff.speciality.includes(bookingData.serviceType)
-    );
-  }, [bookingData.serviceType]);
 
   const updateBookingData = (field: string, value: any) => {
     setBookingData((prev) => ({
       ...prev,
       [field]: value,
     }));
+    console.log("Booking FIELD Updated:", {
+      [field]: value,
+    });
+    console.log("Booking DATA Updated:", bookingData);
   };
 
   // Navigate to next stage
@@ -82,13 +110,60 @@ export function BookingForm() {
     }
   };
 
+  const onConfirmBooking = async () => {
+    setIsSubmitting(true);
+    setBookingStatus("loading");
+
+    const bookingDataToSubmit: CreateAppointmentInfo = {
+      petTypeId: bookingData.pet.typeId,
+      petName: bookingData.pet.name,
+      petAge: bookingData.pet.age,
+      appointmentDate: bookingData.date,
+      appointmentTime: bookingData.time,
+      appointmentType: bookingData.serviceType,
+      appointmentStatus: "pending",
+      appointmentNotes: bookingData.notes,
+      appointmentProviderId: bookingData.provider.id,
+    };
+
+    //console.log("Session:", session);
+    //console.log("Booking Data to Submit:", bookingDataToSubmit);
+
+    try {
+      const response = await axios.post("/api/appointments", {
+        ...bookingDataToSubmit,
+      });
+
+      console.log("Booking confirmed:", response.data);
+
+      if (response.status === 201) {
+        // Handle successful booking confirmation
+        //alert("Booking confirmed successfully!");
+        // Optionally, redirect or perform any other action
+        //router.push("/services/confirmation");
+
+        setBookingStatus("success");
+      }
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      setSubmitError("Failed to confirm booking. Please try again.");
+
+      setBookingStatus("form");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const validateStage = (): boolean => {
     switch (currentStage) {
       case 1:
         return bookingData.serviceType === "";
       case 2:
         return (
-          !bookingData.pet.name || !bookingData.pet.type || !bookingData.pet.age
+          !bookingData.pet.name ||
+          !bookingData.pet.type ||
+          !bookingData.pet.age ||
+          !bookingData.pet.typeId
         );
       case 3:
         return !bookingData.provider.id;
@@ -97,7 +172,7 @@ export function BookingForm() {
       case 5:
         return !bookingData.time; // Disable if no time is selected
       case 6:
-        return true; // Always disable on the last stage
+        return false; // Always disable on the last stage
       default:
         return false; // Default to enabled
     }
@@ -114,26 +189,129 @@ export function BookingForm() {
           />
         );
       case 2:
-        return <BookingStage2 onUpdateBookingData={updateBookingData} />;
+        return (
+          <BookingStage2
+            petTypes={petTypesInfo}
+            onUpdateBookingData={updateBookingData}
+            name={bookingData.pet.name}
+            type={bookingData.pet.type}
+            typeId={bookingData.pet.typeId}
+            age={bookingData.pet.age}
+          />
+        );
       case 3:
         return (
           <BookingStage3
-            staff={filteredStaff}
+            serviceType={bookingData.serviceType}
+            isLoading={staffLoading}
+            isError={staffError}
+            staff={staffInfo}
             onUpdateBookingData={updateBookingData}
+            selectedStaffId={bookingData.provider.id}
           />
         );
       case 4:
-        return <BookingStage4 onUpdateBookingData={updateBookingData} />;
+        return (
+          <BookingStage4
+            onUpdateBookingData={updateBookingData}
+            date={bookingData.date}
+          />
+        );
       case 5:
-        return <BookingStage5 onUpdateBookingData={updateBookingData} />;
+        return (
+          <BookingStage5
+            onUpdateBookingData={updateBookingData}
+            selectedTime={bookingData.time}
+          />
+        );
       case 6:
-        return <BookingStage6 bookingData={bookingData} />;
+        return (
+          <BookingStage6
+            bookingData={bookingData}
+            onUpdateBookingData={updateBookingData}
+          />
+        );
     }
   };
 
+  if (bookingStatus === "loading") {
+    return (
+      <div className="flex items-center justify-center pt-96">
+        <div className="loader2"></div>
+      </div>
+    );
+  }
+
+  if (bookingStatus === "success") {
+    return (
+      <div className="flex items-center justify-center pt-20">
+        <Card className="text-center w-96 dark:bg-neutral-900">
+          <CardHeader>
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-16 w-16 text-green-500" />
+            </div>
+            <CardTitle className="text-2xl">Appointment Confirmed!</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4">
+              Your appointment has been successfully scheduled. We've sent a
+              confirmation email with all the details.
+            </p>
+            <div className="bg-gray-50 dark:bg-neutral-950 p-4 rounded-lg text-left mb-4">
+              <div className="mb-2">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Appointment Type:
+                </span>
+                <p>{bookingData.serviceType}</p>
+              </div>
+              <div className="mb-2">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Date & Time:
+                </span>
+                <p>
+                  {new Date(bookingData.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}
+                  at {bookingData.time}
+                </p>
+              </div>
+              <div className="mb-2">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Pet:
+                </span>
+                <p>{bookingData.pet.name}</p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Provider:
+                </span>
+                <p>{bookingData.provider.name}</p>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-center space-x-4">
+            <Button asChild>
+              <Link
+                className="bg-neutral-900 dark:bg-[#e1e1e1] hover:bg-neutral-500 dark:hover:dark:bg-[#e1e1e1d7]"
+                href="/appointments"
+              >
+                View All Appointments
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/">Return to Home</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <Card>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Card className="bg-[#e1e1e1] dark:bg-neutral-900 shadow-lg border border-neutral-700">
         <CardHeader>
           <CardTitle className="text-3xl">Book a new appointment</CardTitle>
           <CardDescription className="text-lg">
@@ -143,20 +321,34 @@ export function BookingForm() {
         <CardContent>
           <Progress value={progressPercentage} className="mt-4 h-2" />
 
-          <div className="text-2xl font-bold">Step {currentStage}</div>
-          <div className="mt-4">{renderStep()}</div>
+          {/* <div className="text-2xl font-bold">Step {currentStage}</div> */}
+
+          <div className="h-8" />
+
+          {renderStep()}
         </CardContent>
         <CardFooter className="justify-between">
-          <Button
-            variant="outline"
-            onClick={prevStage}
-            disabled={currentStage === 1}
-          >
-            Previous
-          </Button>
-          <Button onClick={nextStage} disabled={validateStage()}>
-            {currentStage === 6 ? "Confirm" : "Next"}
-          </Button>
+          {currentStage > 1 ? (
+            <Button
+              variant="outline"
+              onClick={prevStage}
+              disabled={currentStage === 1}
+            >
+              Previous
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          {currentStage < 6 ? (
+            <Button onClick={nextStage} disabled={validateStage()}>
+              Next
+            </Button>
+          ) : (
+            <Button onClick={onConfirmBooking} disabled={validateStage()}>
+              Confirm
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </div>

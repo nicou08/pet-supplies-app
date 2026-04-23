@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
           id: true,
           name: true,
           displayName: true,
+          petImageUrl: true,
         },
       });
 
@@ -39,15 +40,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(petType, { status: 200 });
     }
 
+    const top = searchParams.get("top");
+    if (top) {
+      const topCount = parseInt(top, 10) || 6;
+      const petTypes = await prisma.petType.findMany({
+        orderBy: { popularity: "asc" }, // 1 is most popular
+        take: topCount,
+        select: {
+          id: true,
+          name: true,
+          displayName: true,
+          petImageUrl: true,
+        },
+      });
+      return NextResponse.json(petTypes, { status: 200 });
+    }
+
     // If no name is provided, return all pet types
     const petTypes = await prisma.petType.findMany({
       select: {
         id: true,
         name: true,
+        displayName: true,
       },
     });
 
-    return NextResponse.json({ petTypes });
+    return NextResponse.json(petTypes, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },

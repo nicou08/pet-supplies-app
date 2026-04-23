@@ -41,9 +41,9 @@ export function HomeCarousel() {
   };
 
   const imageUrls = [
-    "/carousel-dog-2.png",
-    "/carousel-dog-haircut-1-v3.png",
-    "/carousel-gp-1-v2.png",
+    "/carousel-dog-1-v2-2x1.png",
+    "/carousel-gp-1-v3-2x1.png",
+    "/carousel-dog-haircut-1-v4-2x1.png",
   ];
 
   return (
