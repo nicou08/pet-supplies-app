@@ -5,13 +5,6 @@ import Link from "next/link";
 
 import { usePetTypes } from "@/hooks/usePetTypes";
 
-type Pet = {
-  id: string;
-  name: string;
-  displayName: string;
-  petImageUrl: string;
-};
-
 // const pets = [
 //   { name: "dog", image: "/pets/dog1_square_v1.png" },
 //   { name: "cat", image: "/pets/cat2_square_v1.png" },
@@ -34,8 +27,6 @@ export function PetRow() {
     return <div>No pet types available</div>;
   }
 
-  if (petTypes) console.log("Fetchedd pet types:", petTypes);
-
   return (
     <div className="w-full flex flex-col items-center py-8">
       <h2 className="text-2xl sm:text-3xl font-bold pb-10 lg:pb-20 text-center">
@@ -45,7 +36,7 @@ export function PetRow() {
         className="grid grid-cols-1 xxs:grid-cols-2 2md:grid-cols-3 1.5xl:grid-cols-6 gap-y-10 gap-x-5 xs:gap-x-20 2md:gap-x-40 1.5xl:gap-x-20 px-3"
         //style={{ maxWidth: 1200 }}
       >
-        {petTypes.map((pet: Pet) => (
+        {petTypes.map((pet) => (
           <Link
             key={pet.id}
             href={`/pets/${encodeURIComponent(pet.name)}`}
@@ -54,7 +45,7 @@ export function PetRow() {
           >
             <div className="w-40 h-40 flex items-center justify-center bg-white shadow-md rounded-full overflow-hidden border-4 border-stone-300 group-hover:border-blue-400 transition">
               <Image
-                src={pet.petImageUrl} // Placeholder image, replace with pet.image if available
+                src={pet.petImageUrl || "/placeholder.svg"}
                 alt={pet.name}
                 width={128}
                 height={128}

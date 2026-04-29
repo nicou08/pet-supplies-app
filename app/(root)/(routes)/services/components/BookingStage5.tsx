@@ -1,27 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 import { Button } from "@/components/ui/button";
+import { BookingDataUpdater } from "@/types";
 
 interface BookingStage5Props {
-  onUpdateBookingData: (field: string, value: any) => void;
+  onUpdateBookingData: BookingDataUpdater;
   selectedTime: string;
 }
 
 const generateTimeSlots = () => {
-  const slots = [];
+  const slots: string[] = [];
   const start = new Date();
-  start.setHours(6, 0, 0, 0); // Start at 6:00am
+  start.setHours(6, 0, 0, 0);
 
   for (let i = 0; i < 24; i++) {
     const hours = start.getHours();
     const minutes = start.getMinutes();
     const period = hours >= 12 ? " PM" : " AM";
-    const formattedHours = hours % 12 === 0 ? 12 : hours % 12; // Convert to 12-hour format
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
     const formattedMinutes = minutes.toString().padStart(2, "0");
     slots.push(`${formattedHours}:${formattedMinutes}${period}`);
-    start.setMinutes(start.getMinutes() + 30); // Increment by 30 minutes
+    start.setMinutes(start.getMinutes() + 30);
   }
 
   return slots;
@@ -39,9 +38,9 @@ export function BookingStage5({
 
       <div className="pb-2 font-semibold">Morning</div>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {timeSlots.slice(0, 12).map((slot, index) => (
+        {timeSlots.slice(0, 12).map((slot) => (
           <Button
-            key={index}
+            key={slot}
             className={`${
               selectedTime === slot
                 ? "bg-neutral-500 hover:bg-neutral-500"
@@ -60,9 +59,9 @@ export function BookingStage5({
 
       <div className="pb-2 font-semibold">Afternoon</div>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {timeSlots.slice(14).map((slot, index) => (
+        {timeSlots.slice(14).map((slot) => (
           <Button
-            key={index}
+            key={slot}
             className={`${
               selectedTime === slot
                 ? "bg-neutral-500 hover:bg-neutral-500"

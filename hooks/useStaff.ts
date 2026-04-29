@@ -1,9 +1,10 @@
 import useSWR from "swr";
 
 import fetcher from "@/lib/fetcher";
+import { StaffInfo } from "@/types";
 
 export const useStaff = () => {
-  const { data, error } = useSWR("/api/staff", fetcher, {
+  const { data, error } = useSWR<StaffInfo[]>("/api/staff", fetcher, {
     revalidateOnFocus: false,
   });
 

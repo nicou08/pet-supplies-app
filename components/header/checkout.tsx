@@ -7,7 +7,10 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-import { fetchClientSecret } from "@/actions/stripe";
+import {
+  fetchClientSecret,
+  type CheckoutItemInput,
+} from "@/actions/stripe";
 import { useCart } from "@/context/CartContext";
 
 // Environment variable checks
@@ -43,11 +46,20 @@ export default function Checkout() {
     const getClientSecret = async () => {
       try {
         setLoading(true);
-        // Get client secret using existing cart items
-        const secret = await fetchClientSecret(cartItems);
+        setError(null);
+        setClientSecret(null);
+
+        const checkoutItems: CheckoutItemInput[] = cartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        }));
+
+        const secret = await fetchClientSecret(checkoutItems);
         setClientSecret(secret);
       } catch (err) {
-        setError("Failed to initialize checkout");
+        setError(
+          err instanceof Error ? err.message : "Failed to initialize checkout"
+        );
         console.error(err);
       } finally {
         setLoading(false);

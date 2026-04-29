@@ -2,11 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 
 export function HeaderLogo() {
-  const { theme } = useTheme();
-
   return (
     <div className="basis-1/4 hidden 2lg:block  justify-center items-center">
       <div className="flex h-full justify-center items-center">

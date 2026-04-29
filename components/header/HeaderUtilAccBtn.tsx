@@ -23,7 +23,6 @@ interface HeaderUtilAccBtnProps {
 
 export function HeaderUtilAccBtn({
   isLoggedIn,
-  name,
   email,
   image,
 }: HeaderUtilAccBtnProps) {

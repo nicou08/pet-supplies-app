@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     //console.log("Fetched staff from database triggered!!!!!!!!!!");
 
     return NextResponse.json(staff, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

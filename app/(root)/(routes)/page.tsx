@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 import { HomeCarousel } from "@/components/home-carousel";
 import { ProductRow } from "@/components/product-row";
 import { InteractiveRow } from "@/components/interactive-row";

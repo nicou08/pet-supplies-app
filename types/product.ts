@@ -1,6 +1,4 @@
-import { petData } from "@/constants/petData";
-import { getDisplayName } from "next/dist/shared/lib/utils";
-import { number, z } from "zod";
+import { z } from "zod";
 
 export const productSchema = z.object({
   id: z.string().uuid(),

@@ -1,8 +1,5 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { Terminal } from "lucide-react";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BookingForm } from "./components/BookingForm";
 
 export default async function ServicesPage() {
@@ -23,7 +20,7 @@ export default async function ServicesPage() {
   return (
     <div>
       <div className="h-5"></div>
-      <BookingForm session={session} />
+      <BookingForm />
     </div>
   );
 }

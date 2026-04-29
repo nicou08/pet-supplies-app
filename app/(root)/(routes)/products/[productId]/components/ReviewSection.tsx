@@ -36,7 +36,6 @@ export function ReviewSection({
 
   const { reviews, isLoading, isError, mutate } = useProductReviews(productId);
   const { data: session } = useSession();
-  const [showForm, setShowForm] = useState(false);
 
   // WriteReviewForm hooks
   const [rating, setRating] = useState(0);
@@ -55,14 +54,13 @@ export function ReviewSection({
       setRating(0);
 
       // onSuccess callback
-      setShowForm(false);
       setIsDialogOpen(false);
       mutate(); // re-fetch reviews
 
       // Call the callback here, after successful submit
       if (onReviewSubmit) onReviewSubmit();
-    } catch (err: any) {
-      setError(err.message || "Error");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setLoading(false);
     }
@@ -181,7 +179,7 @@ export function ReviewSection({
 
         <div className="w-full flex flex-col space-y-4">
           {reviews &&
-            reviews.map((review: any) => (
+            reviews.map((review) => (
               <div
                 key={review.id}
                 className="w-full border-b px-6 pb-4 bg-neutral-900"

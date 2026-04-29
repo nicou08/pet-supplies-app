@@ -3,18 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-//import { headers } from "next/headers";
-import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
 
@@ -123,10 +115,6 @@ export function ProductRow() {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    console.log("Featured items:", items);
-  }, [items]);
 
   if (loading) {
     return <div>Loading...</div>;

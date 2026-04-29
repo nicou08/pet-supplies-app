@@ -1,11 +1,9 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 import { CheckCircle } from "lucide-react";
 
 import { BookingStage1 } from "./BookingStage1";
@@ -28,18 +26,14 @@ import {
 import { useStaff } from "@/hooks/useStaff";
 import { usePetTypes } from "@/hooks/usePetTypes";
 
-import { AppointmentInfo, CreateAppointmentInfo } from "@/types";
+import {
+  AppointmentInfo,
+  BookingDataUpdater,
+  CreateAppointmentInfo,
+} from "@/types";
 import { appointmentsTypeInfo } from "@/constants/data";
 
-type StaffInfo = {
-  id: string;
-  name: string;
-  role: string[];
-};
-
-export function BookingForm({ session }: { session: Session }) {
-  //const { data: session } = useSession();
-  const router = useRouter();
+export function BookingForm() {
   const [bookingStatus, setBookingStatus] = useState<
     "form" | "loading" | "success"
   >("form");
@@ -47,21 +41,16 @@ export function BookingForm({ session }: { session: Session }) {
   const queryServiceType = searchParams.get("serviceType");
 
   const [currentStage, setCurrentStage] = useState(1);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
-    staff: staffInfo,
+    staff: staffInfo = [],
     isLoading: staffLoading,
     isError: staffError,
   } = useStaff();
 
-  const {
-    petTypes: petTypesInfo,
-    isLoading: petTypesLoading,
-    isError: petTypesError,
-  } = usePetTypes();
+  const { petTypes: petTypesInfo = [] } = usePetTypes();
 
   const progressPercentage = (currentStage - 1) * 20;
 
@@ -85,25 +74,19 @@ export function BookingForm({ session }: { session: Session }) {
     notes: "",
   });
 
-  const updateBookingData = (field: string, value: any) => {
+  const updateBookingData: BookingDataUpdater = (field, value) => {
     setBookingData((prev) => ({
       ...prev,
       [field]: value,
     }));
-    console.log("Booking FIELD Updated:", {
-      [field]: value,
-    });
-    console.log("Booking DATA Updated:", bookingData);
   };
 
-  // Navigate to next stage
   const nextStage = () => {
     if (currentStage < 6) {
       setCurrentStage((prev) => prev + 1);
     }
   };
 
-  // Navigate to previous stage
   const prevStage = () => {
     if (currentStage > 1) {
       setCurrentStage((prev) => prev - 1);
@@ -112,6 +95,7 @@ export function BookingForm({ session }: { session: Session }) {
 
   const onConfirmBooking = async () => {
     setIsSubmitting(true);
+    setSubmitError(null);
     setBookingStatus("loading");
 
     const bookingDataToSubmit: CreateAppointmentInfo = {
@@ -126,28 +110,17 @@ export function BookingForm({ session }: { session: Session }) {
       appointmentProviderId: bookingData.provider.id,
     };
 
-    //console.log("Session:", session);
-    //console.log("Booking Data to Submit:", bookingDataToSubmit);
-
     try {
       const response = await axios.post("/api/appointments", {
         ...bookingDataToSubmit,
       });
 
-      console.log("Booking confirmed:", response.data);
-
       if (response.status === 201) {
-        // Handle successful booking confirmation
-        //alert("Booking confirmed successfully!");
-        // Optionally, redirect or perform any other action
-        //router.push("/services/confirmation");
-
         setBookingStatus("success");
       }
     } catch (error) {
       console.error("Error confirming booking:", error);
       setSubmitError("Failed to confirm booking. Please try again.");
-
       setBookingStatus("form");
     } finally {
       setIsSubmitting(false);
@@ -168,13 +141,13 @@ export function BookingForm({ session }: { session: Session }) {
       case 3:
         return !bookingData.provider.id;
       case 4:
-        return !bookingData.date; // Disable if no date is selected
+        return !bookingData.date;
       case 5:
-        return !bookingData.time; // Disable if no time is selected
+        return !bookingData.time;
       case 6:
-        return false; // Always disable on the last stage
+        return false;
       default:
-        return false; // Default to enabled
+        return false;
     }
   };
 
@@ -204,7 +177,7 @@ export function BookingForm({ session }: { session: Session }) {
           <BookingStage3
             serviceType={bookingData.serviceType}
             isLoading={staffLoading}
-            isError={staffError}
+            isError={Boolean(staffError)}
             staff={staffInfo}
             onUpdateBookingData={updateBookingData}
             selectedStaffId={bookingData.provider.id}
@@ -231,6 +204,8 @@ export function BookingForm({ session }: { session: Session }) {
             onUpdateBookingData={updateBookingData}
           />
         );
+      default:
+        return null;
     }
   };
 
@@ -254,8 +229,8 @@ export function BookingForm({ session }: { session: Session }) {
           </CardHeader>
           <CardContent>
             <p className="mb-4">
-              Your appointment has been successfully scheduled. We've sent a
-              confirmation email with all the details.
+              Your appointment has been successfully scheduled. We&apos;ve sent
+              a confirmation email with all the details.
             </p>
             <div className="bg-gray-50 dark:bg-neutral-950 p-4 rounded-lg text-left mb-4">
               <div className="mb-2">
@@ -266,7 +241,7 @@ export function BookingForm({ session }: { session: Session }) {
               </div>
               <div className="mb-2">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Date & Time:
+                  Date &amp; Time:
                 </span>
                 <p>
                   {new Date(bookingData.date).toLocaleDateString("en-US", {
@@ -321,12 +296,13 @@ export function BookingForm({ session }: { session: Session }) {
         <CardContent>
           <Progress value={progressPercentage} className="mt-4 h-2" />
 
-          {/* <div className="text-2xl font-bold">Step {currentStage}</div> */}
-
           <div className="h-8" />
 
           {renderStep()}
         </CardContent>
+        {submitError && (
+          <div className="px-6 text-sm text-red-500">{submitError}</div>
+        )}
         <CardFooter className="justify-between">
           {currentStage > 1 ? (
             <Button
@@ -345,8 +321,11 @@ export function BookingForm({ session }: { session: Session }) {
               Next
             </Button>
           ) : (
-            <Button onClick={onConfirmBooking} disabled={validateStage()}>
-              Confirm
+            <Button
+              onClick={onConfirmBooking}
+              disabled={validateStage() || isSubmitting}
+            >
+              {isSubmitting ? "Confirming..." : "Confirm"}
             </Button>
           )}
         </CardFooter>

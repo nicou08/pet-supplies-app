@@ -5,10 +5,11 @@ import { stripe } from "@/lib/stripe";
 export default async function Return({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   // Get session_id from searchParams and ensure it's a string
-  const session_id = searchParams.session_id as string;
+  const session_id = resolvedSearchParams.session_id as string;
 
   if (!session_id)
     throw new Error("Please provide a valid session_id (`cs_test_...`)");

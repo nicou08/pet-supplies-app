@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+
 import { usePetTypes } from "@/hooks/usePetTypes";
 import { useProductTypes } from "@/hooks/useProductTypes";
 
@@ -13,7 +13,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
 export function MainNavigationMenu() {
@@ -23,7 +22,6 @@ export function MainNavigationMenu() {
   return (
     <NavigationMenu>
       <NavigationMenuList className="text-black dark:text-white space-x-0">
-        {/* Pets Dropdown */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Pets
@@ -31,20 +29,17 @@ export function MainNavigationMenu() {
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
               {petTypesLoading && <li>Loading...</li>}
-              {petTypes &&
-                Array.isArray(petTypes) &&
-                petTypes.map((pet: any) => (
-                  <ListItem
-                    key={pet.id}
-                    href={`/pets/${pet.name}`}
-                    title={pet.displayName}
-                  />
-                ))}
+              {petTypes?.map((pet) => (
+                <ListItem
+                  key={pet.id}
+                  href={`/pets/${pet.name}`}
+                  title={pet.displayName}
+                />
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* Products Dropdown */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Products
@@ -52,39 +47,30 @@ export function MainNavigationMenu() {
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
               {productTypesLoading && <li>Loading...</li>}
-              {productTypes &&
-                Array.isArray(productTypes) &&
-                productTypes.map((type: any) => (
-                  <ListItem
-                    key={type.id}
-                    href={`/shop?productType=${type.name}`}
-                    title={type.displayName}
-                  />
-                ))}
+              {productTypes?.map((type) => (
+                <ListItem
+                  key={type.id}
+                  href={`/shop?productType=${type.name}`}
+                  title={type.displayName}
+                />
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* Services Dropdown (unchanged) */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Services
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
-              <ListItem
-                href="/services?serviceType=grooming"
-                title="Grooming"
-              ></ListItem>
-              <ListItem
-                href="/services?serviceType=training"
-                title="Training"
-              ></ListItem>
+              <ListItem href="/services?serviceType=grooming" title="Grooming" />
+              <ListItem href="/services?serviceType=training" title="Training" />
               <ListItem
                 href="/services?serviceType=veterinary"
                 title="Vet Consultaions"
-              ></ListItem>
-              <ListItem href="/services" title="Pet+"></ListItem>
+              />
+              <ListItem href="/services" title="Pet+" />
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -92,6 +78,7 @@ export function MainNavigationMenu() {
     </NavigationMenu>
   );
 }
+
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">

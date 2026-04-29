@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
 import {
   Accordion,
   AccordionContent,
@@ -39,7 +36,6 @@ interface FilterSideBarProps {
     value: string[] | number[] | boolean
   ) => void;
   currentlySelectedFilters: FilterState;
-  mobileFilterOpen?: boolean;
 }
 
 export function FilterSideBar({
@@ -49,7 +45,6 @@ export function FilterSideBar({
   defaultFilters,
   onFilterChange,
   currentlySelectedFilters,
-  mobileFilterOpen,
 }: FilterSideBarProps) {
   //const searchParams = useSearchParams();
 

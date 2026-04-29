@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(petTypes, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

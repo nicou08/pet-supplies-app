@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,17 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { on } from "events";
-
-type petTypeInfo = {
-  id: string;
-  name: string;
-  displayName: string;
-};
+import { BookingDataUpdater, PetTypeOption } from "@/types";
 
 interface BookingStage2Props {
-  petTypes: petTypeInfo[]; // petTypeInfo[];
-  onUpdateBookingData: (field: string, value: any) => void;
+  petTypes: PetTypeOption[];
+  onUpdateBookingData: BookingDataUpdater;
   name: string;
   type: string;
   typeId: string;
@@ -35,19 +27,11 @@ export function BookingStage2({
   typeId,
   age,
 }: BookingStage2Props) {
-  // useEffect(() => {
-  //   console.log("PETDETAULS NAME", name);
-  //   console.log("PETDETAULS TYPE", type);
-  //   console.log("PETDETAULS AGE", age);
-  //   //console.log("PROPS PETTYPES", petTypes);
-  // }, [onUpdateBookingData]);
-
   return (
     <div className="">
       <div className="font-bold text-lg pb-7">Pet Information</div>
       <div className="flex flex-col w-md gap-4 w-[400px]">
         <Input
-          //className="bg-neutral-300 text-neutral-800 placeholder:text-gray-500"
           className="bg-neutral-700 text-white placeholder:text-gray-400"
           type="text"
           placeholder="Pet Name"
@@ -57,7 +41,7 @@ export function BookingStage2({
               name: e.target.value,
               type,
               typeId,
-              age,
+              age: age ?? 0,
             })
           }
         />
@@ -70,13 +54,11 @@ export function BookingStage2({
 
             if (!selectedPetType) return;
 
-            console.log("Selected Pet Type:", selectedPetType);
-
             onUpdateBookingData("pet", {
               name,
               type: value,
               typeId: selectedPetType.id,
-              age,
+              age: age ?? 0,
             });
           }}
         >
@@ -84,7 +66,7 @@ export function BookingStage2({
             <SelectValue placeholder="Pet Type" />
           </SelectTrigger>
           <SelectContent className="bg-[#e1e1e1] dark:bg-neutral-950">
-            {petTypes.map((petType: petTypeInfo) => (
+            {petTypes.map((petType) => (
               <SelectItem key={petType.id} value={petType.displayName}>
                 {petType.displayName}
               </SelectItem>

@@ -4,7 +4,11 @@ import { headers } from "next/headers";
 
 import { PetContent } from "./components/PetContent";
 
-export default async function PetPage({ params }: { params: { pet: string } }) {
+export default async function PetPage({
+  params,
+}: {
+  params: Promise<{ pet: string }>;
+}) {
   const { pet } = await params;
 
   let petData = null;

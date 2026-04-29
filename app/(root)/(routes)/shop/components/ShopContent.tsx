@@ -25,7 +25,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { FilterSideBar } from "./FilterSideBar";
 import { ProductList } from "./ProductList";
@@ -80,8 +80,6 @@ export function ShopContent() {
   // Router and URL utilities
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname(); // Kept for potential future use (currently not used directly)
-
   // Page-level loading gate. Ensures we don't render the main UI until data is ready.
   const [generalLoading, setGeneralLoading] = useState(true);
 
@@ -225,19 +223,22 @@ export function ShopContent() {
       return;
     }
 
-    const newFilters = { ...currentlySelectedFilters };
-    let hasUpdates = false;
+    const newFilters: FilterState = {
+      petType: [],
+      productType: [],
+      offersType: [],
+      brandsType: [],
+      priceRange: [0, 1000],
+      inStock: false,
+    };
+    const nextDefaultFilters = new Set(["offers"]);
 
     // petType (CSV)
     const petTypeParam = searchParams.get("petType");
     if (petTypeParam) {
       const petTypes = petTypeParam.split(",");
       newFilters.petType = petTypes;
-      hasUpdates = true;
-
-      if (!defaultFilters.includes("petType")) {
-        setDefaultFilters((prev) => [...prev, "petType"]);
-      }
+      nextDefaultFilters.add("petType");
     }
 
     // productType (CSV)
@@ -245,11 +246,7 @@ export function ShopContent() {
     if (productTypeParam) {
       const productTypes = productTypeParam.split(",");
       newFilters.productType = productTypes;
-      hasUpdates = true;
-
-      if (!defaultFilters.includes("productType")) {
-        setDefaultFilters((prev) => [...prev, "productType"]);
-      }
+      nextDefaultFilters.add("productType");
     }
 
     // offersType (CSV)
@@ -257,11 +254,7 @@ export function ShopContent() {
     if (offersTypeParam) {
       const offersTypes = offersTypeParam.split(",");
       newFilters.offersType = offersTypes;
-      hasUpdates = true;
-
-      if (!defaultFilters.includes("offersType")) {
-        setDefaultFilters((prev) => [...prev, "offersType"]);
-      }
+      nextDefaultFilters.add("offersType");
     }
 
     // brandsType (CSV)
@@ -269,11 +262,7 @@ export function ShopContent() {
     if (brandsTypeParam) {
       const brandsTypes = brandsTypeParam.split(",");
       newFilters.brandsType = brandsTypes;
-      hasUpdates = true;
-
-      if (!defaultFilters.includes("brandsType")) {
-        setDefaultFilters((prev) => [...prev, "brandsType"]);
-      }
+      nextDefaultFilters.add("brandsType");
     }
 
     // priceRange ("min-max")
@@ -283,7 +272,6 @@ export function ShopContent() {
       // Only update if we have valid numbers
       if (!isNaN(min) && !isNaN(max)) {
         newFilters.priceRange = [min, max];
-        hasUpdates = true;
       }
     }
 
@@ -291,12 +279,10 @@ export function ShopContent() {
     const inStockParam = searchParams.get("inStock");
     if (inStockParam === "true") {
       newFilters.inStock = true;
-      hasUpdates = true;
     }
 
-    if (hasUpdates) {
-      setCurrentlySelectedFilters(newFilters);
-    }
+    setCurrentlySelectedFilters(newFilters);
+    setDefaultFilters(Array.from(nextDefaultFilters));
   }, [searchParams, filters.petType.length, filters.productType.length]);
 
   /**
@@ -487,7 +473,6 @@ export function ShopContent() {
           defaultFilters={defaultFilters}
           onFilterChange={handleFilterChange}
           currentlySelectedFilters={currentlySelectedFilters}
-          mobileFilterOpen={isMobileFilterOpen}
         />
       </div>
 
@@ -517,7 +502,6 @@ export function ShopContent() {
               defaultFilters={defaultFilters}
               onFilterChange={handleFilterChange}
               currentlySelectedFilters={currentlySelectedFilters}
-              mobileFilterOpen={isMobileFilterOpen}
             />
           </div>
         </DrawerContent>

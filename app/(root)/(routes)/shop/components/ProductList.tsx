@@ -9,8 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -37,8 +35,6 @@ export function ProductList({
   onMobileFilterChange,
   isFilterChanging,
 }: ProductListProps) {
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-
   const [sortOption, setSortOption] = useState("Best Match");
 
   const filteredProducts = (products || []).filter((product) => {
@@ -92,12 +88,6 @@ export function ProductList({
         return 0; // Best Match (default order)
     }
   });
-
-  // Mobile filter toggle
-  const handleMobileFilterToggle = () => {
-    setMobileFilterOpen(!mobileFilterOpen);
-    onMobileFilterChange(!mobileFilterOpen);
-  };
 
   return (
     <div className="px-4 sm:px-0 col-span-4 w-full py-4">
@@ -170,8 +160,8 @@ export function ProductList({
               ></div>
             ))
           : // Show actual products when not filtering
-            sortedProducts.map((product, index) => (
-              <ProductCard key={index} product={product} />
+            sortedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
       </div>
     </div>

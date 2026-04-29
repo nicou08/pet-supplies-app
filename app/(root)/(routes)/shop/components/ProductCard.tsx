@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Star, StarHalf } from "lucide-react";
 
 import { Product } from "@/types/product";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 /**

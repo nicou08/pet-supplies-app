@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { format, parseISO, isAfter, isBefore, isToday } from "date-fns";
+import { isAfter, isBefore, isToday } from "date-fns";
 import {
   Calendar,
   Clock,
   MapPin,
   Phone,
-  Mail,
   MoreVertical,
   Edit,
   X,
@@ -22,17 +20,13 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -49,136 +43,14 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 import { useAppointments } from "@/hooks/useAppointments";
 
 import { AppointmentDisplay } from "@/types";
-
-// Sample appointment data
-const appointments = [
-  {
-    id: "1",
-    petId: "1",
-    petName: "Buddy",
-    petImage: "/placeholder.svg?height=60&width=60&text=Buddy",
-    type: "training",
-    title: "Basic Obedience Training",
-    date: "2025-01-15",
-    time: "10:00 AM",
-    duration: 60,
-    status: "confirmed",
-    provider: {
-      id: "1",
-      name: "Mike Peterson",
-      image: "/placeholder.svg?height=40&width=40&text=Mike",
-      phone: "(555) 123-4567",
-      email: "mike@pettraining.com",
-    },
-    location: "Happy Paws Training Center",
-    address: "123 Main St, Anytown, ST 12345",
-    notes: "Focus on sit, stay, and come commands",
-    price: 75.0,
-  },
-  {
-    id: "2",
-    petId: "2",
-    petName: "Whiskers",
-    petImage: "/placeholder.svg?height=60&width=60&text=Whiskers",
-    type: "vet-visit",
-    title: "Annual Checkup & Vaccinations",
-    date: "2025-01-18",
-    time: "2:30 PM",
-    duration: 45,
-    status: "confirmed",
-    provider: {
-      id: "2",
-      name: "Dr. Sarah Johnson",
-      image: "/placeholder.svg?height=40&width=40&text=Dr.+Johnson",
-      phone: "(555) 987-6543",
-      email: "sarah@vetclinic.com",
-    },
-    location: "City Veterinary Clinic",
-    address: "456 Oak Ave, Anytown, ST 12345",
-    notes: "Bring vaccination records",
-    price: 120.0,
-  },
-  {
-    id: "3",
-    petId: "1",
-    petName: "Buddy",
-    petImage: "/placeholder.svg?height=60&width=60&text=Buddy",
-    type: "grooming",
-    title: "Full Grooming Service",
-    date: "2025-01-22",
-    time: "11:00 AM",
-    duration: 90,
-    status: "pending",
-    provider: {
-      id: "3",
-      name: "Lisa Garcia",
-      image: "/placeholder.svg?height=40&width=40&text=Lisa",
-      phone: "(555) 456-7890",
-      email: "lisa@pawsgrooming.com",
-    },
-    location: "Paws & Claws Grooming",
-    address: "789 Pine St, Anytown, ST 12345",
-    notes: "Include nail trimming and ear cleaning",
-    price: 85.0,
-  },
-  {
-    id: "4",
-    petId: "3",
-    petName: "Rex",
-    petImage: "/placeholder.svg?height=60&width=60&text=Rex",
-    type: "vet-visit",
-    title: "Follow-up Examination",
-    date: "2024-12-20",
-    time: "3:00 PM",
-    duration: 30,
-    status: "completed",
-    provider: {
-      id: "2",
-      name: "Dr. Sarah Johnson",
-      image: "/placeholder.svg?height=40&width=40&text=Dr.+Johnson",
-      phone: "(555) 987-6543",
-      email: "sarah@vetclinic.com",
-    },
-    location: "City Veterinary Clinic",
-    address: "456 Oak Ave, Anytown, ST 12345",
-    notes: "Check healing progress on paw injury",
-    price: 60.0,
-  },
-  {
-    id: "5",
-    petId: "2",
-    petName: "Whiskers",
-    petImage: "/placeholder.svg?height=60&width=60&text=Whiskers",
-    type: "grooming",
-    title: "Bath & Brush",
-    date: "2024-12-15",
-    time: "1:00 PM",
-    duration: 60,
-    status: "cancelled",
-    provider: {
-      id: "3",
-      name: "Lisa Garcia",
-      image: "/placeholder.svg?height=40&width=40&text=Lisa",
-      phone: "(555) 456-7890",
-      email: "lisa@pawsgrooming.com",
-    },
-    location: "Paws & Claws Grooming",
-    address: "789 Pine St, Anytown, ST 12345",
-    notes: "Cancelled due to pet illness",
-    price: 45.0,
-  },
-];
 
 const appointmentTypeInfo = {
   Training: {
@@ -220,7 +92,8 @@ export function AppointmentListing() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<AppointmentDisplay | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
@@ -267,12 +140,12 @@ export function AppointmentListing() {
       isBefore(apt.appointmentDate, new Date()) && !isToday(apt.appointmentDate)
   );
 
-  const handleViewDetails = (appointment: any) => {
+  const handleViewDetails = (appointment: AppointmentDisplay) => {
     setSelectedAppointment(appointment);
     setShowDetails(true);
   };
 
-  const handleCancelAppointment = (appointment: any) => {
+  const handleCancelAppointment = (appointment: AppointmentDisplay) => {
     setSelectedAppointment(appointment);
     setShowCancelDialog(true);
   };
@@ -493,7 +366,7 @@ export function AppointmentListing() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">My Appointments</h1>
-          <p className="text-gray-600">Manage your pet's appointments</p>
+          <p className="text-gray-600">Manage your pet&apos;s appointments</p>
         </div>
         <Button asChild>
           <Link href="/services">
@@ -636,6 +509,99 @@ export function AppointmentListing() {
           )}
         </TabsContent>
       </Tabs>
+
+      <Dialog
+        open={showDetails}
+        onOpenChange={(open) => {
+          setShowDetails(open);
+          if (!open) {
+            setSelectedAppointment(null);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Appointment Details</DialogTitle>
+            <DialogDescription>
+              Review the details for your selected appointment.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedAppointment && (
+            <div className="space-y-4 text-sm">
+              <div>
+                <span className="font-medium">Type: </span>
+                {selectedAppointment.appointmentType}
+              </div>
+              <div>
+                <span className="font-medium">Pet: </span>
+                {selectedAppointment.petName}
+              </div>
+              <div>
+                <span className="font-medium">Provider: </span>
+                {selectedAppointment.appointmentProvider.name}
+              </div>
+              <div>
+                <span className="font-medium">Date: </span>
+                {new Date(
+                  selectedAppointment.appointmentDate
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}{" "}
+                at {selectedAppointment.appointmentTime}
+              </div>
+              <div>
+                <span className="font-medium">Status: </span>
+                {selectedAppointment.appointmentStatus}
+              </div>
+              {selectedAppointment.appointmentNotes && (
+                <div>
+                  <span className="font-medium">Notes: </span>
+                  {selectedAppointment.appointmentNotes}
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showCancelDialog}
+        onOpenChange={(open) => {
+          setShowCancelDialog(open);
+          if (!open) {
+            setSelectedAppointment(null);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancellation Help</DialogTitle>
+            <DialogDescription>
+              Online appointment cancellation is not available yet. Please call
+              the clinic to cancel this appointment.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedAppointment && (
+            <div className="space-y-3 text-sm">
+              <p>
+                <span className="font-medium">Appointment: </span>
+                {selectedAppointment.appointmentType} for{" "}
+                {selectedAppointment.petName}
+              </p>
+              <p>
+                <span className="font-medium">Provider: </span>
+                {selectedAppointment.appointmentProvider.name}
+              </p>
+              <Button variant="outline" size="sm" className="w-fit">
+                <Phone className="h-4 w-4 mr-1" />
+                Call Clinic
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

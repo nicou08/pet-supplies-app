@@ -1,4 +1,3 @@
-import { User } from "lucide-react";
 import { z } from "zod";
 
 export const appointmentInfoSchema = z.object({
@@ -68,3 +67,37 @@ export type AppointmentInfo = z.infer<typeof appointmentInfoSchema>;
 export type CreateAppointmentInfo = z.infer<typeof createAppointmentSchema>;
 export type AppointmentDisplay = z.infer<typeof appointmentDisplaySchema>;
 export type CreateReviewInfo = z.infer<typeof createReviewSchema>;
+
+export type BookingDataUpdater = <K extends keyof AppointmentInfo>(
+  field: K,
+  value: AppointmentInfo[K]
+) => void;
+
+export type StaffInfo = {
+  id: string;
+  name: string;
+  role: string[];
+};
+
+export type PetTypeOption = {
+  id: string;
+  name: string;
+  displayName: string;
+  petImageUrl?: string;
+};
+
+export type ProductTypeOption = {
+  id: string;
+  name: string;
+  displayName: string;
+};
+
+export type ProductReview = {
+  id: string;
+  rating: number;
+  review: string;
+  createdAt: Date | string;
+  user: {
+    name: string | null;
+  } | null;
+};

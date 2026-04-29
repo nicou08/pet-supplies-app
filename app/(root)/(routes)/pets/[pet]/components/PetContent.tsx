@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Utensils,
@@ -18,9 +19,28 @@ import {
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { usePetProducts } from "@/hooks/usePetProducts";
+import { Product } from "@/types/product";
 
 type PetContentProps = {
   petId: string;
+};
+
+type PetProductType = Product["productType"] & {
+  displayName?: string;
+  icon?: string;
+  description?: string;
+};
+
+type PetProduct = Omit<Product, "productType"> & {
+  productType?: PetProductType;
+};
+
+type ProductTypeSummary = {
+  id: string;
+  name: string;
+  displayName: string;
+  icon?: string;
+  description?: string;
 };
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -44,72 +64,42 @@ export function PetContent({ petId }: PetContentProps) {
     isError: petProductsError,
   } = usePetProducts(petId);
 
-  // Group products by productType
-  // const productsByType = useMemo(() => {
-  //   if (!products) return {};
-  //   return products.reduce((acc: Record<string, any[]>, product: any) => {
-  //     const type = product.productType?.name || "Other";
-  //     if (!acc[type]) acc[type] = [];
-  //     acc[type].push(product);
-  //     return acc;
-  //   }, {});
-  // }, [products]);
-
-  // const productTypes = useMemo(() => {
-  //   if (!products) return [];
-  //   const map = new Map();
-  //   products.forEach((product: any) => {
-  //     const pt = product.productType;
-  //     if (pt && !map.has(pt.id)) {
-  //       map.set(pt.id, {
-  //         id: pt.id,
-  //         name: pt.name,
-  //         displayName: pt.displayName,
-  //         icon: pt.icon,
-  //         description: pt.description,
-  //       });
-  //     }
-  //   });
-  //   return Array.from(map.values());
-  // }, [products]);
+  const typedProducts = useMemo(
+    () => (products ?? []) as PetProduct[],
+    [products]
+  );
 
   const productsByType = useMemo(() => {
-    if (!products) return {};
-    return products.reduce((acc: Record<string, any[]>, product: any) => {
+    return typedProducts.reduce<Record<string, PetProduct[]>>((acc, product) => {
       const typeKey = product.productType?.name ?? "Other";
       (acc[typeKey] ||= []).push(product);
       return acc;
     }, {});
-  }, [products]);
+  }, [typedProducts]);
 
   const productTypes = useMemo(() => {
-    if (!products) return [];
-    const map = new Map<string, any>();
-    products.forEach((product: any) => {
-      const pt = product.productType;
-      if (pt && !map.has(pt.id)) {
-        map.set(pt.id, {
-          id: pt.id,
-          name: pt.name,
-          displayName: pt.displayName,
-          icon: pt.icon,
-          description: pt.description,
+    const map = new Map<string, ProductTypeSummary>();
+
+    typedProducts.forEach((product) => {
+      const productType = product.productType;
+      if (productType && !map.has(productType.id)) {
+        map.set(productType.id, {
+          id: productType.id,
+          name: productType.name,
+          displayName: productType.displayName ?? productType.name,
+          icon: productType.icon,
+          description: productType.description,
         });
       }
     });
+
     return Array.from(map.values());
-  }, [products]);
+  }, [typedProducts]);
 
   const productTypeNames = useMemo(
     () => Object.keys(productsByType),
     [productsByType]
   );
-
-  useEffect(() => {
-    if (productTypes) {
-      console.log("USEMEMO productTypes", productTypes);
-    }
-  }, [productTypes]);
 
   if (petProductsLoading) {
     return <div className="text-3xl text-center py-10">Loading...</div>;
@@ -123,33 +113,23 @@ export function PetContent({ petId }: PetContentProps) {
     );
   }
 
-  if (!products || products.length === 0) {
+  if (typedProducts.length === 0) {
     return (
       <div className="text-3xl text-center py-10 text-gray-700">
         No products available for this pet.
       </div>
     );
   }
-  if (products) console.log("Fetched products for pet:", products);
 
   return (
     <div className="w-full max-w-5xl mx-auto py-8">
       <h2 className="text-lg md:text-2xl font-semibold text-center mb-6">
         Shop by Categories
       </h2>
-      {/* Horizontal Line */}
-      {/* <div className="border-t border-gray-300 mb-6" /> */}
 
-      {/* Tabs for product types */}
       <div className="flex justify-center">
         <Tabs defaultValue={productTypeNames[0]} className="w-full">
           <TabsList className="w-full flex justify-center bg-transparent mb-10 h-auto">
-            {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto gap-4 bg-transparent justify-center max-w-3xl bg-green-300 mx-auto"> */}
-            {/*<div
-              className="grid grid-cols-[repeat(auto-fit,144px)] md:grid-cols-[repeat(auto-fit,192px)] 
-              max-w-sm xxs:max-w-md 2xs:max-w-xl md:max-w-3xl lg:max-w-5xl gap-y-4 gap-x-6 md:gap-x-10 
-              h-auto justify-center mx-auto bg-red-300"
-            > */}
             <div
               className="
                 relative w-full -mx-4 px-4 pb-5 pt-2
@@ -171,7 +151,9 @@ export function PetContent({ petId }: PetContentProps) {
                 "
               >
                 {productTypes.map((productType) => {
-                  const IconComponent = iconMap[productType.icon] || PawPrint;
+                  const IconComponent =
+                    (productType.icon && iconMap[productType.icon]) || PawPrint;
+
                   return (
                     <TabsTrigger
                       key={productType.id}
@@ -224,9 +206,11 @@ export function PetContent({ petId }: PetContentProps) {
                     "
                   >
                     <div className="flex justify-center w-full">
-                      <img
+                      <Image
                         src={product.mainImageUrl || "/placeholder.svg"}
                         alt={product.name}
+                        width={192}
+                        height={192}
                         className="w-28 h-28 sm:w-48 sm:h-48 object-contain mb-2"
                       />
                     </div>

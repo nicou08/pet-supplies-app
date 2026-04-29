@@ -1,40 +1,9 @@
 "use client";
 
-import { useProductReviews } from "@/hooks/useProductReviews";
 import { Star } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 
 export function WriteReviewForm({
   productId,
@@ -62,8 +31,8 @@ export function WriteReviewForm({
       setReview("");
       setRating(0);
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Error");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error");
     } finally {
       setLoading(false);
     }

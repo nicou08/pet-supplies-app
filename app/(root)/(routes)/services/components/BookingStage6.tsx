@@ -1,11 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import { AppointmentInfo } from "@/types";
+import { AppointmentInfo, BookingDataUpdater } from "@/types";
 
 const BookingInfoSection = ({
   bookingInfoTitle,
@@ -31,10 +28,8 @@ export function BookingStage6({
   onUpdateBookingData,
 }: {
   bookingData: AppointmentInfo;
-  onUpdateBookingData: (field: string, value: any) => void;
+  onUpdateBookingData: BookingDataUpdater;
 }) {
-  const [notes, setNotes] = useState<string>("");
-
   return (
     <div>
       <div className="text-xl font-bold pb-10">Appointment Summary</div>

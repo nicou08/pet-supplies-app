@@ -15,9 +15,6 @@ export async function GET(request: NextRequest) {
     const isFeaturedParam = searchParams.get("isFeatured");
     const isFeatured = isFeaturedParam === "true";
 
-    // Build the query conditionally based on the presence of petTypeId
-    let whereClause = undefined; // No filtering if petTypeId is not provided
-
     if (petId) {
       const petProducts = await prisma.product.findMany({
         where: {
@@ -145,7 +142,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(result.data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

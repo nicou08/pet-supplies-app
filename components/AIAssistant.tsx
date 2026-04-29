@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Loader2, ArrowUp } from "lucide-react";
 

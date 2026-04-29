@@ -1,21 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 
 import { Button } from "@/components/ui/button";
-
-type StaffInfo = {
-  id: string;
-  name: string;
-  role: string[];
-};
+import { BookingDataUpdater, StaffInfo } from "@/types";
 
 interface BookingStage3Props {
   serviceType: string;
   isLoading: boolean;
   isError: boolean;
   staff: StaffInfo[];
-  onUpdateBookingData: (field: string, value: any) => void;
+  onUpdateBookingData: BookingDataUpdater;
   selectedStaffId: string;
 }
 
@@ -27,9 +22,6 @@ export function BookingStage3({
   onUpdateBookingData,
   selectedStaffId,
 }: BookingStage3Props) {
-  const [selectedStaff, setSelectedStaff] = useState("");
-
-  // Filter staff based on the selected service type
   const filteredStaff = useMemo(() => {
     if (!staff || isLoading || isError) return [];
 
@@ -39,19 +31,15 @@ export function BookingStage3({
       );
     }
     if (serviceType === "Grooming") {
-      return staff.filter((staffMember) =>
-        staffMember.role.includes("Groomer")
-      );
+      return staff.filter((staffMember) => staffMember.role.includes("Groomer"));
     }
     if (serviceType === "Training") {
-      return staff.filter((staffMember) =>
-        staffMember.role.includes("Trainer")
-      );
+      return staff.filter((staffMember) => staffMember.role.includes("Trainer"));
     }
     return staff.filter((staffMember) =>
       staffMember.role.includes(serviceType)
     );
-  }, [serviceType]);
+  }, [isError, isLoading, serviceType, staff]);
 
   if (isLoading) {
     return <div>Loading staff...</div>;
@@ -73,15 +61,13 @@ export function BookingStage3({
                 ? "bg-neutral-500 hover:bg-neutral-500"
                 : "bg-neutral-700 hover:bg-neutral-700"
             }  active:scale-95 transition-transform duration-100`}
-            onClick={() => (
-              console.log("Selected Staff Member:", member.name),
-              //setSelectedStaff(member.id),
+            onClick={() =>
               onUpdateBookingData("provider", {
                 id: member.id,
                 name: member.name,
                 specialty: member.role,
               })
-            )}
+            }
           >
             <div className="text-xl font-semibold text-white pb-2">
               {member.name}

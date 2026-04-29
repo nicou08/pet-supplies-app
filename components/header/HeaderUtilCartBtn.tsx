@@ -4,11 +4,9 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
-import Checkout from "./checkout";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -25,7 +23,6 @@ export function HeaderUtilCartBtn() {
     removeFromCart,
     isCartOpen,
     openCart,
-    toggleCart,
     closeCart,
   } = useCart();
 

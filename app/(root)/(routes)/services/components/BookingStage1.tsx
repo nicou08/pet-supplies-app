@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { BookingDataUpdater } from "@/types";
 
 type Service = {
   name: string;
@@ -11,7 +12,7 @@ type Service = {
 
 type BookingStage1Props = {
   Services: Service[];
-  onUpdateBookingData: (field: string, value: any) => void;
+  onUpdateBookingData: BookingDataUpdater;
   selectedService: string;
 };
 
@@ -33,7 +34,6 @@ export function BookingStage1({
         {Services.map((service, index) => (
           <Button
             key={index}
-            //variant={selectedService === service.name ? "default" : "outline"}
             className={`flex flex-col justify-start items-start h-48 py-5 px-8 gap-0 ${
               selectedService === service.name
                 ? "bg-neutral-400 hover:bg-neutral-400"
@@ -43,7 +43,6 @@ export function BookingStage1({
             } active:scale-95 transition-transform duration-100 `}
             onClick={() => {
               onUpdateBookingData("serviceType", service.name);
-              // Reset the provider data
               onUpdateBookingData("provider", {
                 id: "",
                 name: "",

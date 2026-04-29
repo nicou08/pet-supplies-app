@@ -2,7 +2,6 @@ import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useState } from "react";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -19,7 +18,7 @@ export default async function SettingsPage() {
 
   // For demo, default to account section
   // In a real app, use useState or URL param for section switching
-  let activeSection = "account";
+  const activeSection = "account";
 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full min-h-[60vh] py-8 px-2 sm:px-8">
