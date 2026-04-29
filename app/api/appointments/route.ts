@@ -2,7 +2,28 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prismadb";
-import { CreateAppointmentInfo, appointmentDisplaySchema } from "@/types";
+import {
+  appointmentDisplaySchema,
+  createAppointmentSchema,
+} from "@/types";
+
+function normalizeAppointmentPayload(body: unknown) {
+  if (typeof body !== "object" || body === null) {
+    return body;
+  }
+
+  const payload = body as Record<string, unknown>;
+
+  return {
+    ...payload,
+    appointmentDate:
+      typeof payload.appointmentDate === "string" ||
+      typeof payload.appointmentDate === "number" ||
+      payload.appointmentDate instanceof Date
+        ? new Date(payload.appointmentDate)
+        : payload.appointmentDate,
+  };
+}
 
 export async function POST(request: NextRequest) {
   // const session = await auth();
@@ -38,7 +59,33 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Parse and validate body
-    const body = await request.json();
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch (error) {
+      console.error("Invalid appointment request body:", error);
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    const parsedBody = createAppointmentSchema.safeParse(
+      normalizeAppointmentPayload(body)
+    );
+
+    if (!parsedBody.success) {
+      console.error(
+        "Invalid appointment payload:",
+        parsedBody.error.errors
+      );
+      return NextResponse.json(
+        {
+          error: "Invalid appointment payload",
+          details: parsedBody.error.errors,
+        },
+        { status: 400 }
+      );
+    }
+
     const {
       petTypeId,
       petName,
@@ -49,7 +96,7 @@ export async function POST(request: NextRequest) {
       appointmentStatus,
       appointmentNotes,
       appointmentProviderId,
-    } = body as CreateAppointmentInfo;
+    } = parsedBody.data;
 
     console.log("Received body:", body);
 
@@ -103,7 +150,8 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newAppointment, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("Failed to create appointment:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -201,7 +249,8 @@ export async function GET(request: NextRequest) {
       );
     }
     return NextResponse.json(validatedAppointments, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch appointments:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
