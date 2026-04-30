@@ -1,26 +1,29 @@
-#version: '3.8'
-
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - MONGODB_URL=${MONGODB_URL}
-      - WATCHPACK_POLLING=true
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+      DATABASE_URL_LOCAL: ${DATABASE_URL_LOCAL}
+      AUTH_SECRET: ${AUTH_SECRET:-docker-dev-auth-secret}
+      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-docker-github-id}
+      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-docker-github-secret}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_docker_placeholder}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_docker_placeholder}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
     volumes:
       - .:/app
-      - /app/node_modules
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
+      - app_node_modules:/app/node_modules
+      - app_next:/app/.next
+    command: node scripts/docker-dev.mjs
+    restart: unless-stopped
 
 volumes:
-  mongo-data:
+  app_node_modules:
+  app_next:

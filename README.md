@@ -76,6 +76,7 @@ Auth provider variables are also required for GitHub OAuth (names depend on your
 ```bash
 npx prisma generate
 npx prisma migrate dev
+npm run db:seed
 ```
 
 ### 5. Run locally
@@ -86,9 +87,56 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Docker Development
+
+The repository includes a Docker-based development setup for the Next.js app that connects to the same PostgreSQL database configured in `DATABASE_URL_LOCAL`.
+
+### Start the dev stack
+
+```bash
+docker compose up --build
+```
+
+This starts:
+
+- the app at `http://localhost:3000`
+
+The app container:
+
+- runs `next dev` on `0.0.0.0`
+- mounts the repository for live code edits
+- installs dependencies into a named Docker volume
+- runs `prisma generate`
+- applies checked-in migrations with `prisma migrate deploy`
+- runs `npm run db:seed`, which inserts sample storefront data only when the `Product` table is empty
+- uses the same `DATABASE_URL_LOCAL` value as local development; if that URL points to `localhost`, Docker rewrites it to `host.docker.internal` so the container reaches the host PostgreSQL server
+
+### Environment notes
+
+- `DATABASE_URL_LOCAL` should point to the database you actually want Docker to use.
+- On Docker Desktop, a local URL such as `postgresql://...@localhost:5432/...` is rewritten automatically inside the container to target the host machine.
+- Other variables such as `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_APP_URL` can be provided from your shell or project `.env` file before starting Compose.
+- Docker provides safe placeholder values for auth and Stripe so the app can boot, but real sign-in and checkout flows still need valid credentials.
+
+### Prisma during development
+
+When you change the Prisma schema and need a new local migration, run:
+
+```bash
+docker compose exec app npx prisma migrate dev
+```
+
+If you need to seed the configured database from an already-running app container, run:
+
+```bash
+docker compose exec app npm run db:seed
+```
+
 ## NPM Scripts
 
 - `npm run dev` - start local dev server
+- `npm run dev:docker` - start dev server bound for container access
+- `npm run db:seed` - seed sample storefront data when the product catalog is empty
 - `npm run build` - production build
 - `npm run start` - run production server
 - `npm run lint` - lint project

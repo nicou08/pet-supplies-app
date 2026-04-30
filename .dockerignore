@@ -1,3 +1,7 @@
 node_modules
+.next
+.git
+.github
+playwright-report
 npm-debug.log
-.env
+.env*
