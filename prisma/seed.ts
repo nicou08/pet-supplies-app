@@ -381,6 +381,40 @@ async function ensureBrand(brand: SeedBrand) {
   return brand.id;
 }
 
+// Default working hours given to any Staff row that has no schedule yet.
+// Mon-Fri, 09:00-17:00 in minutes-since-midnight.
+const DEFAULT_STAFF_SCHEDULE = {
+  weekdays: [1, 2, 3, 4, 5],
+  startMinute: 9 * 60,
+  endMinute: 17 * 60,
+} as const;
+
+async function ensureDefaultStaffSchedules() {
+  const staffWithoutSchedules = await prisma.staff.findMany({
+    where: { schedules: { none: {} } },
+    select: { id: true },
+  });
+
+  if (staffWithoutSchedules.length === 0) {
+    return;
+  }
+
+  const rows = staffWithoutSchedules.flatMap(({ id }) =>
+    DEFAULT_STAFF_SCHEDULE.weekdays.map((dayOfWeek) => ({
+      staffId: id,
+      dayOfWeek,
+      startMinute: DEFAULT_STAFF_SCHEDULE.startMinute,
+      endMinute: DEFAULT_STAFF_SCHEDULE.endMinute,
+    }))
+  );
+
+  await prisma.staffSchedule.createMany({ data: rows, skipDuplicates: true });
+
+  console.log(
+    `Seeded default Mon-Fri 9-5 schedules for ${staffWithoutSchedules.length} staff member(s).`
+  );
+}
+
 async function main() {
   const petTypeIdByName = new Map<string, string>();
   const productTypeIdByName = new Map<string, string>();
@@ -400,6 +434,8 @@ async function main() {
   for (const brand of brands) {
     brandIdByName.set(brand.name, await ensureBrand(brand));
   }
+
+  await ensureDefaultStaffSchedules();
 
   const existingProducts = await prisma.product.count();
 

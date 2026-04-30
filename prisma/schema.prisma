@@ -182,6 +182,7 @@ model Appointment {
   petName               String
   petAge                Int
   appointmentDate       DateTime
+  // Canonical "HH:mm" 24-hour string aligned to a 30-minute slot. All appointments are 30 minutes long.
   appointmentTime       String
   appointmentType       String
   appointmentStatus     String
@@ -191,16 +192,48 @@ model Appointment {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
+  @@unique([appointmentProviderId, appointmentDate, appointmentTime])
   @@index([userId])
   @@index([petTypeId])
   @@index([appointmentProviderId])
 }
 
 model Staff {
-  id           String        @id @default(uuid())
+  id           String          @id @default(uuid())
   name         String
   role         String[]
-  appointments Appointment[] @relation("StaffToAppointment")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]   @relation("StaffToAppointment")
+  schedules    StaffSchedule[] @relation("StaffToSchedule")
+  timeOff      StaffTimeOff[]  @relation("StaffToTimeOff")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+// Recurring weekly working hours for a staff member.
+// One row per weekday — split shifts are intentionally not supported.
+model StaffSchedule {
+  id          String   @id @default(uuid())
+  staffId     String
+  staff       Staff    @relation("StaffToSchedule", fields: [staffId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int      // 0 = Sunday ... 6 = Saturday
+  startMinute Int      // minutes from midnight, e.g. 540 = 09:00
+  endMinute   Int      // exclusive, e.g. 1020 = 17:00
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([staffId, dayOfWeek])
+  @@index([staffId])
+}
+
+// Date-range exceptions where a staff member is unavailable.
+model StaffTimeOff {
+  id        String   @id @default(uuid())
+  staffId   String
+  staff     Staff    @relation("StaffToTimeOff", fields: [staffId], references: [id], onDelete: Cascade)
+  startsAt  DateTime
+  endsAt    DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([staffId, startsAt, endsAt])
 }
