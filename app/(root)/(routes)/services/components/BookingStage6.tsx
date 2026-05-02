@@ -2,6 +2,7 @@
 
 import { Textarea } from "@/components/ui/textarea";
 
+import { formatSlotLabel } from "@/lib/slots";
 import { AppointmentInfo, BookingDataUpdater } from "@/types";
 
 const BookingInfoSection = ({
@@ -40,9 +41,9 @@ export function BookingStage6({
         />
         <BookingInfoSection
           bookingInfoTitle="Date & Time"
-          bookingInfoData={`${bookingData.date.toDateString()} at ${
+          bookingInfoData={`${bookingData.date.toDateString()} at ${formatSlotLabel(
             bookingData.time
-          }`}
+          )}`}
         />
         <BookingInfoSection
           bookingInfoTitle="Pet"

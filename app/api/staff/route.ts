@@ -13,6 +13,14 @@ export async function GET(request: NextRequest) {
         id: true,
         name: true,
         role: true,
+        schedules: {
+          select: {
+            dayOfWeek: true,
+            startMinute: true,
+            endMinute: true,
+          },
+          orderBy: { dayOfWeek: "asc" },
+        },
       },
     });
 

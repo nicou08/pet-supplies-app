@@ -1,11 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { prisma } from "@/lib/prismadb";
-import {
-  generateSlots,
-  hhmmToMinutes,
-  parseYMD,
-} from "@/lib/slots";
+import { getAvailableSlots } from "@/lib/availability";
+import { parseYMD } from "@/lib/slots";
 
 // GET /api/staff/[id]/availability?date=YYYY-MM-DD
 // Returns the staff member's open 30-minute slots for the given date as
@@ -45,65 +41,16 @@ export async function GET(
   }
 
   try {
-    const staff = await prisma.staff.findUnique({
-      where: { id: staffId },
-      select: { id: true },
-    });
+    const result = await getAvailableSlots(staffId, date);
 
-    if (!staff) {
+    if (result.kind === "not_found") {
       return NextResponse.json(
         { error: "Staff member not found." },
         { status: 404 }
       );
     }
 
-    const dayOfWeek = date.getDay();
-    const schedule = await prisma.staffSchedule.findUnique({
-      where: { staffId_dayOfWeek: { staffId, dayOfWeek } },
-      select: { startMinute: true, endMinute: true },
-    });
-
-    if (!schedule) {
-      return NextResponse.json({ slots: [] }, { status: 200 });
-    }
-
-    const startOfDay = new Date(date);
-    const endOfDay = new Date(date);
-    endOfDay.setDate(endOfDay.getDate() + 1);
-
-    const [timeOff, bookedAppointments] = await Promise.all([
-      prisma.staffTimeOff.findMany({
-        where: {
-          staffId,
-          startsAt: { lt: endOfDay },
-          endsAt: { gt: startOfDay },
-        },
-        select: { startsAt: true, endsAt: true },
-      }),
-      prisma.appointment.findMany({
-        where: {
-          appointmentProviderId: staffId,
-          appointmentDate: { gte: startOfDay, lt: endOfDay },
-        },
-        select: { appointmentTime: true },
-      }),
-    ]);
-
-    const bookedSet = new Set(
-      bookedAppointments.map((a) => a.appointmentTime)
-    );
-
-    const slots = generateSlots(schedule.startMinute, schedule.endMinute)
-      .filter((slot) => !bookedSet.has(slot))
-      .filter((slot) => {
-        const slotStart = new Date(date);
-        slotStart.setMinutes(slotStart.getMinutes() + hhmmToMinutes(slot));
-        return !timeOff.some(
-          (off) => off.startsAt <= slotStart && off.endsAt > slotStart
-        );
-      });
-
-    return NextResponse.json({ slots }, { status: 200 });
+    return NextResponse.json({ slots: result.slots }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch staff availability:", error);
     return NextResponse.json(

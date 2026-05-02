@@ -73,10 +73,17 @@ export type BookingDataUpdater = <K extends keyof AppointmentInfo>(
   value: AppointmentInfo[K]
 ) => void;
 
+export type StaffSchedule = {
+  dayOfWeek: number;
+  startMinute: number;
+  endMinute: number;
+};
+
 export type StaffInfo = {
   id: string;
   name: string;
   role: string[];
+  schedules: StaffSchedule[];
 };
 
 export type PetTypeOption = {

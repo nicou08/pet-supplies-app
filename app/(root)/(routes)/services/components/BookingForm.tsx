@@ -26,6 +26,7 @@ import {
 import { useStaff } from "@/hooks/useStaff";
 import { usePetTypes } from "@/hooks/usePetTypes";
 
+import { formatSlotLabel } from "@/lib/slots";
 import {
   AppointmentInfo,
   BookingDataUpdater,
@@ -80,6 +81,11 @@ export function BookingForm() {
       [field]: value,
     }));
   };
+
+  const selectedStaff = staffInfo.find(
+    (s) => s.id === bookingData.provider.id
+  );
+  const providerSchedules = selectedStaff?.schedules ?? [];
 
   const nextStage = () => {
     if (currentStage < 6) {
@@ -188,6 +194,7 @@ export function BookingForm() {
           <BookingStage4
             onUpdateBookingData={updateBookingData}
             date={bookingData.date}
+            schedules={providerSchedules}
           />
         );
       case 5:
@@ -195,6 +202,8 @@ export function BookingForm() {
           <BookingStage5
             onUpdateBookingData={updateBookingData}
             selectedTime={bookingData.time}
+            providerId={bookingData.provider.id}
+            date={bookingData.date}
           />
         );
       case 6:
@@ -249,7 +258,7 @@ export function BookingForm() {
                     month: "long",
                     day: "numeric",
                   })}{" "}
-                  at {bookingData.time}
+                  at {formatSlotLabel(bookingData.time)}
                 </p>
               </div>
               <div className="mb-2">

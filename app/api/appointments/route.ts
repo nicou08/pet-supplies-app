@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { Prisma } from "@prisma/client";
 
 import { auth } from "@/auth";
+import { getAvailableSlots } from "@/lib/availability";
 import { prisma } from "@/lib/prismadb";
 import {
   appointmentDisplaySchema,
@@ -115,41 +117,62 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check if the appointment already exists
-    const existingAppointment = await prisma.appointment.findFirst({
-      where: {
-        petTypeId,
-        appointmentDate,
-        appointmentTime,
-        userId: currentUser.id,
-      },
-    });
+    // Re-validate the requested slot against the canonical availability list
+    // for this provider/date. UI-side validation is not authoritative.
+    const dateAtMidnight = new Date(appointmentDate);
+    dateAtMidnight.setHours(0, 0, 0, 0);
 
-    if (existingAppointment) {
-      console.error("existingAppointment: Appointment already exists");
+    const availability = await getAvailableSlots(
+      appointmentProviderId,
+      dateAtMidnight
+    );
+
+    if (availability.kind === "not_found") {
       return NextResponse.json(
-        { error: "Appointment already exists" },
-        { status: 409 }
+        { error: "Provider not found" },
+        { status: 404 }
       );
     }
 
-    // Create a new appointment
-    const newAppointment = await prisma.appointment.create({
-      data: {
-        userId: currentUser.id,
-        petTypeId,
-        petName,
-        petAge,
-        appointmentDate,
-        appointmentTime,
-        appointmentType,
-        appointmentStatus,
-        appointmentNotes,
-        appointmentProviderId,
-      },
-    });
+    if (!availability.slots.includes(appointmentTime)) {
+      return NextResponse.json(
+        { error: "Selected time slot is not available" },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json(newAppointment, { status: 201 });
+    // The composite unique constraint on (appointmentProviderId, appointmentDate,
+    // appointmentTime) is the authoritative race-condition guard — if two
+    // requests both pass the availability check above, only one create() wins.
+    try {
+      const newAppointment = await prisma.appointment.create({
+        data: {
+          userId: currentUser.id,
+          petTypeId,
+          petName,
+          petAge,
+          appointmentDate,
+          appointmentTime,
+          appointmentType,
+          appointmentStatus,
+          appointmentNotes,
+          appointmentProviderId,
+        },
+      });
+
+      return NextResponse.json(newAppointment, { status: 201 });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        return NextResponse.json(
+          { error: "That time slot was just booked. Please pick another." },
+          { status: 409 }
+        );
+      }
+      throw error;
+    }
   } catch (error) {
     console.error("Failed to create appointment:", error);
     return NextResponse.json(
