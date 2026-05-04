@@ -26,10 +26,11 @@ function normalizeCheckoutItems(items: CheckoutItemInput[]) {
       throw new Error("Cart contains an invalid quantity.");
     }
 
-    quantitiesByProductId.set(
-      item.id,
-      (quantitiesByProductId.get(item.id) ?? 0) + item.quantity
-    );
+    const accumulated = (quantitiesByProductId.get(item.id) ?? 0) + item.quantity;
+    if (accumulated > 999) {
+      throw new Error("Cart quantity exceeds the maximum allowed (999 per item).");
+    }
+    quantitiesByProductId.set(item.id, accumulated);
   }
 
   return Array.from(quantitiesByProductId, ([id, quantity]) => ({
@@ -77,11 +78,7 @@ export async function fetchClientSecret(items: CheckoutItemInput[]) {
   }
 
   const lineItems = normalizedItems.map((item) => {
-    const product = productsById.get(item.id);
-
-    if (!product) {
-      throw new Error("One or more cart items are no longer available.");
-    }
+    const product = productsById.get(item.id)!;
 
     return {
       price_data: {

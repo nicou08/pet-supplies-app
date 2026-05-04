@@ -48,10 +48,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (session) {
-      console.log("Session user email:", session.user.email);
-    }
-
     // 2. Method check
     if (request.method !== "POST") {
       return NextResponse.json(
@@ -99,8 +95,6 @@ export async function POST(request: NextRequest) {
       appointmentNotes,
       appointmentProviderId,
     } = parsedBody.data;
-
-    console.log("Received body:", body);
 
     // 4. Find the current user
     const currentUser = await prisma.user.findUnique({
@@ -151,7 +145,7 @@ export async function POST(request: NextRequest) {
           petTypeId,
           petName,
           petAge,
-          appointmentDate,
+          appointmentDate: dateAtMidnight,
           appointmentTime,
           appointmentType,
           appointmentStatus,
@@ -262,7 +256,6 @@ export async function GET(request: NextRequest) {
         throw new Error(`Invalid appointment data for ID: ${appointment.id}`);
       }
     });
-    console.log("Validated appointments");
 
     // 6. Return the validated appointments
     if (validatedAppointments.length === 0) {
