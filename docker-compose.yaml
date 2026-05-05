@@ -1,16 +1,35 @@
 services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pet_supplies
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       NODE_ENV: development
       NEXT_TELEMETRY_DISABLED: "1"
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
-      DATABASE_URL_LOCAL: ${DATABASE_URL_LOCAL}
+      DATABASE_URL_LOCAL: postgresql://postgres:postgres@db:5432/pet_supplies
       AUTH_SECRET: ${AUTH_SECRET:-docker-dev-auth-secret}
       AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-docker-github-id}
       AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-docker-github-secret}
@@ -27,3 +46,4 @@ services:
 volumes:
   app_node_modules:
   app_next:
+  db_data:
