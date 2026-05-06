@@ -1,10 +1,12 @@
-import { auth, signOut } from "@/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default async function SettingsPage() {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/sign-in");
 
   const user = session.user;
@@ -96,7 +98,8 @@ export default async function SettingsPage() {
           <form
             action={async () => {
               "use server";
-              await signOut({ redirectTo: "/" });
+              await auth.api.signOut({ headers: await headers() });
+              redirect("/");
             }}
           >
             <Button type="submit" variant="destructive">

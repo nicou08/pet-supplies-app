@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import { Star } from "lucide-react";
 
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,7 +35,7 @@ export function ReviewSection({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { reviews, isLoading, isError, mutate } = useProductReviews(productId);
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   // WriteReviewForm hooks
   const [rating, setRating] = useState(0);

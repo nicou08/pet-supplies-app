@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { Github, Mail } from "lucide-react";
 
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -17,10 +17,8 @@ export function SignInCard() {
     console.log("Magic link sign-in for:", email);
   };
 
-  const handleGithubSignIn = () => {
-    signIn("github", { redirectTo: "/" });
-
-    console.log("Sign in with GitHub");
+  const handleGithubSignIn = async () => {
+    await authClient.signIn.social({ provider: "github", callbackURL: "/" });
   };
 
   const handleGoogleSignIn = () => {

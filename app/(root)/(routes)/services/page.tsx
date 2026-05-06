@@ -1,9 +1,11 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
 import { auth } from "@/auth";
 import { BookingForm } from "./components/BookingForm";
 
 export default async function ServicesPage() {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   //const isSignedIn = !!session;
 
   if (!session) {

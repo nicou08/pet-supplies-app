@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { ReviewSection } from "./components/ReviewSection";
 import { useProduct } from "@/hooks/useProduct";
@@ -16,7 +16,7 @@ import { useCart } from "@/context/CartContext";
 export default function ProductDetailsPage() {
   const params = useParams<{ productId: string }>();
 
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   // State for favourite status
   const [isFavourited, setIsFavourited] = useState(false);

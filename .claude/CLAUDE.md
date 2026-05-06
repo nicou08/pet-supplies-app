@@ -26,9 +26,10 @@ Required in `.env.local`:
 DATABASE_URL_LOCAL=          # PostgreSQL connection string
 STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
-AUTH_SECRET=
-AUTH_GITHUB_ID=
-AUTH_GITHUB_SECRET=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=             # Base URL of the app, e.g. http://localhost:3000
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 NEXT_PUBLIC_APP_URL=         # Optional — app origin fallback
 ```
 

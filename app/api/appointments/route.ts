@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { Prisma } from "@prisma/client";
 
@@ -28,18 +29,9 @@ function normalizeAppointmentPayload(body: unknown) {
 }
 
 export async function POST(request: NextRequest) {
-  // const session = await auth();
-
-  // if (!session) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
-
-  // if (!session.user?.email) {
-  //   return NextResponse.json({ error: "User not found" }, { status: 404 });
-  // }
   try {
     // 1. Authentication check
-    const session = await auth();
+    const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.email) {
       console.error("!session.user.email: Unauthorized or invalid session");
       return NextResponse.json(
@@ -179,7 +171,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // 1. Authentication check
-    const session = await auth();
+    const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.email) {
       console.error("!session.user.email: Unauthorized or invalid session");
       return NextResponse.json(

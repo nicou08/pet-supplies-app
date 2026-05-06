@@ -115,7 +115,7 @@ The app container:
 
 - `DATABASE_URL_LOCAL` should point to the database you actually want Docker to use.
 - On Docker Desktop, a local URL such as `postgresql://...@localhost:5432/...` is rewritten automatically inside the container to target the host machine.
-- Other variables such as `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_APP_URL` can be provided from your shell or project `.env` file before starting Compose.
+- Other variables such as `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_APP_URL` can be provided from your shell or project `.env` file before starting Compose.
 - Docker provides safe placeholder values for auth and Stripe so the app can boot, but real sign-in and checkout flows still need valid credentials.
 
 ### Prisma during development

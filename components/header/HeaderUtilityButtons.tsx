@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 import { auth } from "@/auth";
 
 import { HeaderUtilSearch } from "./HeaderUtilSearch";
@@ -6,7 +8,7 @@ import { HeaderUtilCartBtn } from "./HeaderUtilCartBtn";
 import { ModeToggle } from "@/components/ui/theme-toggle-2";
 
 export async function HeaderUtilityButtons() {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   const isSignedIn = !!session;
   let user_name: string | undefined = undefined;
   let user_email: string | undefined = undefined;

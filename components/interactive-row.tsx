@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+
+import { authClient } from "@/lib/auth-client";
 
 import {
   Bone,
@@ -96,7 +97,7 @@ function InteractiveItemConsultVet() {
 }
 
 export function InteractiveRow() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   return (
     <div className="px-4 md:px-0 grid grid-cols-2 2xl:grid-cols-4 gap-2 md:gap-6">
       {session ? <InteractiveItemConsultVet /> : <InteractiveItemSignIn />}

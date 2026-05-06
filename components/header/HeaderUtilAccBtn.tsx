@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { User } from "lucide-react";
+
+import { authClient } from "@/lib/auth-client";
 
 import {
   DropdownMenu,
@@ -26,6 +28,16 @@ export function HeaderUtilAccBtn({
   email,
   image,
 }: HeaderUtilAccBtnProps) {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => router.push("/"),
+      },
+    });
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -77,7 +89,7 @@ export function HeaderUtilAccBtn({
           {isLoggedIn ? (
             <DropdownMenuItem
               className="p-0"
-              onClick={() => signOut({ redirectTo: "/" })}
+              onClick={handleSignOut}
             >
               <div className="bp-0 m-0 cursor-pointer h-full w-full px-2 py-1.5 rounded-sm">
                 Sign Out

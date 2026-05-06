@@ -30,9 +30,10 @@ services:
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
       DATABASE_URL_LOCAL: postgresql://postgres:postgres@db:5432/pet_supplies
-      AUTH_SECRET: ${AUTH_SECRET:-docker-dev-auth-secret}
-      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-docker-github-id}
-      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-docker-github-secret}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-docker-dev-auth-secret}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-docker-github-id}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-docker-github-secret}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_docker_placeholder}
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_docker_placeholder}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}

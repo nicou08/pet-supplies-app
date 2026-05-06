@@ -1,10 +1,11 @@
+import { headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prismadb";
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.email) {
     return NextResponse.json({ favourited: false });
   }
