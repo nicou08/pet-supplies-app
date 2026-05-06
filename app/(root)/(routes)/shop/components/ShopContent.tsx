@@ -80,13 +80,29 @@ export function ShopContent() {
   // Router and URL utilities
   const router = useRouter();
   const searchParams = useSearchParams();
-  // Page-level loading gate. Ensures we don't render the main UI until data is ready.
-  const [generalLoading, setGeneralLoading] = useState(true);
 
-  /**
-   * Names of filters to show as "default open" in the UI (if the sidebar supports that behavior).
-   * "offers" is opened by default; others are pushed as they are discovered in URL params.
-   */
+  // Fetch data (moved before useState calls to allow lazy initializers below)
+  const {
+    petTypes,
+    isLoading: isPetTypesLoading,
+    isError: isPetTypesError,
+  } = usePetTypes();
+
+  const {
+    productTypes,
+    isLoading: isProductTypesLoading,
+    isError: isProductTypesError,
+  } = useProductTypes();
+
+  const {
+    products,
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+  } = useProducts();
+
+  // Page-level loading gate. With server-seeded SWR data this starts false.
+  const [generalLoading, setGeneralLoading] = useState(false);
+
   const [defaultFilters, setDefaultFilters] = useState<string[]>(["offers"]);
 
   /**
@@ -95,13 +111,29 @@ export function ShopContent() {
    */
   const [productTypeMap, setProductTypeMap] = useState<{
     [key: string]: string;
-  }>({});
+  }>(() => {
+    if (!productTypes) return {};
+    const map: { [key: string]: string } = {};
+    productTypes.forEach((pt) => {
+      map[pt.name] = pt.displayName;
+    });
+    return map;
+  });
 
   /**
    * Mapping of petType machine name -> display name.
    * Example: "dog" -> "Dog"
    */
-  const [petTypesMap, setPetTypesMap] = useState<{ [key: string]: string }>({});
+  const [petTypesMap, setPetTypesMap] = useState<{ [key: string]: string }>(
+    () => {
+      if (!petTypes) return {};
+      const map: { [key: string]: string } = {};
+      petTypes.forEach((pt) => {
+        map[pt.name] = pt.displayName;
+      });
+      return map;
+    }
+  );
 
   // Mobile drawer state
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -112,38 +144,34 @@ export function ShopContent() {
   // Track if scroll restoration ran already for this mount
   const hasRestoredScroll = useRef(false);
 
-  // Fetch pet types using the custom hook
-  const {
-    petTypes,
-    isLoading: isPetTypesLoading,
-    isError: isPetTypesError,
-  } = usePetTypes();
-
-  // Fetch product types using the custom hook
-  const {
-    productTypes,
-    isLoading: isProductTypesLoading,
-    isError: isProductTypesError,
-  } = useProductTypes();
-
-  // Fetch products using the custom hook
-  const {
-    products,
-    isLoading: isProductsLoading,
-    isError: isProductsError,
-  } = useProducts();
-
   /**
    * Available filter options (not the user's current selection).
-   * These are populated after petTypes/productTypes are loaded.
+   * Seeded from server data on first render; updated by useEffect on revalidation.
    */
-  const [filters, setFilters] = useState<FilterState>({
-    petType: [],
-    productType: [],
-    offersType: offers.map((offer) => offer.label),
-    brandsType: brands.map((brand) => brand.label),
-    priceRange: [0, 1000],
-    inStock: false,
+  const [filters, setFilters] = useState<FilterState>(() => {
+    if (
+      petTypes &&
+      productTypes &&
+      petTypes.length > 0 &&
+      productTypes.length > 0
+    ) {
+      return {
+        petType: petTypes.map((type) => type.name),
+        productType: productTypes.map((type) => type.name),
+        offersType: offers.map((offer) => offer.label),
+        brandsType: brands.map((brand) => brand.label),
+        priceRange: [0, 1000],
+        inStock: false,
+      };
+    }
+    return {
+      petType: [],
+      productType: [],
+      offersType: offers.map((offer) => offer.label),
+      brandsType: brands.map((brand) => brand.label),
+      priceRange: [0, 1000],
+      inStock: false,
+    };
   });
 
   /**
@@ -434,17 +462,14 @@ export function ShopContent() {
 
   /**
    * Render: loading state.
-   * We gate on:
-   * - all data hooks resolved
-   * - available filters computed (petType/productType arrays set)
+   * We gate on all data hooks resolved. With server-seeded SWR data all flags
+   * are already false on first render so no spinner appears.
    */
   if (
     isPetTypesLoading ||
     isProductTypesLoading ||
     isProductsLoading ||
-    generalLoading ||
-    filters.petType.length === 0 || // Wait for filters to be set
-    filters.productType.length === 0
+    generalLoading
   ) {
     console.log("Loading data...");
     return <Loading />;
