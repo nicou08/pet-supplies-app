@@ -1,8 +1,4 @@
-"use client";
-
 import Link from "next/link";
-
-import { authClient } from "@/lib/auth-client";
 
 import {
   Bone,
@@ -96,11 +92,10 @@ function InteractiveItemConsultVet() {
   );
 }
 
-export function InteractiveRow() {
-  const { data: session } = authClient.useSession();
+export function InteractiveRow({ isSignedIn }: { isSignedIn: boolean }) {
   return (
     <div className="px-4 md:px-0 grid grid-cols-2 2xl:grid-cols-4 gap-2 md:gap-6">
-      {session ? <InteractiveItemConsultVet /> : <InteractiveItemSignIn />}
+      {isSignedIn ? <InteractiveItemConsultVet /> : <InteractiveItemSignIn />}
       <InteractiveItem
         title="Book Grooming"
         description="Trim ya dawg"

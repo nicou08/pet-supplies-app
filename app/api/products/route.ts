@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { prisma } from "@/lib/prismadb";
+import { getFeaturedProducts } from "@/lib/queries/featured-products";
 import { productSchema } from "@/types/product";
 
 export async function GET(request: NextRequest) {
@@ -66,29 +67,8 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json(mapped);
     } else if (isFeatured) {
-      const featuredProducts = await prisma.product.findMany({
-        where: {
-          isFeatured: true,
-        },
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          mainImageUrl: true,
-        },
-        orderBy: { createdAt: "desc" },
-        take: 7,
-      });
-
-      // Map junction rows into petTypes[]
-      const mappedFeatured = featuredProducts.map((p) => ({
-        id: p.id,
-        name: p.name,
-        price: p.price,
-        mainImageUrl: p.mainImageUrl,
-      }));
-
-      return NextResponse.json(mappedFeatured);
+      const featuredProducts = await getFeaturedProducts();
+      return NextResponse.json(featuredProducts);
     }
 
     const products = await prisma.product.findMany({
