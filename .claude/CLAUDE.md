@@ -35,7 +35,7 @@ NEXT_PUBLIC_APP_URL=         # Optional — app origin fallback
 
 ## Architecture
 
-**Stack:** Next.js 15 App Router, React 19, TypeScript, Prisma 7 (PrismaPg adapter) + PostgreSQL, NextAuth v5 (beta), Stripe Embedded Checkout, Radix UI + Tailwind CSS, SWR + Axios.
+**Stack:** Next.js 15 App Router, React 19, TypeScript, Prisma 7 (PrismaPg adapter) + PostgreSQL, better-auth, Stripe Embedded Checkout, Radix UI + Tailwind CSS, SWR + Axios.
 
 ### Request Flow
 
@@ -53,7 +53,7 @@ The single exception is **Stripe checkout**, which uses a server action (`action
 
 | Path | Purpose |
 |---|---|
-| `app/(root)/` | Main shell — wraps all user-facing pages with `SessionProvider`, `CartProvider`, persistent `Header`, and `AIAssistant` |
+| `app/(root)/` | Main shell — wraps all user-facing pages with `CartProvider`, persistent `Header`, and `AIAssistant` |
 | `app/(root)/(routes)/` | User routes: `/shop`, `/products/[id]`, `/checkout`, `/appointments`, `/return`, etc. |
 | `app/(auth)/` | Auth pages (`/sign-in`) |
 | `app/api/` | REST-style route handlers: `products`, `search`, `reviews`, `favourites`, `appointments`, `staff`, `checkout_sessions`, `auth` |
@@ -72,7 +72,7 @@ The single exception is **Stripe checkout**, which uses a server action (`action
 
 **Product normalization:** Products have an optional `petTypeId` FK plus a `ProductPetType` many-to-many junction. API responses flatten these into a single `petTypes` array — preserve this shape when touching product routes.
 
-**Auth guards:** Protected pages/handlers call `await auth()` explicitly (from `auth.ts`). `middleware.ts` exists but has no `matcher` configured, so it does not centrally protect routes.
+**Auth guards:** Protected pages/handlers use better-auth session validation. `middleware.ts` exists but has no `matcher` configured, so it does not centrally protect routes.
 
 **Adding data-fetching:** Extend or add a hook in `hooks/` using SWR + `lib/fetcher.ts`. Don't add one-off `fetch`/`axios` calls inline in components.
 
