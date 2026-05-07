@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import axios from "axios";
 import { Search } from "lucide-react";
 
@@ -152,23 +153,26 @@ export function HeaderUtilSearch() {
               ) : results.length > 0 ? (
                 <ul className="divide-y divide-gray-200 dark:divide-neutral-800">
                   {results.map((result) => (
-                     <li
-                       key={result.id}
-                       className="flex items-center gap-3 p-3 hover:bg-neutral-300 dark:hover:bg-neutral-800 cursor-pointer"
-                     >
-                       <Image
-                         src={result.mainImageUrl || "/placeholder.svg"}
-                         alt={result.name}
-                         width={40}
-                         height={40}
-                         className="w-10 h-10 object-cover rounded"
-                       />
-                      <div>
-                        <div className="font-medium">{result.name}</div>
-                        <div className="text-sm text-gray-500">
-                          ${result.price?.toFixed(2)}
+                    <li key={result.id}>
+                      <Link
+                        href={`/products/${result.id}`}
+                        onClick={() => { setShowDropdown(false); setSearchValue(""); }}
+                        className="flex items-center gap-3 p-3 hover:bg-neutral-300 dark:hover:bg-neutral-800 cursor-pointer"
+                      >
+                        <Image
+                          src={result.mainImageUrl || "/placeholder.svg"}
+                          alt={result.name}
+                          width={40}
+                          height={40}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                        <div>
+                          <div className="font-medium">{result.name}</div>
+                          <div className="text-sm text-gray-500">
+                            ${result.price?.toFixed(2)}
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>

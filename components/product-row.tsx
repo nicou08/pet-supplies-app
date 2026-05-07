@@ -103,7 +103,7 @@ export function ProductRow() {
       <div className="text-2xl sm:text-3xl font-medium py-5 px-5 text-gray-800">
         Featured
       </div>
-      <div className="flex flex-row gap-3 sm:gap-4 overflow-x-auto px-2 sm:px-5">
+      <div className="flex flex-row gap-3 sm:gap-4 overflow-x-auto px-2 pb-3 sm:px-5">
         {products.length === 0 ? (
           <div className="text-gray-700 px-5 py-6">No featured products.</div>
         ) : (
