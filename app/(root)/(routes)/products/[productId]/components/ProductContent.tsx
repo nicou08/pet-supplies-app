@@ -9,6 +9,7 @@ import { Star, ShoppingCart, Heart } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { ReviewSection } from "./ReviewSection";
+import { ProductDetailsSkeleton } from "./ProductDetailsSkeleton";
 import { useProduct } from "@/hooks/useProduct";
 
 import { useCart } from "@/context/CartContext";
@@ -19,10 +20,9 @@ export function ProductContent() {
   const { data: session } = authClient.useSession();
 
   const [isFavourited, setIsFavourited] = useState(false);
-
   const [favLoading, setFavLoading] = useState(false);
-
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const { product, isLoading, isError, mutate } = useProduct(params.productId);
 
@@ -76,6 +76,12 @@ export function ProductContent() {
   };
 
   return (
+    <div className="relative">
+      {!imageLoaded && (
+        <div className="absolute inset-0 z-10 bg-background">
+          <ProductDetailsSkeleton />
+        </div>
+      )}
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
@@ -88,6 +94,7 @@ export function ProductContent() {
                   width={400}
                   height={400}
                   className="w-full h-full rounded-lg object-contain"
+                  onLoad={() => setImageLoaded(true)}
                 />
               </div>
             </div>
@@ -197,6 +204,7 @@ export function ProductContent() {
         onReviewSubmit={mutate}
       />
       <div className="h-96" />
+    </div>
     </div>
   );
 }
