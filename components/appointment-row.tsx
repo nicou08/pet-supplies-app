@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Stethoscope,
   GraduationCap,
@@ -11,6 +13,12 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export function AppointmentRow() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.prefetch("/services");
+  }, [router]);
+
   const services = [
     {
       title: "Veterinary Care",

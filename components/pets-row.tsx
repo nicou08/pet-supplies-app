@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,7 +17,15 @@ import { usePetTypes } from "@/hooks/usePetTypes";
 // ];
 
 export function PetRow() {
+  const router = useRouter();
   const { petTypes, isLoading: loading, isError: error } = usePetTypes(6);
+
+  useEffect(() => {
+    if (!petTypes) return;
+    petTypes.forEach((pet) => {
+      router.prefetch(`/pets/${encodeURIComponent(pet.name)}`);
+    });
+  }, [petTypes, router]);
 
   if (error) {
     return <div>Error loading pet types</div>;
