@@ -2,9 +2,8 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "./HeaderLogo";
-import { HeaderNavHamburg } from "./HeaderNavHamburg";
 import { HeaderUtilityButtons } from "./HeaderUtilityButtons";
-import { MainNavigationMenu } from "./MainNavigationMenu";
+import { HeaderNavHamburg, MainNavigationMenu } from "./HeaderClientNav";
 
 export default function Header() {
   return (
