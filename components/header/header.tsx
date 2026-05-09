@@ -24,7 +24,10 @@ export default function Header() {
 
       {/* Bottom Header Section */}
       <div className="z-50 w-full h-12 px-0 2lg:px-4 hidden sm:flex justify-start items-center bg-[#e1e1e1] dark:bg-neutral-950">
-        <Button className="bg-neutral-900 dark:bg-[#e1e1e1] hover:bg-neutral-500 dark:hover:dark:bg-[#e1e1e1d7]">
+        <Button
+          asChild
+          className="bg-neutral-900 dark:bg-[#e1e1e1] hover:bg-neutral-500 dark:hover:dark:bg-[#e1e1e1d7]"
+        >
           <Link href="/shop">Shop All</Link>
         </Button>
 

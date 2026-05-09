@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { usePetTypes } from "@/hooks/usePetTypes";
 import { useProductTypes } from "@/hooks/useProductTypes";
@@ -16,8 +18,21 @@ import {
 } from "@/components/ui/navigation-menu";
 
 export function MainNavigationMenu() {
+  const router = useRouter();
   const { petTypes, isLoading: petTypesLoading } = usePetTypes();
   const { productTypes, isLoading: productTypesLoading } = useProductTypes();
+
+  React.useEffect(() => {
+    petTypes?.forEach((pet) => {
+      router.prefetch(`/pets/${encodeURIComponent(pet.name)}`);
+    });
+  }, [petTypes, router]);
+
+  React.useEffect(() => {
+    productTypes?.forEach((type) => {
+      router.prefetch(`/shop?productType=${encodeURIComponent(type.name)}`);
+    });
+  }, [productTypes, router]);
 
   return (
     <NavigationMenu>
@@ -32,7 +47,7 @@ export function MainNavigationMenu() {
               {petTypes?.map((pet) => (
                 <ListItem
                   key={pet.id}
-                  href={`/pets/${pet.name}`}
+                  href={`/pets/${encodeURIComponent(pet.name)}`}
                   title={pet.displayName}
                 />
               ))}
@@ -50,7 +65,7 @@ export function MainNavigationMenu() {
               {productTypes?.map((type) => (
                 <ListItem
                   key={type.id}
-                  href={`/shop?productType=${type.name}`}
+                  href={`/shop?productType=${encodeURIComponent(type.name)}`}
                   title={type.displayName}
                 />
               ))}
@@ -79,28 +94,32 @@ export function MainNavigationMenu() {
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent dark:hover:bg-neutral-800 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
+type ListItemProps = Omit<React.ComponentPropsWithoutRef<"a">, "href"> & {
+  href: string;
+};
+
+const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
+  ({ className, title, children, href, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <Link
+            ref={ref}
+            href={href}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent dark:hover:bg-neutral-800 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              className
+            )}
+            {...props}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </Link>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
 ListItem.displayName = "ListItem";
