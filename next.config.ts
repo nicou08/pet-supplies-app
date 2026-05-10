@@ -10,8 +10,6 @@ const nextConfig: NextConfig = {
         search: "",
       },
     ],
-    loader: "custom",
-    loaderFile: "./lib/image-optimizer.ts",
   },
 };
 

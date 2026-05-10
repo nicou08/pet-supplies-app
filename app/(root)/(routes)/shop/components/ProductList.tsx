@@ -160,8 +160,8 @@ export function ProductList({
               ></div>
             ))
           : // Show actual products when not filtering
-            sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            sortedProducts.map((product, index) => (
+              <ProductCard key={product.id} product={product} priority={index < 4} />
             ))}
       </div>
     </div>

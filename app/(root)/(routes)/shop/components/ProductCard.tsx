@@ -1,17 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, StarHalf } from "lucide-react";
 
 import { Product } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Props for the ProductCard component.
  */
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
 /**
@@ -22,22 +25,29 @@ interface ProductCardProps {
  * @returns The rendered ProductCard component.
  */
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const fullStars = Math.floor(product.averageRating);
   const hasHalfStar = product.averageRating % 1 !== 0;
+  const [imageLoaded, setImageLoaded] = useState(false);
   //bg-[#e1e1e1] dark:bg-neutral-950
   return (
     <Link href={`/products/${product.id}`} className="block h-full">
       <div className="flex flex-col h-[350px] bg-stone-100 dark:bg-neutral-950 rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden mb-5">
         {/* Image */}
         <div className="relative w-full h-48 bg-white dark:bg-neutral-900 flex-shrink-0">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 rounded-none" />
+          )}
           <Image
             src={product.mainImageUrl || "/placeholder.svg"}
             alt={product.name}
             fill
-            className="object-contain"
-            sizes="(max-width: 768px) 100vw, 400px"
-            priority={false}
+            className={`object-contain transition-opacity duration-300 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            priority={priority}
+            onLoad={() => setImageLoaded(true)}
           />
           {product.offersType === "On Sale" && (
             <Badge className="absolute top-3 left-3 bg-white text-black rounded-full shadow">
