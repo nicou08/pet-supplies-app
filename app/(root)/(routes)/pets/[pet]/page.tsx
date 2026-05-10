@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 
+import { getPetTypeByName } from "@/lib/queries/pet-types";
 import { PetContent } from "./components/PetContent";
 
 export default async function PetPage({
@@ -11,29 +11,8 @@ export default async function PetPage({
 }) {
   const { pet } = await params;
 
-  let petData = null;
-
-  try {
-    // Get protocol and host for absolute URL
-    const host = (await headers()).get("host");
-    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-    const url = `${protocol}://${host}/api/pet-types?name=${encodeURIComponent(
-      pet
-    )}`;
-
-    console.log("Fetchingg pet data from:", url);
-
-    const response = await fetch(url, { cache: "no-store" }); // or "force-cache" if you want caching
-    if (response.ok) {
-      petData = await response.json();
-      if (!petData) {
-        redirect("/404");
-      }
-    } else {
-      redirect("/404");
-    }
-  } catch (error) {
-    console.log("PETPAGE Error fetching pet info:", error);
+  const petData = await getPetTypeByName(pet);
+  if (!petData) {
     redirect("/404");
   }
 
@@ -54,7 +33,7 @@ export default async function PetPage({
         </div>
       </div>
 
-      {/*  
+      {/*
 
       <div className="flex justify-between w-full max-w-5xl mx-auto pt-14">
         <div className="w-80 h-80 bg-red-300"></div>

@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { prisma } from "@/lib/prismadb";
+import {
+  getAllPetTypes,
+  getPetTypeByName,
+  getTopPetTypes,
+} from "@/lib/queries/pet-types";
 
 export async function GET(request: NextRequest) {
   if (request.method !== "GET") {
@@ -8,63 +12,28 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Parse the query parameters from the request URL
     const searchParams = request.nextUrl.searchParams;
     const petName = searchParams.get("name");
 
     if (petName) {
-      // Fetch a specific pet type by name
-      //console.log("ROUTE HANDLER: Fetching pet type by name:", petName);
-      const petType = await prisma.petType.findFirst({
-        where: {
-          name: petName,
-        },
-        select: {
-          id: true,
-          name: true,
-          displayName: true,
-          petImageUrl: true,
-        },
-      });
-
+      const petType = await getPetTypeByName(petName);
       if (!petType) {
         return NextResponse.json(
           { error: `Pet type with name "${petName}" not found` },
           { status: 404 }
         );
       }
-
-      console.log("ROUTE HANDLER: Fetched pet type from database:", petType);
-      console.log("ROUTE HANDLER: Fetched pet id from database:", petType.id);
-
       return NextResponse.json(petType, { status: 200 });
     }
 
     const top = searchParams.get("top");
     if (top) {
       const topCount = parseInt(top, 10) || 6;
-      const petTypes = await prisma.petType.findMany({
-        orderBy: { popularity: "asc" }, // 1 is most popular
-        take: topCount,
-        select: {
-          id: true,
-          name: true,
-          displayName: true,
-          petImageUrl: true,
-        },
-      });
+      const petTypes = await getTopPetTypes(topCount);
       return NextResponse.json(petTypes, { status: 200 });
     }
 
-    // If no name is provided, return all pet types
-    const petTypes = await prisma.petType.findMany({
-      select: {
-        id: true,
-        name: true,
-        displayName: true,
-      },
-    });
-
+    const petTypes = await getAllPetTypes();
     return NextResponse.json(petTypes, { status: 200 });
   } catch {
     return NextResponse.json(
