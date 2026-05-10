@@ -58,5 +58,4 @@ console.log(
 run("npm", ["ci"], env);
 run("npx", ["prisma", "generate"], env);
 run("npx", ["prisma", "migrate", "deploy"], env);
-run("npm", ["run", "db:seed"], env);
 run("npm", ["run", "dev:docker"], env);
