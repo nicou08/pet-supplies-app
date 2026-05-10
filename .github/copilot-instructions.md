@@ -31,6 +31,20 @@ There is currently no automated test runner configured in `package.json` or via 
 - When changing auth-protected flows, check both the page component and the API route. This repo does not rely on a single centralized guard.
 - Checkout changes should usually go through `actions/stripe.ts`, not a new checkout API route. The active checkout flow is server-action-based.
 
+## Commit and push messages
+
+- When writing commit messages or push summaries, use the format `<type>: <concise description>`.
+- Use these types consistently:
+  - `feat`: A new feature
+  - `fix`: A bug fix
+  - `docs`: Documentation changes only
+  - `style`: Formatting, missing semicolons, etc. (no logic change)
+  - `refactor`: Code restructuring (not a fix or feature)
+  - `test`: Adding or updating tests
+  - `chore`: Build process, dependency updates, tooling
+  - `perf`: Performance improvements
+  - `ci`: CI/CD configuration changes
+
 ## Relevant MCP server
 
 - If an MCP server is available for browser automation, prefer Playwright for validating user-facing changes. The highest-value flows in this repo are `/sign-in`, `/shop`, `/products/[productId]`, cart interactions from the header, `/checkout`, `/return`, `/services`, `/appointments`, and `/settings`.
