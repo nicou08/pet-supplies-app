@@ -28,12 +28,6 @@ export function MainNavigationMenu() {
     });
   }, [petTypes, router]);
 
-  React.useEffect(() => {
-    productTypes?.forEach((type) => {
-      router.prefetch(`/shop?productType=${encodeURIComponent(type.name)}`);
-    });
-  }, [productTypes, router]);
-
   return (
     <NavigationMenu>
       <NavigationMenuList className="text-black dark:text-white space-x-0">
