@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       if (!petType) {
         return NextResponse.json(
           { error: `Pet type with name "${petName}" not found` },
-          { status: 404 }
+          { status: 404 },
         );
       }
       return NextResponse.json(petType, { status: 200 });
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
