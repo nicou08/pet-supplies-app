@@ -10,6 +10,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { ReviewSection } from "./ReviewSection";
 import { ProductDetailsSkeleton } from "./ProductDetailsSkeleton";
+import { RecommendationCarousel } from "./RecommendationCarousel";
 import { useProduct } from "@/hooks/useProduct";
 
 import { useCart } from "@/context/CartContext";
@@ -197,6 +198,9 @@ export function ProductContent() {
           </div>
         </div>
       </div>
+      <div className="h-20" />
+
+      <RecommendationCarousel productId={params.productId} />
       <div className="h-20" />
 
       <ReviewSection
