@@ -25,15 +25,15 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full min-h-[60vh] py-8 px-2 sm:px-8">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 flex-shrink-0 border-b md:border-b-0 md:border-r border-neutral-300 dark:border-neutral-800 pb-4 md:pb-0">
+      <aside className="w-full md:w-64 flex-shrink-0 border-b md:border-b-0 md:border-r border-border pb-4 md:pb-0">
         <nav className="flex md:flex-col gap-2">
           {sections.map((section) => (
             <a
               key={section.key}
               href={`#${section.key}`}
-              className={`px-4 py-2 rounded-md text-left text-base font-medium transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 ${
+              className={`px-4 py-2 rounded-md text-left text-base font-medium transition-colors hover:bg-accent ${
                 activeSection === section.key
-                  ? "bg-neutral-200 dark:bg-neutral-800"
+                  ? "bg-accent"
                   : ""
               }`}
             >
@@ -55,7 +55,7 @@ export default async function SettingsPage() {
             </Avatar>
             <div>
               <div className="font-medium text-lg">{user?.name}</div>
-              <div className="text-neutral-500 text-sm">{user?.email}</div>
+              <div className="text-muted-foreground text-sm">{user?.email}</div>
             </div>
           </div>
           {/* Update name/email form (demo only, not functional) */}
@@ -65,7 +65,7 @@ export default async function SettingsPage() {
               <input
                 type="text"
                 defaultValue={user?.name || ""}
-                className="w-full px-3 py-2 border rounded-md bg-background border-neutral-300 dark:border-neutral-700"
+                className="w-full px-3 py-2 border rounded-md bg-background border-border"
                 disabled
               />
             </div>
@@ -74,7 +74,7 @@ export default async function SettingsPage() {
               <input
                 type="email"
                 defaultValue={user?.email || ""}
-                className="w-full px-3 py-2 border rounded-md bg-background border-neutral-300 dark:border-neutral-700"
+                className="w-full px-3 py-2 border rounded-md bg-background border-border"
                 disabled
               />
             </div>
@@ -87,7 +87,7 @@ export default async function SettingsPage() {
         {/* Billing Section */}
         <div id="billing" className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Billing</h2>
-          <div className="text-neutral-500">
+          <div className="text-muted-foreground">
             No billing information available.
           </div>
         </div>

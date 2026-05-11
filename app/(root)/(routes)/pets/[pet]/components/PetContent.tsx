@@ -115,7 +115,7 @@ export function PetContent({ petId }: PetContentProps) {
 
   if (typedProducts.length === 0) {
     return (
-      <div className="text-3xl text-center py-10 text-gray-700">
+      <div className="text-3xl text-center py-10 text-muted-foreground">
         No products available for this pet.
       </div>
     );
@@ -196,7 +196,7 @@ export function PetContent({ petId }: PetContentProps) {
                   <div
                     key={product.id}
                     className="
-                      bg-neutral-300 dark:bg-neutral-900
+                      bg-card
                       rounded-lg shadow
                       flex flex-col items-start
                       px-2
@@ -217,7 +217,7 @@ export function PetContent({ petId }: PetContentProps) {
                     <div className="font-bold text-sm sm:text-base mb-1 text-center line-clamp-2">
                       {product.name}
                     </div>
-                    <div className="text-gray-700 dark:text-gray-300 mb-1 text-center text-xs">
+                    <div className="text-muted-foreground mb-1 text-center text-xs">
                       {product.brand?.name}
                     </div>
 

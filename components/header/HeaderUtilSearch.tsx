@@ -94,7 +94,7 @@ export function HeaderUtilSearch() {
           ref={containerRef}
           className="hidden sm:flex w-full flex-col items-center justify-start relative"
         >
-          <div className="w-full bg-[#e1e1e1] dark:bg-neutral-900 rounded-none border border-stone-400 dark:border-neutral-800 shadow-md flex items-center relative">
+          <div className="w-full bg-card rounded-none border border-border shadow-md flex items-center relative">
             <Input
               type="text"
               value={searchValue}
@@ -102,7 +102,7 @@ export function HeaderUtilSearch() {
               onKeyDown={handleInputKeyDown}
               onFocus={handleInputFocus}
               placeholder="Search for products"
-              className="h-12 rounded-none placeholder-gray-500 dark:gray-900 dark:caret-stone-200 dark:text-stone-100 text-sm pr-20 flex-1"
+              className="h-12 rounded-none placeholder:text-muted-foreground text-foreground text-sm pr-20 flex-1"
             />
             {/* X (clear) button, appears left of search button */}
             {searchValue && (
@@ -112,7 +112,7 @@ export function HeaderUtilSearch() {
                   setSearchValue("");
                   setResults([]);
                 }}
-                className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-stone-200 focus:outline-none"
+                className="absolute right-12 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
                 aria-label="Clear search"
               >
                 <svg
@@ -135,7 +135,7 @@ export function HeaderUtilSearch() {
             <button
               type="button"
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-neutral-900 dark:hover:text-[#e1e1e1] focus:outline-none p-1"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none p-1"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -143,21 +143,21 @@ export function HeaderUtilSearch() {
           </div>
           {/* Search Results Dropdown */}
           {showDropdown && (
-            <div className="absolute z-20 left-0 top-full w-full bg-[#e1e1e1] dark:bg-neutral-900 border border-stone-400 dark:border-neutral-800 shadow-lg mt-1 rounded-b-md">
+            <div className="absolute z-20 left-0 top-full w-full bg-popover border border-border shadow-lg mt-1 rounded-b-md">
               {loading ? (
-                <div className="p-4 py-10 text-center text-gray-500">
+                <div className="p-4 py-10 text-center text-muted-foreground">
                   <div className="flex justify-center">
                     <div className="loader3" />
                   </div>
                 </div>
               ) : results.length > 0 ? (
-                <ul className="divide-y divide-gray-200 dark:divide-neutral-800">
+                <ul className="divide-y divide-border">
                   {results.map((result) => (
                     <li key={result.id}>
                       <Link
                         href={`/products/${result.id}`}
                         onClick={() => { setShowDropdown(false); setSearchValue(""); }}
-                        className="flex items-center gap-3 p-3 hover:bg-neutral-300 dark:hover:bg-neutral-800 cursor-pointer"
+                        className="flex items-center gap-3 p-3 hover:bg-accent cursor-pointer"
                       >
                         <Image
                           src={result.mainImageUrl || "/placeholder.svg"}
@@ -168,7 +168,7 @@ export function HeaderUtilSearch() {
                         />
                         <div>
                           <div className="font-medium">{result.name}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             ${result.price?.toFixed(2)}
                           </div>
                         </div>
@@ -178,7 +178,7 @@ export function HeaderUtilSearch() {
                 </ul>
               ) : (
                 hasSearched && (
-                  <div className="p-4 text-center text-gray-500">
+                  <div className="p-4 text-center text-muted-foreground">
                     No results found.
                   </div>
                 )
@@ -191,7 +191,7 @@ export function HeaderUtilSearch() {
       {/* Search Icon (mobile) */}
       <Button
         onClick={handleSearch}
-        className="sm:hidden focus:outline-none w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-neutral-900"
+        className="sm:hidden focus:outline-none w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-foreground hover:bg-accent"
       >
         <Search />
       </Button>

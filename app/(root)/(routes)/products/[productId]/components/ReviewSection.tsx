@@ -148,7 +148,7 @@ export function ReviewSection({
       {isLoading && <div>Loading reviews...</div>}
       {isError && <div className="text-red-500">Failed to load reviews.</div>}
       {reviews && reviews.length === 0 && (
-        <div className="text-gray-500">No reviews yet.</div>
+        <div className="text-muted-foreground">No reviews yet.</div>
       )}
       <div className="flex flex-col md:flex-row space-y-6">
         {/* Rating summary section */}
@@ -168,11 +168,11 @@ export function ReviewSection({
                   }`}
                 />
               ))}
-              <span className="text-nowrap ml-2 text-lg text-gray-500">
+              <span className="text-nowrap ml-2 text-lg text-muted-foreground">
                 ({numberOfRatings} review{numberOfRatings !== 1 ? "s" : ""})
               </span>
             </div>
-            <span className="text-xs text-gray-400 mt-1">Average Rating</span>
+            <span className="text-xs text-muted-foreground mt-1">Average Rating</span>
           </div>
           {/* The rest of the flex row is empty, so the summary doesn't take up half the width */}
         </div>
@@ -189,7 +189,7 @@ export function ReviewSection({
                     <span className="font-semibold">
                       {review.user?.name || "Anonymous"}
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-muted-foreground">
                       {new Date(review.createdAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -206,7 +206,7 @@ export function ReviewSection({
                     ))}
                   </div>
                 </div>
-                <div className="text-gray-800 dark:text-gray-200">
+                <div className="text-foreground">
                   {review.review}
                 </div>
               </div>

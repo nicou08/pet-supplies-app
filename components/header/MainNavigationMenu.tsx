@@ -30,13 +30,13 @@ export function MainNavigationMenu() {
 
   return (
     <NavigationMenu>
-      <NavigationMenuList className="text-black dark:text-white space-x-0">
+      <NavigationMenuList className="text-foreground space-x-0">
         <NavigationMenuItem>
           <NavigationMenuTrigger className="rounded-none">
             Pets
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-background/50">
               {petTypesLoading && <li>Loading...</li>}
               {petTypes?.map((pet) => (
                 <ListItem
@@ -54,7 +54,7 @@ export function MainNavigationMenu() {
             Products
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-background/50">
               {productTypesLoading && <li>Loading...</li>}
               {productTypes?.map((type) => (
                 <ListItem
@@ -72,7 +72,7 @@ export function MainNavigationMenu() {
             Services
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-[#e1e1e1]/50 dark:bg-neutral-950">
+            <ul className="grid w-[250px] gap-3 p-4 md:w-[350px] md:grid-cols-2 bg-background/50">
               <ListItem href="/services?serviceType=grooming" title="Grooming" />
               <ListItem href="/services?serviceType=training" title="Training" />
               <ListItem
@@ -101,7 +101,7 @@ const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
             ref={ref}
             href={href}
             className={cn(
-              "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent dark:hover:bg-neutral-800 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              "block select-none space-y-1 rounded-md p-5 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
               className
             )}
             {...props}

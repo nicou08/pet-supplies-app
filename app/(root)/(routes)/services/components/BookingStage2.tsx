@@ -65,7 +65,7 @@ export function BookingStage2({
           <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
             <SelectValue placeholder="Pet Type" />
           </SelectTrigger>
-          <SelectContent className="bg-[#e1e1e1] dark:bg-neutral-950">
+          <SelectContent className="bg-popover">
             {petTypes.map((petType) => (
               <SelectItem key={petType.id} value={petType.displayName}>
                 {petType.displayName}
@@ -87,7 +87,7 @@ export function BookingStage2({
           <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
             <SelectValue placeholder="Age of Pet" />
           </SelectTrigger>
-          <SelectContent className="bg-[#e1e1e1] dark:bg-neutral-950">
+          <SelectContent className="bg-popover">
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>

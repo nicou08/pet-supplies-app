@@ -229,7 +229,7 @@ export function BookingForm() {
   if (bookingStatus === "success") {
     return (
       <div className="flex items-center justify-center pt-20">
-        <Card className="text-center w-96 dark:bg-neutral-900">
+        <Card className="text-center w-96 bg-card">
           <CardHeader>
             <div className="flex justify-center mb-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
@@ -241,15 +241,15 @@ export function BookingForm() {
               Your appointment has been successfully scheduled. We&apos;ve sent
               a confirmation email with all the details.
             </p>
-            <div className="bg-gray-50 dark:bg-neutral-950 p-4 rounded-lg text-left mb-4">
+            <div className="bg-muted p-4 rounded-lg text-left mb-4">
               <div className="mb-2">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <span className="text-sm font-medium text-muted-foreground">
                   Appointment Type:
                 </span>
                 <p>{bookingData.serviceType}</p>
               </div>
               <div className="mb-2">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <span className="text-sm font-medium text-muted-foreground">
                   Date &amp; Time:
                 </span>
                 <p>
@@ -262,13 +262,13 @@ export function BookingForm() {
                 </p>
               </div>
               <div className="mb-2">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <span className="text-sm font-medium text-muted-foreground">
                   Pet:
                 </span>
                 <p>{bookingData.pet.name}</p>
               </div>
               <div>
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <span className="text-sm font-medium text-muted-foreground">
                   Provider:
                 </span>
                 <p>{bookingData.provider.name}</p>
@@ -278,7 +278,7 @@ export function BookingForm() {
           <CardFooter className="flex justify-center space-x-4">
             <Button asChild>
               <Link
-                className="bg-neutral-900 dark:bg-[#e1e1e1] hover:bg-neutral-500 dark:hover:dark:bg-[#e1e1e1d7]"
+                className="bg-primary text-primary-foreground hover:bg-primary/80"
                 href="/appointments"
               >
                 View All Appointments
@@ -295,7 +295,7 @@ export function BookingForm() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Card className="bg-[#e1e1e1] dark:bg-neutral-900 shadow-lg border border-neutral-700">
+      <Card className="bg-card shadow-lg border border-border">
         <CardHeader>
           <CardTitle className="text-3xl">Book a new appointment</CardTitle>
           <CardDescription className="text-lg">

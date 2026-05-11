@@ -29,12 +29,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const fullStars = Math.floor(product.averageRating);
   const hasHalfStar = product.averageRating % 1 !== 0;
   const [imageLoaded, setImageLoaded] = useState(false);
-  //bg-[#e1e1e1] dark:bg-neutral-950
   return (
     <Link href={`/products/${product.id}`} className="block h-full">
-      <div className="flex flex-col h-[350px] bg-stone-100 dark:bg-neutral-950 rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden mb-5">
+      <div className="flex flex-col h-[350px] bg-card rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden mb-5">
         {/* Image */}
-        <div className="relative w-full h-48 bg-white dark:bg-neutral-900 flex-shrink-0">
+        <div className="relative w-full h-48 bg-card flex-shrink-0">
           {!imageLoaded && (
             <Skeleton className="absolute inset-0 rounded-none" />
           )}
@@ -72,7 +71,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             {product.name}
           </h3>
           {/* Brand */}
-          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1 truncate">
+          <div className="text-sm text-muted-foreground mb-1 truncate">
             {product.brand.name}
           </div>
           {/* Rating */}

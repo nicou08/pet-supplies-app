@@ -41,7 +41,7 @@ export function HeaderUtilAccBtn({
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger className="focus:outline-none w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-black hover:bg-neutral-300 data-[state=open]:bg-neutral-300 dark:text-white cursor-pointer dark:hover:bg-neutral-900 transition-shadow duration-200">
+        <DropdownMenuTrigger className="focus:outline-none w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-foreground hover:bg-accent data-[state=open]:bg-accent cursor-pointer transition-shadow duration-200">
           {isLoggedIn ? (
             <Avatar>
               <AvatarImage src={image} />

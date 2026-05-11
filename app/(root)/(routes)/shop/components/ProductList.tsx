@@ -156,7 +156,7 @@ export function ProductList({
             Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="h-[350px] bg-stone-200 dark:bg-neutral-800 rounded-lg animate-pulse"
+                className="h-[350px] bg-muted rounded-lg animate-pulse"
               ></div>
             ))
           : // Show actual products when not filtering

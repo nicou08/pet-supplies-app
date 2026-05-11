@@ -186,7 +186,7 @@ export function AppointmentListing() {
           at {appointment.appointmentTime} - {appointment.appointmentStatus}
         </div> */}
 
-        <Card className="hover:shadow-md transition-shadow bg dark:bg-neutral-900">
+        <Card className="hover:shadow-md transition-shadow bg-card">
           <CardHeader className="pb-3">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
@@ -202,7 +202,7 @@ export function AppointmentListing() {
                   <h3 className="font-semibold text-lg">
                     {appointment.appointmentType}
                   </h3>
-                  <p className="text-sm text-neutral-400">
+                  <p className="text-sm text-muted-foreground">
                     for {appointment.petName}
                   </p>
                 </div>
@@ -260,7 +260,7 @@ export function AppointmentListing() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-1 text-neutral-400">
+                  <div className="flex items-center space-x-1 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
                     <span className="text-sm">
                       {new Date(appointment.appointmentDate).toLocaleDateString(
@@ -273,7 +273,7 @@ export function AppointmentListing() {
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-1 text-neutral-400">
+                  <div className="flex items-center space-x-1 text-muted-foreground">
                     <Clock className="h-4 w-4" />
                     <span className="text-sm">
                       {appointment.appointmentTime}
@@ -305,12 +305,12 @@ export function AppointmentListing() {
                   className="object-cover"
                 />
               </div> */}
-                <span className="text-sm text-neutral-400">
+                <span className="text-sm text-muted-foreground">
                   Performed by: {appointment.appointmentProvider.name}
                 </span>
               </div>
 
-              <div className="flex items-start space-x-1 text-neutral-400">
+              <div className="flex items-start space-x-1 text-muted-foreground">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
                   {/* <p className="font-medium">{appointment.location}</p>
@@ -321,7 +321,7 @@ export function AppointmentListing() {
               </div>
 
               {appointment.appointmentNotes && (
-                <div className="bg-neutral-300 dark:bg-neutral-950 p-2 rounded text-sm">
+                <div className="bg-muted p-2 rounded text-sm">
                   <span className="font-medium">Notes: </span>
                   {appointment.appointmentNotes}
                 </div>
@@ -366,7 +366,7 @@ export function AppointmentListing() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">My Appointments</h1>
-          <p className="text-gray-600">Manage your pet&apos;s appointments</p>
+          <p className="text-muted-foreground">Manage your pet&apos;s appointments</p>
         </div>
         <Button asChild>
           <Link href="/services">
@@ -380,7 +380,7 @@ export function AppointmentListing() {
       <div className="mb-6 space-y-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Search appointments, pets, or providers..."
               value={searchTerm}
@@ -433,11 +433,11 @@ export function AppointmentListing() {
         <TabsContent value="upcoming" className="mt-6">
           {upcomingAppointments.length === 0 ? (
             <div className="text-center py-12">
-              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 No upcoming appointments
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Schedule your next appointment to keep your pet healthy and
                 happy.
               </p>
@@ -464,11 +464,11 @@ export function AppointmentListing() {
         <TabsContent value="past" className="mt-6">
           {pastAppointments.length === 0 ? (
             <div className="text-center py-12">
-              <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 No past appointments
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Your appointment history will appear here.
               </p>
             </div>
@@ -488,11 +488,11 @@ export function AppointmentListing() {
         <TabsContent value="all" className="mt-6">
           {filteredAppointments.length === 0 ? (
             <div className="text-center py-12">
-              <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 No appointments found
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Try adjusting your search or filters.
               </p>
             </div>

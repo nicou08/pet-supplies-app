@@ -1,6 +1,6 @@
 import { CartProvider } from "@/context/CartContext";
 
-import Header from "@/components/header/Header";
+import Header from "@/components/header/header";
 import { AIAssistant } from "@/components/AIAssistant";
 
 export default function MainLayout({
@@ -10,8 +10,8 @@ export default function MainLayout({
 }) {
   return (
     <CartProvider>
-      <div className="w-full min-h-screen flex justify-center bg-[#e1e1e1] dark:bg-neutral-950 overflow-y-auto">
-        <div className="w-full sm:w-11/12 max-w-screen-2xl bg-[#e1e1e1] dark:bg-neutral-950">
+      <div className="w-full min-h-screen flex justify-center bg-background overflow-y-auto">
+        <div className="w-full sm:w-11/12 max-w-screen-2xl bg-background">
           <Header />
           {children}
           <AIAssistant />

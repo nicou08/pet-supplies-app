@@ -14,10 +14,10 @@ const BookingInfoSection = ({
 }) => {
   return (
     <div className="flex flex-col gap-3">
-      <div className="font-bold text-neutral-800 dark:text-white">
+      <div className="font-bold text-foreground">
         {bookingInfoTitle}
       </div>
-      <div className="text-md text-neutral-800 dark:text-white">
+      <div className="text-md text-foreground">
         {bookingInfoData}
       </div>
     </div>
@@ -34,7 +34,7 @@ export function BookingStage6({
   return (
     <div>
       <div className="text-xl font-bold pb-10">Appointment Summary</div>
-      <div className="grid grid-cols-2 gap-10 bg-neutral-300 dark:bg-neutral-950 p-8 rounded-lg">
+      <div className="grid grid-cols-2 gap-10 bg-muted p-8 rounded-lg">
         <BookingInfoSection
           bookingInfoTitle="Appointment Type"
           bookingInfoData={bookingData.serviceType}
@@ -60,7 +60,7 @@ export function BookingStage6({
       <div className="text-lg pb-2 pl-2">Additional Notes</div>
       <Textarea
         placeholder="Add any special instructions or notes for the provider..."
-        className="bg-neutral-300 dark:bg-neutral-950 text-neutral-800 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 w-full h-32 resize-none"
+        className="bg-muted text-foreground placeholder:text-muted-foreground w-full h-32 resize-none"
         spellCheck={false}
         value={bookingData.notes}
         onChange={(e) => onUpdateBookingData("notes", e.target.value)}

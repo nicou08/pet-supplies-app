@@ -41,7 +41,7 @@ export function WriteReviewForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-6 p-4 border rounded bg-gray-50 dark:bg-neutral-900"
+      className="mb-6 p-4 border rounded bg-card"
     >
       <div className="flex items-center mb-2">
         {[...Array(5)].map((_, i) => (

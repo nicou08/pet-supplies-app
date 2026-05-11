@@ -1,29 +1,45 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Button
+        aria-hidden
+        className="w-11 h-11 rounded-full flex justify-center items-center cursor-pointer shadow-none bg-transparent hover:bg-accent transition-shadow duration-200"
+      >
+        <span className="h-6 w-6" />
+      </Button>
+    );
+  }
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
   return (
     <Button
       onClick={toggleTheme}
-      className="w-11 h-11 rounded-full flex justify-center items-center cursor-pointer shadow-none bg-transparent hover:bg-neutral-300 dark:hover:bg-neutral-900 transition-shadow duration-200"
+      aria-label={resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className="w-11 h-11 rounded-full flex justify-center items-center cursor-pointer shadow-none bg-transparent hover:bg-accent transition-shadow duration-200"
     >
-      {/* {theme === "light" ? (
-        <SunIcon className="h-6 w-6 text-black dark:text-white" />
+      {resolvedTheme === "dark" ? (
+        <Moon className="h-6 w-6 text-foreground" />
       ) : (
-        <MoonIcon className="h-6 w-6 text-black dark:text-white" />
-      )} */}
-      <Sun className="h-6 w-6 text-black dark:text-white dark:hidden" />
-      <Moon className="h-6 w-6 text-black dark:text-white hidden dark:block" />
+        <Sun className="h-6 w-6 text-foreground" />
+      )}
     </Button>
   );
 }

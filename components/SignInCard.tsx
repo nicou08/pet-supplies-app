@@ -27,7 +27,7 @@ export function SignInCard() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#e1e1e1]">
+    <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-md">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">

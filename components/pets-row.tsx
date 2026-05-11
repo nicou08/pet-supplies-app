@@ -53,7 +53,7 @@ export function PetRow() {
                 priority={pet.name === "dog"}
               />
             </div>
-            <span className="mt-3 text-base sm:text-lg font-medium capitalize text-stone-800 dark:text-stone-100 group-hover:text-blue-500 transition">
+            <span className="mt-3 text-base sm:text-lg font-medium capitalize text-foreground group-hover:text-blue-500 transition">
               {pet.displayName}
             </span>
           </Link>

@@ -126,7 +126,7 @@ export function ProductContent() {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
-            <div className="text-gray-400 space-y-0">
+            <div className="text-muted-foreground space-y-0">
               by {product.brand.name}
             </div>
           </div>
@@ -138,34 +138,36 @@ export function ProductContent() {
                   className={`w-5 h-5 ${
                     i < Math.floor(product.averageRating)
                       ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
+                      : "text-gray-300 dark:text-gray-600"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-muted-foreground">
               ({product.numberOfRatings} reviews)
             </span>
           </div>
           <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
           <div className="space-y-4 text-md">
             <div className="flex flex-col sm:flex-row">
-              <div className="font-bold text-gray-400 min-w-[100px]">
+              <div className="font-bold text-muted-foreground min-w-[100px]">
                 Description:
               </div>
-              <p className="text-white break-words sm:ml-2">
+              <p className="text-muted-foreground break-words sm:ml-2">
                 {product.description}
               </p>
             </div>
             <div className="flex ">
-              <div className="font-bold text-gray-400">Type: &nbsp;</div>
-              <p className="text-white">{product.productType.displayName}</p>
+              <div className="font-bold text-muted-foreground">Type: &nbsp;</div>
+              <p className="text-muted-foreground">{product.productType.displayName}</p>
             </div>
             <div className="flex ">
-              <div className="font-bold text-gray-400">For: &nbsp;</div>
-              {product.petTypes?.length
-                ? product.petTypes.map((t) => t.petType.displayName).join(", ")
-                : product.petType?.displayName || "—"}
+              <div className="font-bold text-muted-foreground">For: &nbsp;</div>
+              <p className="text-muted-foreground">
+                {product.petTypes?.length
+                  ? product.petTypes.map((t) => t.petType.displayName).join(", ")
+                  : product.petType?.displayName || "—"}
+              </p>
             </div>
           </div>
 
