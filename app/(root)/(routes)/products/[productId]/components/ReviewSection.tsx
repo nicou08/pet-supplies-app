@@ -66,151 +66,160 @@ export function ReviewSection({
     }
   };
 
+  const writeReviewDialog = (
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">Write a Review</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Write a Review</DialogTitle>
+            <DialogDescription>
+              Share your thoughts about this product. Your feedback helps other
+              shoppers.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 mt-6">
+            <div className="grid gap-3">
+              <Label>Rating</Label>
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <button
+                    type="button"
+                    key={i}
+                    onClick={() => setRating(i + 1)}
+                    className="focus:outline-none"
+                    aria-label={`Rate ${i + 1} star${i + 1 !== 1 ? "s" : ""}`}
+                  >
+                    <Star
+                      className={`w-7 h-7 transition-colors ${
+                        i < rating
+                          ? "text-yellow-400 fill-yellow-400"
+                          : "text-gray-300 dark:text-gray-600"
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="review-comment">Comment</Label>
+              <Textarea
+                id="review-comment"
+                className="resize-none"
+                rows={4}
+                value={review}
+                onChange={(e) => setReview(e.target.value)}
+                placeholder="What did you think of this product?"
+              />
+              {error && <div className="text-sm text-red-500">{error}</div>}
+            </div>
+          </div>
+          <DialogFooter className="mt-6">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit" disabled={loading || !rating || !review}>
+              {loading ? "Submitting..." : "Submit Review"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className="mt-16 w-full max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">Customer Reviews</h2>
-        {session && (
-          // <Button onClick={() => setShowForm((v) => !v)}>Write a Review</Button>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">Open Dialog</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <form onSubmit={handleSubmit}>
-                <DialogHeader>
-                  <DialogTitle>Write your review</DialogTitle>
-                  <DialogDescription>
-                    Share your thoughts about this product. Your feedback is
-                    valuable to us.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 mt-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="name-1">Rating</Label>
-                    <div className="flex items-center">
+      <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
+
+      <div className="flex flex-col md:flex-row gap-10">
+        {/* Left panel: rating summary */}
+        <div className="flex-shrink-0 flex flex-col items-center md:items-start w-full md:w-48 md:border-r md:border-border md:pr-8">
+          <span className="text-6xl font-bold text-yellow-400 leading-none">
+            {averageRating.toFixed(1)}
+          </span>
+          <div className="flex items-center gap-0.5 mt-3">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-5 h-5 ${
+                  i < Math.round(Number(averageRating))
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-300 dark:text-gray-600"
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-muted-foreground mt-2">
+            {numberOfRatings} {numberOfRatings !== 1 ? "reviews" : "review"}
+          </span>
+        </div>
+
+        {/* Right panel: review list */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-sm text-muted-foreground">
+              {isLoading
+                ? "Loading reviews..."
+                : reviews
+                ? `${reviews.length} ${reviews.length !== 1 ? "reviews" : "review"}`
+                : ""}
+            </span>
+            {session && writeReviewDialog}
+          </div>
+
+          {isError && (
+            <div className="text-sm text-red-500">Failed to load reviews.</div>
+          )}
+
+          {!isLoading && !isError && reviews && reviews.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground border border-dashed rounded-lg">
+              <Star className="w-10 h-10 mb-3 opacity-30" />
+              <p className="text-base font-medium">No reviews yet</p>
+              {session ? (
+                <p className="text-sm mt-1">Be the first to share your thoughts!</p>
+              ) : (
+                <p className="text-sm mt-1">Sign in to leave the first review.</p>
+              )}
+            </div>
+          )}
+
+          <div className="flex flex-col divide-y divide-border">
+            {reviews &&
+              reviews.map((review) => (
+                <div key={review.id} className="py-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm">
+                        {review.user?.name || "Anonymous"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(review.createdAt).toLocaleDateString(
+                          undefined,
+                          { year: "numeric", month: "short", day: "numeric" }
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-0.5 flex-shrink-0">
                       {[...Array(5)].map((_, i) => (
-                        <button
-                          type="button"
+                        <Star
                           key={i}
-                          onClick={() => setRating(i + 1)}
-                          className="focus:outline-none"
-                        >
-                          <Star
-                            className={`w-6 h-6 ${
-                              i < rating
-                                ? "text-yellow-400 fill-current"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        </button>
+                          className={`w-4 h-4 ${
+                            i < review.rating
+                              ? "text-yellow-400 fill-yellow-400"
+                              : "text-gray-300 dark:text-gray-600"
+                          }`}
+                        />
                       ))}
                     </div>
                   </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="username-1">Comment</Label>
-                    <Textarea
-                      id="username-1"
-                      name="username"
-                      className="resize-none mb-6"
-                      value={review}
-                      onChange={(e) => setReview(e.target.value)}
-                      placeholder="Write your review..."
-                    />
-                    {error && <div className="text-red-500 mb-2">{error}</div>}
-                  </div>
+                  <p className="mt-2 text-sm text-foreground leading-relaxed">
+                    {review.review}
+                  </p>
                 </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    disabled={loading || !rating || !review}
-                  >
-                    {loading ? "Submitting..." : "Submit Review"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-      {/* {showForm && (
-        <WriteReviewForm
-          productId={productId}
-          onSuccess={() => {
-            setShowForm(false);
-            mutate(); // re-fetch reviews
-          }}
-        />
-      )} */}
-      {isLoading && <div>Loading reviews...</div>}
-      {isError && <div className="text-red-500">Failed to load reviews.</div>}
-      {reviews && reviews.length === 0 && (
-        <div className="text-muted-foreground">No reviews yet.</div>
-      )}
-      <div className="flex flex-col md:flex-row space-y-6">
-        {/* Rating summary section */}
-        <div className="flex justify-center items-center mb-8">
-          <div className="flex flex-col items-center mr-0 sm:mr-8">
-            <span className="text-5xl font-bold text-yellow-400">
-              {averageRating.toFixed(1)}
-            </span>
-            <div className="flex items-center mt-1">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-7 h-7 ${
-                    i < Math.round(Number(averageRating))
-                      ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
-                  }`}
-                />
               ))}
-              <span className="text-nowrap ml-2 text-lg text-muted-foreground">
-                ({numberOfRatings} review{numberOfRatings !== 1 ? "s" : ""})
-              </span>
-            </div>
-            <span className="text-xs text-muted-foreground mt-1">Average Rating</span>
           </div>
-          {/* The rest of the flex row is empty, so the summary doesn't take up half the width */}
-        </div>
-
-        <div className="w-full flex flex-col space-y-4">
-          {reviews &&
-            reviews.map((review) => (
-              <div
-                key={review.id}
-                className="w-full border-b px-6 pb-4 bg-neutral-900"
-              >
-                <div className="flex justify-between  py-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="font-semibold">
-                      {review.user?.name || "Anonymous"}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(review.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center mt-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < review.rating
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="text-foreground">
-                  {review.review}
-                </div>
-              </div>
-            ))}
         </div>
       </div>
     </div>

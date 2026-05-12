@@ -59,7 +59,7 @@ export const createReviewSchema = z.object({
   rating: z.number().min(1).max(5),
   review: z.string().min(5).max(500),
   productId: z.string().uuid(),
-  userId: z.string().uuid(),
+  userId: z.string(),
 });
 
 // Infer the TypeScript type from the schema
