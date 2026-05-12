@@ -127,71 +127,43 @@ export function PetContent({ petId }: PetContentProps) {
         Shop by Categories
       </h2>
 
-      <div className="flex justify-center">
-        <Tabs defaultValue={productTypeNames[0]} className="w-full">
-          <TabsList className="w-full flex justify-center bg-transparent mb-10 h-auto">
-            <div
-              className="
-                relative w-full -mx-4 px-4 pb-5 pt-2
-                overflow-x-auto
-                scroll-smooth
-                scrollbar-thin
-                [&::-webkit-scrollbar]:h-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb]:bg-neutral-300
-                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700
-              "
-            >
-              <div
-                className="
-                  flex flex-nowrap gap-4 w-max mx-auto
-                  snap-x snap-mandatory
-                  scroll-px-4
-                "
-              >
-                {productTypes.map((productType) => {
-                  const IconComponent =
-                    (productType.icon && iconMap[productType.icon]) || PawPrint;
+      <Tabs
+        defaultValue={productTypeNames[0]}
+        orientation="vertical"
+        className="flex gap-4 items-start"
+      >
+        <TabsList className="flex flex-col h-auto bg-transparent gap-2 shrink-0 w-36 md:w-44">
+          {productTypes.map((productType) => {
+            const IconComponent =
+              (productType.icon && iconMap[productType.icon]) || PawPrint;
 
-                  return (
-                    <TabsTrigger
-                      key={productType.id}
-                      value={productType.name}
-                      className="
-                        flex-none
-                        w-40 md:w-48
-                        snap-start
-                        flex flex-col items-center
-                        p-3 md:p-4 rounded-xl cursor-pointer transition-all
-                        data-[state=active]:ring-2 data-[state=active]:ring-blue-500
-                        data-[state=active]:bg-stone-100 dark:data-[state=active]:bg-stone-950
-                        bg-stone-100 dark:bg-stone-800 hover:shadow-md
-                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
-                      "
-                    >
-                      <IconComponent className="w-7 h-7 md:w-8 md:h-8" />
-                      <h3 className="font-bold text-xs md:text-sm mt-2 text-center line-clamp-2">
-                        {productType.displayName}
-                      </h3>
-                      <p className="hidden md:block text-xs mt-1 dark:data-[state=inactive]:text-gray-500 dark:data-[state=active]:text-white line-clamp-2">
-                        {productType.description}
-                      </p>
-                    </TabsTrigger>
-                  );
-                })}
-              </div>
-            </div>
-          </TabsList>
-          {productTypeNames.map((type) => (
-            <TabsContent key={type} value={type} className="w-full">
-              <div
+            return (
+              <TabsTrigger
+                key={productType.id}
+                value={productType.name}
                 className="
-                  grid
-                  gap-1
-                  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+                  w-full
+                  flex flex-col items-center
+                  p-3 rounded-xl cursor-pointer transition-all
+                  data-[state=active]:ring-2 data-[state=active]:ring-blue-500
+                  data-[state=active]:bg-stone-100 dark:data-[state=active]:bg-stone-950
+                  bg-stone-100 dark:bg-stone-800 hover:shadow-md
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
                 "
               >
+                <IconComponent className="w-6 h-6 md:w-7 md:h-7" />
+                <h3 className="font-bold text-xs mt-2 text-center line-clamp-2">
+                  {productType.displayName}
+                </h3>
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
+
+        <div className="flex-1 min-w-0">
+          {productTypeNames.map((type) => (
+            <TabsContent key={type} value={type} className="mt-0">
+              <div className="grid gap-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {productsByType[type].map((product) => (
                   <div
                     key={product.id}
@@ -235,8 +207,8 @@ export function PetContent({ petId }: PetContentProps) {
               </div>
             </TabsContent>
           ))}
-        </Tabs>
-      </div>
+        </div>
+      </Tabs>
     </div>
   );
 }
