@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prismadb";
 import { getFeaturedProducts } from "@/lib/queries/featured-products";
-import { productSchema } from "@/types/product";
+import { paginatedProductsSchema } from "@/types/product";
 
 export async function GET(request: NextRequest) {
   if (request.method !== "GET") {
@@ -71,47 +72,88 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(featuredProducts);
     }
 
-    const products = await prisma.product.findMany({
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        mainImageUrl: true,
-        offersType: true,
-        inStock: true,
-        averageRating: true,
-        brand: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        productType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        // Pet types (many-to-many via junction)
-        petTypes: {
-          select: {
-            petType: {
-              select: { id: true, name: true, displayName: true },
-            },
-          },
-        },
-      },
-    });
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
+    const sortParam = searchParams.get("sort");
+    const petTypeParam = searchParams.get("petType");
+    const productTypeParam = searchParams.get("productType");
+    const offersTypeParam = searchParams.get("offersType");
+    const brandsTypeParam = searchParams.get("brandsType");
+    const priceRangeParam = searchParams.get("priceRange");
+    const inStockParam = searchParams.get("inStock");
 
-    // Map productToPetTypes to petTypes array for each product
-    const mappedProducts = products.map((product) => ({
+    const page = pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
+    const limit = limitParam ? Math.min(100, Math.max(1, parseInt(limitParam, 10))) : 24;
+    const skip = (page - 1) * limit;
+
+    const petTypeNames = petTypeParam ? petTypeParam.split(",").filter(Boolean) : [];
+    const productTypeNames = productTypeParam ? productTypeParam.split(",").filter(Boolean) : [];
+    const offersTypeValues = offersTypeParam ? offersTypeParam.split(",").filter(Boolean) : [];
+    const brandsTypeNames = brandsTypeParam ? brandsTypeParam.split(",").filter(Boolean) : [];
+
+    const where: Prisma.ProductWhereInput = {};
+
+    if (petTypeNames.length > 0) {
+      where.petTypes = { some: { petType: { name: { in: petTypeNames } } } };
+    }
+    if (productTypeNames.length > 0) {
+      where.productType = { name: { in: productTypeNames } };
+    }
+    if (offersTypeValues.length > 0) {
+      where.offersType = { in: offersTypeValues };
+    }
+    if (brandsTypeNames.length > 0) {
+      where.brand = { name: { in: brandsTypeNames } };
+    }
+    if (priceRangeParam) {
+      const [minStr, maxStr] = priceRangeParam.split("-");
+      const min = parseFloat(minStr);
+      const max = parseFloat(maxStr);
+      if (!isNaN(min) && !isNaN(max)) {
+        where.price = { gte: min, lte: max };
+      }
+    }
+    if (inStockParam === "true") {
+      where.inStock = true;
+    }
+
+    let orderBy: Prisma.ProductOrderByWithRelationInput | undefined;
+    if (sortParam === "price_asc") orderBy = { price: "asc" };
+    else if (sortParam === "price_desc") orderBy = { price: "desc" };
+    else if (sortParam === "rating_desc") orderBy = { averageRating: "desc" };
+
+    const select = {
+      id: true,
+      name: true,
+      price: true,
+      mainImageUrl: true,
+      offersType: true,
+      inStock: true,
+      averageRating: true,
+      brand: { select: { id: true, name: true } },
+      productType: { select: { id: true, name: true } },
+      petTypes: {
+        select: { petType: { select: { id: true, name: true, displayName: true } } },
+      },
+    };
+
+    const [rawProducts, total] = await Promise.all([
+      prisma.product.findMany({ where, orderBy, select, skip, take: limit }),
+      prisma.product.count({ where }),
+    ]);
+
+    const mappedProducts = rawProducts.map((product) => ({
       ...product,
       petTypes: product.petTypes.map((pt) => pt.petType),
     }));
 
-    //console.log("ALL Products found:", mappedProducts);
-    // Validate the data using Zod
-    const result = productSchema.array().safeParse(mappedProducts);
+    const result = paginatedProductsSchema.safeParse({
+      items: mappedProducts,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
 
     if (!result.success) {
       console.error("Validation errors:", result.error.errors);

@@ -3,25 +3,15 @@
 /**
  * ShopContent (client component)
  *
- * Responsibilities:
- * - Fetch and normalize data needed to render the shop page (pet types, product types, products).
- * - Manage all filter state and UI (desktop sidebar + mobile drawer).
- * - Keep filter state in sync with URL query parameters and vice versa.
- * - Persist and restore scroll position across navigations.
- * - Render product list based on current filters.
- *
  * URL Query Contract:
- * - petType: comma-separated values (e.g., "dog,cat")
- * - productType: comma-separated values (e.g., "toys,food")
- * - offersType: comma-separated values (labels from constants.offers)
- * - brandsType: comma-separated values (labels from constants.brands)
- * - priceRange: "min-max" (hyphen-delimited; e.g., "0-1000")
+ * - petType: comma-separated machine names (e.g., "dog,cat")
+ * - productType: comma-separated machine names (e.g., "toys,food")
+ * - offersType: comma-separated labels from constants.offers
+ * - brandsType: comma-separated labels from constants.brands
+ * - priceRange: "min-max" (hyphen-delimited; e.g., "10-500")
  * - inStock: "true" when enabled
- *
- * Notes:
- * - priceRange is validated and always serialized as "min-max" to avoid encoding issues (e.g., 0%2C1000).
- * - URL updates are delayed slightly to avoid React warning about updating the Router during render.
- * - Consider replacing the setTimeout-based URL update with a transition (React 18 startTransition) if needed.
+ * - page: integer ≥ 1 (default 1)
+ * - sort: "price_asc" | "price_desc" | "rating_desc" (omit = best match)
  */
 
 import { useState, useEffect, useRef } from "react";
@@ -44,15 +34,6 @@ import { useProducts } from "@/hooks/useProducts";
 
 import { offers, brands } from "@/constants";
 
-/**
- * Type definition for the filter state.
- * - petType: machine names from API (e.g., "dog", "cat")
- * - productType: machine names from API (e.g., "food", "toys")
- * - offersType: labels from constants.offers (e.g., "On Sale")
- * - brandsType: labels from constants.brands (e.g., "Acme")
- * - priceRange: [min, max] numeric range. Serialized as "min-max" in URL.
- * - inStock: boolean flag; present in URL as "inStock=true" only when true
- */
 type FilterState = {
   petType: string[];
   productType: string[];
@@ -62,26 +43,15 @@ type FilterState = {
   inStock: boolean;
 };
 
-/**
- * Type definition for the filter type keys.
- */
 type FilterType = keyof FilterState;
 
-/**
- * The ShopContent component is responsible for rendering the shop page content,
- * including the filter sidebar and the product list.
- */
 export function ShopContent() {
-  /**
-   * Key used to persist the vertical scroll position of the shop list.
-   */
   const scrollPositionKey = "shop-scroll-position";
 
-  // Router and URL utilities
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Fetch data (moved before useState calls to allow lazy initializers below)
+  // Data hooks first — their results are used in lazy initializers below
   const {
     petTypes,
     isLoading: isPetTypesLoading,
@@ -94,67 +64,32 @@ export function ShopContent() {
     isError: isProductTypesError,
   } = useProductTypes();
 
-  const {
-    products,
-    isLoading: isProductsLoading,
-    isError: isProductsError,
-  } = useProducts();
+  // Pagination / sort state (no dependencies)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentSort, setCurrentSort] = useState("");
 
-  // Page-level loading gate. With server-seeded SWR data this starts false.
+  // UI state
   const [generalLoading, setGeneralLoading] = useState(false);
-
   const [defaultFilters, setDefaultFilters] = useState<string[]>(["offers"]);
-
-  /**
-   * Mapping of productType machine name -> display name.
-   * Example: "toys" -> "Toys"
-   */
-  const [productTypeMap, setProductTypeMap] = useState<{
-    [key: string]: string;
-  }>(() => {
+  const [productTypeMap, setProductTypeMap] = useState<{ [key: string]: string }>(() => {
     if (!productTypes) return {};
     const map: { [key: string]: string } = {};
-    productTypes.forEach((pt) => {
-      map[pt.name] = pt.displayName;
-    });
+    productTypes.forEach((pt) => { map[pt.name] = pt.displayName; });
     return map;
   });
-
-  /**
-   * Mapping of petType machine name -> display name.
-   * Example: "dog" -> "Dog"
-   */
-  const [petTypesMap, setPetTypesMap] = useState<{ [key: string]: string }>(
-    () => {
-      if (!petTypes) return {};
-      const map: { [key: string]: string } = {};
-      petTypes.forEach((pt) => {
-        map[pt.name] = pt.displayName;
-      });
-      return map;
-    }
-  );
-
-  // Mobile drawer state
+  const [petTypesMap, setPetTypesMap] = useState<{ [key: string]: string }>(() => {
+    if (!petTypes) return {};
+    const map: { [key: string]: string } = {};
+    petTypes.forEach((pt) => { map[pt.name] = pt.displayName; });
+    return map;
+  });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-  // Lightweight "busy" indicator while filters are changing
   const [isFilterChanging, setIsFilterChanging] = useState(false);
-
-  // Track if scroll restoration ran already for this mount
   const hasRestoredScroll = useRef(false);
 
-  /**
-   * Available filter options (not the user's current selection).
-   * Seeded from server data on first render; updated by useEffect on revalidation.
-   */
+  // Available filter options (seeded from server data on first render)
   const [filters, setFilters] = useState<FilterState>(() => {
-    if (
-      petTypes &&
-      productTypes &&
-      petTypes.length > 0 &&
-      productTypes.length > 0
-    ) {
+    if (petTypes && productTypes && petTypes.length > 0 && productTypes.length > 0) {
       return {
         petType: petTypes.map((type) => type.name),
         productType: productTypes.map((type) => type.name),
@@ -174,10 +109,7 @@ export function ShopContent() {
     };
   });
 
-  /**
-   * Currently selected filters (the user's selection).
-   * This state is the source of truth for what to render and for building the URL.
-   */
+  // Currently selected filters — source of truth for what to fetch and display
   const [currentlySelectedFilters, setCurrentlySelectedFilters] =
     useState<FilterState>({
       petType: [],
@@ -188,10 +120,26 @@ export function ShopContent() {
       inStock: false,
     });
 
-  /**
-   * Once petTypes and productTypes are loaded, compute name->displayName maps and
-   * set the available filters list.
-   */
+  // Products hook — called after all filter state is declared
+  const {
+    products,
+    total,
+    totalPages,
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+  } = useProducts({
+    page: currentPage,
+    limit: 24,
+    sort: currentSort || undefined,
+    petType: currentlySelectedFilters.petType.length > 0 ? currentlySelectedFilters.petType : undefined,
+    productType: currentlySelectedFilters.productType.length > 0 ? currentlySelectedFilters.productType : undefined,
+    offersType: currentlySelectedFilters.offersType.length > 0 ? currentlySelectedFilters.offersType : undefined,
+    brandsType: currentlySelectedFilters.brandsType.length > 0 ? currentlySelectedFilters.brandsType : undefined,
+    priceRange: currentlySelectedFilters.priceRange,
+    inStock: currentlySelectedFilters.inStock || undefined,
+  });
+
+  // Once petTypes and productTypes are loaded, compute maps and available filter options
   useEffect(() => {
     if (
       petTypes &&
@@ -199,7 +147,6 @@ export function ShopContent() {
       petTypes.length > 0 &&
       productTypes.length > 0
     ) {
-      // Build product type name-to-displayName map
       const productTypeMapTemp: { [key: string]: string } = {};
       productTypes.forEach(
         (productType: { id: string; name: string; displayName: string }) => {
@@ -208,7 +155,6 @@ export function ShopContent() {
       );
       setProductTypeMap(productTypeMapTemp);
 
-      // Build pet type name-to-displayName map
       const petTypesMapTemp: { [key: string]: string } = {};
       petTypes.forEach(
         (petType: { id: string; name: string; displayName: string }) => {
@@ -217,14 +163,9 @@ export function ShopContent() {
       );
       setPetTypesMap(petTypesMapTemp);
 
-      // Update available filter options
       setFilters({
-        petType: petTypes.map(
-          (type: { id: string; name: string }) => type.name
-        ),
-        productType: productTypes.map(
-          (type: { id: string; name: string }) => type.name
-        ),
+        petType: petTypes.map((type: { id: string; name: string }) => type.name),
+        productType: productTypes.map((type: { id: string; name: string }) => type.name),
         offersType: offers.map((offer) => offer.label),
         brandsType: brands.map((brand) => brand.label),
         priceRange: [0, 1000],
@@ -233,20 +174,16 @@ export function ShopContent() {
     }
   }, [petTypes, productTypes]);
 
-  /**
-   * Sync currentlySelectedFilters from URL search params.
-   *
-   * Behavior:
-   * - Reads each known filter key from URL and updates the selection accordingly.
-   * - priceRange must be "min-max". Non-numeric values are ignored.
-   * - Only runs once filters list is available (so we don't initialize with empty arrays).
-   *
-   * Why dependencies:
-   * - searchParams: re-run when the URL query changes.
-   * - filters.petType.length / filters.productType.length: ensure options are loaded first.
-   */
+  // Sync page and sort from URL (no filter-availability dependency needed)
   useEffect(() => {
-    // Defer processing until available filter options are known
+    const pageParam = searchParams.get("page");
+    setCurrentPage(pageParam && !isNaN(Number(pageParam)) ? Math.max(1, Number(pageParam)) : 1);
+    const sortParam = searchParams.get("sort");
+    setCurrentSort(sortParam || "");
+  }, [searchParams]);
+
+  // Sync currentlySelectedFilters from URL search params
+  useEffect(() => {
     if (filters.petType.length === 0 || filters.productType.length === 0) {
       return;
     }
@@ -261,49 +198,38 @@ export function ShopContent() {
     };
     const nextDefaultFilters = new Set(["offers"]);
 
-    // petType (CSV)
     const petTypeParam = searchParams.get("petType");
     if (petTypeParam) {
-      const petTypes = petTypeParam.split(",");
-      newFilters.petType = petTypes;
+      newFilters.petType = petTypeParam.split(",");
       nextDefaultFilters.add("petType");
     }
 
-    // productType (CSV)
     const productTypeParam = searchParams.get("productType");
     if (productTypeParam) {
-      const productTypes = productTypeParam.split(",");
-      newFilters.productType = productTypes;
+      newFilters.productType = productTypeParam.split(",");
       nextDefaultFilters.add("productType");
     }
 
-    // offersType (CSV)
     const offersTypeParam = searchParams.get("offersType");
     if (offersTypeParam) {
-      const offersTypes = offersTypeParam.split(",");
-      newFilters.offersType = offersTypes;
+      newFilters.offersType = offersTypeParam.split(",");
       nextDefaultFilters.add("offersType");
     }
 
-    // brandsType (CSV)
     const brandsTypeParam = searchParams.get("brandsType");
     if (brandsTypeParam) {
-      const brandsTypes = brandsTypeParam.split(",");
-      newFilters.brandsType = brandsTypes;
+      newFilters.brandsType = brandsTypeParam.split(",");
       nextDefaultFilters.add("brandsType");
     }
 
-    // priceRange ("min-max")
     const priceRangeParam = searchParams.get("priceRange");
     if (priceRangeParam) {
       const [min, max] = priceRangeParam.split("-").map(Number);
-      // Only update if we have valid numbers
       if (!isNaN(min) && !isNaN(max)) {
         newFilters.priceRange = [min, max];
       }
     }
 
-    // inStock ("true")
     const inStockParam = searchParams.get("inStock");
     if (inStockParam === "true") {
       newFilters.inStock = true;
@@ -313,20 +239,12 @@ export function ShopContent() {
     setDefaultFilters(Array.from(nextDefaultFilters));
   }, [searchParams, filters.petType.length, filters.productType.length]);
 
-  /**
-   * Aggregate loading state for the entire page. When all data hooks finish,
-   * we clear generalLoading to render the main UI.
-   */
   useEffect(() => {
     if (!isPetTypesLoading && !isProductTypesLoading && !isProductsLoading) {
       setGeneralLoading(false);
     }
   }, [isPetTypesLoading, isProductTypesLoading, isProductsLoading]);
 
-  /**
-   * Persist scroll position while the user scrolls the page.
-   * Uses a throttled listener to avoid excessive writes to localStorage.
-   */
   useEffect(() => {
     const handleScroll = () => {
       if (typeof window !== "undefined") {
@@ -334,7 +252,6 @@ export function ShopContent() {
       }
     };
 
-    // Simple throttle using a timeout
     let timeoutId: NodeJS.Timeout;
     const throttledScroll = () => {
       if (timeoutId) clearTimeout(timeoutId);
@@ -342,17 +259,12 @@ export function ShopContent() {
     };
 
     window.addEventListener("scroll", throttledScroll);
-
     return () => {
       window.removeEventListener("scroll", throttledScroll);
       clearTimeout(timeoutId);
     };
   }, []);
 
-  /**
-   * Restore the user's scroll position after initial content render.
-   * Runs once after loading is complete.
-   */
   useEffect(() => {
     if (
       !generalLoading &&
@@ -360,72 +272,42 @@ export function ShopContent() {
       typeof window !== "undefined"
     ) {
       const savedPosition = localStorage.getItem(scrollPositionKey);
-
       if (savedPosition) {
-        // Small delay to ensure content is rendered
         setTimeout(() => {
-          window.scrollTo({
-            top: parseInt(savedPosition),
-            behavior: "instant", // Use "smooth" for animated scrolling
-          });
+          window.scrollTo({ top: parseInt(savedPosition), behavior: "instant" });
           hasRestoredScroll.current = true;
         }, 100);
       }
     }
   }, [generalLoading]);
 
-  /**
-   * Handle filter change event.
-   *
-   * Updates local selection state immediately and then (after a short delay)
-   * serializes the selection into URL query params. The delay avoids React's
-   * "Cannot update a component (Router) while rendering a different component" warning.
-   *
-   * URL serialization rules:
-   * - Arrays are CSV (petType, productType, offersType, brandsType).
-   * - priceRange is serialized as "min-max" (hyphen), only if both are numeric.
-   * - inStock only present when true.
-   *
-   * @param filterType The type of filter being changed.
-   * @param value The new value for the filter.
-   */
   const handleFilterChange = (
     filterType: FilterType,
     value: string[] | number[] | boolean
   ) => {
-    // Show lightweight busy state
     setIsFilterChanging(true);
 
-    // Update selected filters first
-    setCurrentlySelectedFilters((prevFilters) => {
-      return { ...prevFilters, [filterType]: value };
-    });
+    setCurrentlySelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterType]: value,
+    }));
 
-    // After state commit, update the URL (avoid router updates inside render)
-    // NOTE: Consider using React startTransition + router.replace for a more idiomatic approach.
     setTimeout(() => {
       const params = new URLSearchParams();
 
-      // Use the latest selection to build URL params
-      const updatedFilters = {
-        ...currentlySelectedFilters,
-        [filterType]: value,
-      };
+      const updatedFilters = { ...currentlySelectedFilters, [filterType]: value };
 
-      // priceRange: ensure numbers, serialize as "min-max"
       if (
         Array.isArray(updatedFilters.priceRange) &&
         updatedFilters.priceRange.length === 2
       ) {
         const min = Number(updatedFilters.priceRange[0]);
         const max = Number(updatedFilters.priceRange[1]);
-
-        if (!isNaN(min) && !isNaN(max)) {
+        if (!isNaN(min) && !isNaN(max) && (min > 0 || max < 1000)) {
           params.set("priceRange", `${min}-${max}`);
         }
       }
 
-      // Other arrays: serialize as CSV when non-empty
       if (updatedFilters.petType.length > 0) {
         params.set("petType", updatedFilters.petType.join(","));
       }
@@ -438,55 +320,45 @@ export function ShopContent() {
       if (updatedFilters.brandsType.length > 0) {
         params.set("brandsType", updatedFilters.brandsType.join(","));
       }
-
-      // inStock only when true
       if (updatedFilters.inStock === true) {
         params.set("inStock", "true");
       }
 
-      // Update URL without a full page reload (and without scrolling)
-      router.push(`/shop?${params.toString()}`, { scroll: false });
+      // Preserve current sort; page resets to 1 (omitted = 1)
+      if (currentSort) params.set("sort", currentSort);
 
-      // Clear busy indicator
+      router.push(`/shop?${params.toString()}`, { scroll: false });
       setIsFilterChanging(false);
     }, 400);
   };
 
-  /**
-   * Toggle mobile filter drawer open/close.
-   */
-  const handleOpenMobileFilter = (openValue: boolean) => {
-    setIsMobileFilterOpen(openValue);
-    console.log("Mobile filter open state:", openValue);
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
+    router.push(`/shop?${params.toString()}`, { scroll: false });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /**
-   * Render: loading state.
-   * We gate on all data hooks resolved. With server-seeded SWR data all flags
-   * are already false on first render so no spinner appears.
-   */
-  if (
-    isPetTypesLoading ||
-    isProductTypesLoading ||
-    isProductsLoading ||
-    generalLoading
-  ) {
-    console.log("Loading data...");
+  const handleSortChange = (sort: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (sort) params.set("sort", sort);
+    else params.delete("sort");
+    params.set("page", "1");
+    router.push(`/shop?${params.toString()}`, { scroll: false });
+  };
+
+  const handleOpenMobileFilter = (openValue: boolean) => {
+    setIsMobileFilterOpen(openValue);
+  };
+
+  if (isPetTypesLoading || isProductTypesLoading || generalLoading) {
     return <Loading />;
   }
 
-  /**
-   * Render: error state.
-   */
   if (isPetTypesError || isProductTypesError || isProductsError) {
     return <div>Error loading data</div>;
   }
 
-  /**
-   * Render: main shop content
-   * - Desktop: sidebar visible, product list on the right
-   * - Mobile: filter in a bottom drawer
-   */
   return (
     <div className="grid grid-cols-1 2lg:grid-cols-5 gap-4 pr-0 2lg:pr-4 min-h-[calc(100vh-145px)] h-full ">
       {/* Desktop filter sidebar */}
@@ -501,12 +373,17 @@ export function ShopContent() {
         />
       </div>
 
-      {/* Product list (drives the main content) */}
+      {/* Product list */}
       <ProductList
-        filters={currentlySelectedFilters}
         products={products}
         onMobileFilterChange={handleOpenMobileFilter}
         isFilterChanging={isFilterChanging}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        total={total}
+        sortOption={currentSort}
+        onPageChange={handlePageChange}
+        onSortChange={handleSortChange}
       />
 
       {/* Mobile filter drawer */}

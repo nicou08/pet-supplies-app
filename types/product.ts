@@ -68,3 +68,13 @@ export const detailedProductSchema = z.object({
 });
 
 export type DetailedProduct = z.infer<typeof detailedProductSchema>;
+
+export const paginatedProductsSchema = z.object({
+  items: productSchema.array(),
+  total: z.number().int().nonnegative(),
+  page: z.number().int().positive(),
+  limit: z.number().int().positive(),
+  totalPages: z.number().int().nonnegative(),
+});
+
+export type PaginatedProducts = z.infer<typeof paginatedProductsSchema>;
