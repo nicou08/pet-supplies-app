@@ -362,7 +362,7 @@ export function ShopContent() {
   return (
     <div className="grid grid-cols-1 2lg:grid-cols-5 gap-4 pr-0 2lg:pr-4 min-h-[calc(100vh-145px)] h-full ">
       {/* Desktop filter sidebar */}
-      <div className="hidden 2lg:block">
+      <div className="hidden 2lg:block border-r border-neutral-700">
         <FilterSideBar
           filters={filters}
           filterNameMap={productTypeMap}
