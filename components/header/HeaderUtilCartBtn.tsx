@@ -31,6 +31,8 @@ export function HeaderUtilCartBtn() {
     0
   );
 
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   const handleOpenChange = (open: boolean) => {
     if (open) {
       openCart();
@@ -42,8 +44,13 @@ export function HeaderUtilCartBtn() {
   return (
     <>
       <Sheet open={isCartOpen} onOpenChange={handleOpenChange}>
-        <SheetTrigger className="focus:outline-none  w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-foreground hover:bg-accent data-[state=open]:bg-accent cursor-pointer transition-shadow duration-200">
+        <SheetTrigger className="focus:outline-none relative w-11 h-11 rounded-full flex justify-center items-center shadow-none bg-transparent text-foreground hover:bg-accent data-[state=open]:bg-accent cursor-pointer transition-shadow duration-200">
           <ShoppingCart />
+          {totalItems > 0 && (
+            <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-[3px] rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
+          )}
         </SheetTrigger>
         <SheetContent className="flex flex-col h-full">
           <SheetHeader>
