@@ -34,10 +34,10 @@ export const createAppointmentSchema = z.object({
 
 export const appointmentDisplaySchema = z.object({
   id: z.string().uuid(),
-  userId: z.string().uuid(),
+  userId: z.string(),
   petType: z.object({
     id: z.string().uuid(),
-    displayName: z.string(),
+    displayName: z.string().nullable(),
   }),
   petName: z.string(),
   petAge: z.number(),
@@ -45,7 +45,7 @@ export const appointmentDisplaySchema = z.object({
   appointmentTime: z.string(),
   appointmentType: z.string(),
   appointmentStatus: z.string().default("pending"),
-  appointmentNotes: z.string().optional(),
+  appointmentNotes: z.string().nullish(),
   appointmentProvider: z.object({
     id: z.string().uuid(),
     name: z.string(),

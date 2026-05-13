@@ -250,12 +250,6 @@ export async function GET(request: NextRequest) {
     });
 
     // 6. Return the validated appointments
-    if (validatedAppointments.length === 0) {
-      return NextResponse.json(
-        { message: "No appointments found" },
-        { status: 404 }
-      );
-    }
     return NextResponse.json(validatedAppointments, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch appointments:", error);
