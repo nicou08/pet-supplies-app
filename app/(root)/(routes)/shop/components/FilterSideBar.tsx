@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -46,6 +47,15 @@ export function FilterSideBar({
   onFilterChange,
   currentlySelectedFilters,
 }: FilterSideBarProps) {
+  const [openSections, setOpenSections] = useState<string[]>(defaultFilters);
+
+  useEffect(() => {
+    setOpenSections((prev) => {
+      const merged = Array.from(new Set([...prev, ...defaultFilters]));
+      return merged;
+    });
+  }, [defaultFilters]);
+
   //const searchParams = useSearchParams();
 
   // Filter Change Checkboxes
@@ -111,7 +121,7 @@ export function FilterSideBar({
       </div>
 
       {/* New Variation Test */}
-      <Accordion type="multiple" defaultValue={defaultFilters}>
+      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {/* Offers */}
         <AccordionItem value="offers" className="px-4">
           <AccordionTrigger>
