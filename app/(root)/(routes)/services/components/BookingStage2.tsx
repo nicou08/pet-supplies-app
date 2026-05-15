@@ -1,3 +1,11 @@
+/**
+ * BookingStage2 — step 2 of the booking wizard: pet information.
+ *
+ * Collects the pet's name, species/type, and age. Pet type selection stores
+ * both the human-readable `displayName` (used by the Select) and the database
+ * `id` (`typeId`) in a single atomic update so the two values are always in
+ * sync and stage-3 provider filtering has a valid FK to work with.
+ */
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -10,6 +18,14 @@ import {
 } from "@/components/ui/select";
 import { BookingDataUpdater, PetTypeOption } from "@/types";
 
+/**
+ * @param petTypes - Available pet-type options fetched from the API.
+ * @param onUpdateBookingData - Shared updater from `BookingForm` state.
+ * @param name - Controlled value for the pet name input.
+ * @param type - Display name of the selected pet type (e.g. "Dog").
+ * @param typeId - Database ID of the selected pet type; sent to the API.
+ * @param age - Pet age in years; `undefined` until the user makes a selection.
+ */
 interface BookingStage2Props {
   petTypes: PetTypeOption[];
   onUpdateBookingData: BookingDataUpdater;
@@ -19,6 +35,7 @@ interface BookingStage2Props {
   age: number | undefined;
 }
 
+/** Renders the pet-information form for booking stage 2. */
 export function BookingStage2({
   petTypes,
   onUpdateBookingData,
@@ -48,6 +65,8 @@ export function BookingStage2({
         <Select
           value={type}
           onValueChange={(value) => {
+            // `value` is displayName; look up the corresponding DB id so both
+            // fields stay in sync in a single state update.
             const selectedPetType = petTypes.find(
               (petType) => petType.displayName === value,
             );
@@ -75,6 +94,7 @@ export function BookingStage2({
         </Select>
         <Select
           value={age ? age.toString() : ""}
+          // SelectItem values must be strings; parse back to number for the API.
           onValueChange={(value) =>
             onUpdateBookingData("pet", {
               name,

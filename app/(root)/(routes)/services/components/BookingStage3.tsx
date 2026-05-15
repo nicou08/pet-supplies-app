@@ -1,3 +1,15 @@
+/**
+ * BookingStage3 — step 3 of the booking wizard: provider selection.
+ *
+ * Filters the full staff list down to members whose role array matches the
+ * service type chosen in stage 1. The three named service types use slightly
+ * different role strings (e.g. "Veterinary" → "Veterinarian") so they are
+ * handled explicitly; any unrecognised service type falls back to a generic
+ * substring match against `serviceType` itself.
+ *
+ * The full staff list is fetched once in `BookingForm` (via `useStaff`) and
+ * passed down so this component does not trigger its own network request.
+ */
 "use client";
 
 import { useMemo } from "react";
@@ -5,6 +17,14 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { BookingDataUpdater, StaffInfo } from "@/types";
 
+/**
+ * @param serviceType - Appointment type from stage 1; used to filter staff by role.
+ * @param isLoading - True while the staff list is being fetched.
+ * @param isError - True if the staff fetch failed.
+ * @param staff - Full staff list from the API.
+ * @param onUpdateBookingData - Shared updater from `BookingForm` state.
+ * @param selectedStaffId - ID of the currently selected staff member; drives highlight.
+ */
 interface BookingStage3Props {
   serviceType: string;
   isLoading: boolean;
@@ -14,6 +34,7 @@ interface BookingStage3Props {
   selectedStaffId: string;
 }
 
+/** Renders the provider selection grid for booking stage 3. */
 export function BookingStage3({
   serviceType,
   isLoading,
@@ -22,9 +43,15 @@ export function BookingStage3({
   onUpdateBookingData,
   selectedStaffId,
 }: BookingStage3Props) {
+  // Memoised so the filter only reruns when the staff list or service type
+  // actually changes, not on every parent re-render.
   const filteredStaff = useMemo(() => {
     if (!staff || isLoading || isError) return [];
 
+    // Service type names and role strings don't share an exact naming convention
+    // (e.g. "Veterinary" ≠ "Veterinarian"), so each known type is mapped
+    // explicitly. The final fallback handles any future service types whose
+    // role string happens to match the service type name directly.
     if (serviceType === "Veterinary") {
       return staff.filter((staffMember) =>
         staffMember.role.includes("Veterinarian")

@@ -1,3 +1,14 @@
+/**
+ * BookingForm — multi-stage appointment booking wizard.
+ *
+ * Renders a six-step flow (service type → pet info → provider → date → time →
+ * review/notes) backed by a single `AppointmentInfo` state object. Each step
+ * is gated by `validateStage`, and the form transitions to a loading spinner
+ * then a success card after a successful POST to `/api/appointments`.
+ *
+ * The `serviceType` query param (e.g. `?serviceType=grooming`) pre-selects
+ * stage 1 so deep-links from the services page land in the right place.
+ */
 "use client";
 
 import axios from "axios";
@@ -34,6 +45,7 @@ import {
 } from "@/types";
 import { appointmentsTypeInfo } from "@/constants/data";
 
+/** Root booking wizard component. Mounts inside the `/services` page. */
 export function BookingForm() {
   const [bookingStatus, setBookingStatus] = useState<
     "form" | "loading" | "success"
@@ -53,6 +65,7 @@ export function BookingForm() {
 
   const { petTypes: petTypesInfo = [] } = usePetTypes();
 
+  // Stages 1-6 map to 0-100% in 20% increments; stage 6 (review) fills the bar.
   const progressPercentage = (currentStage - 1) * 20;
 
   const [bookingData, setBookingData] = useState<AppointmentInfo>({
@@ -75,6 +88,10 @@ export function BookingForm() {
     notes: "",
   });
 
+  /**
+   * Generic setter passed down to every stage component so each can update its
+   * own slice of `bookingData` without needing direct access to `setBookingData`.
+   */
   const updateBookingData: BookingDataUpdater = (field, value) => {
     setBookingData((prev) => ({
       ...prev,
@@ -99,6 +116,12 @@ export function BookingForm() {
     }
   };
 
+  /**
+   * Submits the completed booking to `POST /api/appointments`.
+   * On success, transitions `bookingStatus` to `"success"` to show the
+   * confirmation card. On failure, surfaces an inline error and returns to
+   * the form so the user can retry.
+   */
   const onConfirmBooking = async () => {
     setIsSubmitting(true);
     setSubmitError(null);
@@ -133,6 +156,12 @@ export function BookingForm() {
     }
   };
 
+  /**
+   * Returns `true` when the current stage is INCOMPLETE (i.e. the "Next" /
+   * "Confirm" button should be disabled). The name is intentionally positive
+   * even though the return value semantics are inverted relative to typical
+   * "isValid" helpers — callers pass it directly to the `disabled` prop.
+   */
   const validateStage = (): boolean => {
     switch (currentStage) {
       case 1:
@@ -157,6 +186,7 @@ export function BookingForm() {
     }
   };
 
+  /** Renders the stage component that corresponds to `currentStage`. */
   const renderStep = () => {
     switch (currentStage) {
       case 1:

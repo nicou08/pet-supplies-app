@@ -1,22 +1,26 @@
+/**
+ * /services — server-rendered page that guards the booking wizard.
+ *
+ * Auth is checked server-side before any client JS runs; unauthenticated
+ * visitors are immediately redirected to /sign-in. Authenticated users see
+ * the `BookingForm` client component which owns all booking state.
+ */
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { BookingForm } from "./components/BookingForm";
 
+/**
+ * Server component — runs only on the server; no client bundle contribution.
+ * `headers()` must be awaited in Next.js 15 because it is a dynamic API.
+ */
 export default async function ServicesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   //const isSignedIn = !!session;
 
   if (!session) {
     redirect("/sign-in");
-    // return (
-    //   <Alert>
-    //     <Terminal className="h-4 w-4" />
-    //     <AlertTitle>You need to sign-in first!</AlertTitle>
-    //     <AlertDescription>Sign-in to book an appointment.</AlertDescription>
-    //   </Alert>
-    // );
   }
 
   return (

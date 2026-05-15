@@ -1,3 +1,15 @@
+/**
+ * BookingStage5 — step 5 of the booking wizard: time-slot selection.
+ *
+ * Fetches available slots for the chosen provider and date via
+ * `useStaffAvailability`, then splits them into Morning / Afternoon sections
+ * using a noon threshold (720 minutes). Slots are "HH:MM" strings;
+ * `hhmmToMinutes` converts them for numeric comparison and `formatSlotLabel`
+ * renders them as human-readable labels (e.g. "09:00" → "9:00 AM").
+ *
+ * Three early-return states (loading, error, empty) are shown before the
+ * slot grid so the user always gets meaningful feedback.
+ */
 "use client";
 
 import { useMemo } from "react";
@@ -7,6 +19,12 @@ import { useStaffAvailability } from "@/hooks/useStaffAvailability";
 import { formatSlotLabel, hhmmToMinutes } from "@/lib/slots";
 import { BookingDataUpdater } from "@/types";
 
+/**
+ * @param onUpdateBookingData - Shared updater from `BookingForm` state.
+ * @param selectedTime - Currently chosen "HH:MM" slot; drives the highlight.
+ * @param providerId - ID of the provider selected in stage 3.
+ * @param date - Date selected in stage 4; combined with `providerId` to fetch slots.
+ */
 interface BookingStage5Props {
   onUpdateBookingData: BookingDataUpdater;
   selectedTime: string;
@@ -14,6 +32,7 @@ interface BookingStage5Props {
   date: Date | undefined;
 }
 
+/** Noon expressed in minutes; threshold for splitting slots into AM / PM groups. */
 const NOON_MINUTES = 12 * 60;
 
 export function BookingStage5({
@@ -22,11 +41,15 @@ export function BookingStage5({
   providerId,
   date,
 }: BookingStage5Props) {
+  // `providerId` can be an empty string (falsy) before stage 3 completes;
+  // `date` can be undefined before stage 4 completes. Both are coerced to null
+  // so the hook can distinguish "not yet selected" from a real value.
   const { slots, isLoading, isError } = useStaffAvailability(
     providerId || null,
     date ?? null
   );
 
+  // Single pass over slots to avoid iterating the array twice.
   const { morning, afternoon } = useMemo(() => {
     const morning: string[] = [];
     const afternoon: string[] = [];
@@ -69,6 +92,9 @@ export function BookingStage5({
     );
   }
 
+  // Helper (not a component) used by both morning and afternoon grids to avoid
+  // duplicating the button markup. The `key` prop is set here so the caller's
+  // `.map(renderSlot)` still gets stable reconciliation keys.
   const renderSlot = (slot: string) => (
     <Button
       key={slot}
@@ -100,6 +126,7 @@ export function BookingStage5({
         </>
       )}
 
+      {/* Spacer only rendered when both sections are visible to avoid extra whitespace. */}
       {morning.length > 0 && afternoon.length > 0 && <div className="h-10" />}
 
       {afternoon.length > 0 && (

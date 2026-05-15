@@ -1,3 +1,11 @@
+/**
+ * BookingStage1 — step 1 of the booking wizard: appointment type selection.
+ *
+ * Renders a card grid of available service types sourced from
+ * `constants/data.ts`. Selecting a card sets `serviceType` and clears the
+ * previously chosen provider, because providers are filtered by service type
+ * in stage 3 and a stale selection would be invalid.
+ */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,20 +15,30 @@ type Service = {
   name: string;
   description: string;
   icon: string;
+  /** Semantic color key resolved to Tailwind classes via `bgColorMap`. */
   bgColor: string;
 };
 
+/**
+ * @param Services - List of appointment types to display as selectable cards.
+ * @param onUpdateBookingData - Shared updater from `BookingForm` state.
+ * @param selectedService - Currently chosen service name; drives the ring highlight.
+ */
 type BookingStage1Props = {
   Services: Service[];
   onUpdateBookingData: BookingDataUpdater;
   selectedService: string;
 };
 
+/** Renders the service-type selection grid for booking stage 1. */
 export function BookingStage1({
   Services,
   onUpdateBookingData,
   selectedService,
 }: BookingStage1Props) {
+  // Indirection needed because Tailwind's JIT compiler requires full class strings
+  // at build time — dynamic string interpolation (e.g. `bg-${color}-200`) would
+  // be purged from the output bundle.
   const bgColorMap: { [key: string]: string } = {
     blue: "bg-blue-200 hover:bg-blue-300 ",
     green: "bg-green-200 hover:bg-green-300 ",
