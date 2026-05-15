@@ -58,9 +58,9 @@ export function BookingStage3({
             key={member.id}
             className={`flex flex-col justify-start items-start w-full h-32 py-5 px-8 gap-0 ${
               selectedStaffId === member.id
-                ? "bg-neutral-500 hover:bg-neutral-500"
-                : "bg-neutral-700 hover:bg-neutral-700"
-            }  active:scale-95 transition-transform duration-100`}
+                ? "bg-slate-300 hover:bg-slate-300 dark:bg-neutral-500 dark:hover:bg-neutral-500"
+                : "bg-slate-100 hover:bg-slate-200 dark:bg-neutral-700 dark:hover:bg-neutral-700"
+            } active:scale-95 transition-transform duration-100`}
             onClick={() =>
               onUpdateBookingData("provider", {
                 id: member.id,
@@ -69,10 +69,10 @@ export function BookingStage3({
               })
             }
           >
-            <div className="text-xl font-semibold text-white pb-2">
+            <div className="text-xl font-semibold text-black dark:text-white pb-2">
               {member.name}
             </div>
-            <div className="text-md font-normal text-gray-100 text-left text-wrap">
+            <div className="text-md font-normal text-gray-600 dark:text-gray-100 text-left text-wrap">
               {member.role.join(", ")}
             </div>
           </Button>

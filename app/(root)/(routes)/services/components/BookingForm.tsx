@@ -307,7 +307,9 @@ export function BookingForm() {
 
           <div className="h-8" />
 
-          {renderStep()}
+          <div className="min-h-[480px]">
+            {renderStep()}
+          </div>
         </CardContent>
         {submitError && (
           <div className="px-6 text-sm text-red-500">{submitError}</div>

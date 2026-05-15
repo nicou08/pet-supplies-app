@@ -32,7 +32,7 @@ export function BookingStage2({
       <div className="font-bold text-lg pb-7">Pet Information</div>
       <div className="flex flex-col w-md gap-4 w-[400px]">
         <Input
-          className="bg-neutral-700 text-white placeholder:text-gray-400"
+          className="bg-slate-100 dark:bg-neutral-700 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
           type="text"
           placeholder="Pet Name"
           value={name}
@@ -49,7 +49,7 @@ export function BookingStage2({
           value={type}
           onValueChange={(value) => {
             const selectedPetType = petTypes.find(
-              (petType) => petType.displayName === value
+              (petType) => petType.displayName === value,
             );
 
             if (!selectedPetType) return;
@@ -62,7 +62,7 @@ export function BookingStage2({
             });
           }}
         >
-          <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
+          <SelectTrigger className="w-[180px] bg-slate-100 dark:bg-neutral-950 text-black dark:text-white">
             <SelectValue placeholder="Pet Type" />
           </SelectTrigger>
           <SelectContent className="bg-popover">
@@ -84,7 +84,7 @@ export function BookingStage2({
             })
           }
         >
-          <SelectTrigger className="w-[180px] bg-neutral-700 dark:bg-neutral-950 text-white">
+          <SelectTrigger className="w-[180px] bg-slate-100 dark:bg-neutral-950 text-black dark:text-white">
             <SelectValue placeholder="Age of Pet" />
           </SelectTrigger>
           <SelectContent className="bg-popover">

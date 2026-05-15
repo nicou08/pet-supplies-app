@@ -74,14 +74,14 @@ export function BookingStage5({
       key={slot}
       className={`${
         selectedTime === slot
-          ? "bg-neutral-500 hover:bg-neutral-500"
-          : "bg-neutral-700 hover:bg-neutral-700"
+          ? "bg-slate-300 hover:bg-slate-300 dark:bg-neutral-500 dark:hover:bg-neutral-500"
+          : "bg-slate-100 hover:bg-slate-200 dark:bg-neutral-700 dark:hover:bg-neutral-700"
       } active:scale-95 transition-transform duration-100`}
       onClick={() => {
         onUpdateBookingData("time", slot);
       }}
     >
-      <div className="text-xl text-white font-normal">
+      <div className="text-xl text-black dark:text-white font-normal">
         {formatSlotLabel(slot)}
       </div>
     </Button>

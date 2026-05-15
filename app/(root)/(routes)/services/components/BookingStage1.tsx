@@ -22,9 +22,9 @@ export function BookingStage1({
   selectedService,
 }: BookingStage1Props) {
   const bgColorMap: { [key: string]: string } = {
-    blue: "bg-blue-200",
-    green: "bg-green-200",
-    purple: "bg-purple-200",
+    blue: "bg-blue-200 hover:bg-blue-300 ",
+    green: "bg-green-200 hover:bg-green-300 ",
+    purple: "bg-purple-200 hover:bg-purple-300 ",
   };
 
   return (
@@ -34,12 +34,10 @@ export function BookingStage1({
         {Services.map((service, index) => (
           <Button
             key={index}
-            className={`flex flex-col justify-start items-start h-48 py-5 px-8 gap-0 ${
+            className={`flex flex-col justify-start items-start min-h-48 py-5 px-8 gap-0 ${bgColorMap[service.bgColor]} ${
               selectedService === service.name
-                ? "bg-neutral-400 hover:bg-neutral-400"
-                : `${bgColorMap[service.bgColor]} hover:${
-                    bgColorMap[service.bgColor]
-                  } hover:shadow-lg dark:hover:shadow-white/25`
+                ? "ring-4 ring-offset-0 ring-black dark:ring-white rounded-none"
+                : "hover:shadow-lg dark:hover:shadow-white/25"
             } active:scale-95 transition-transform duration-100 `}
             onClick={() => {
               onUpdateBookingData("serviceType", service.name);
