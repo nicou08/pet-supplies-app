@@ -77,3 +77,7 @@ The single exception is **Stripe checkout**, which uses a server action (`action
 **Adding data-fetching:** Extend or add a hook in `hooks/` using SWR + `lib/fetcher.ts`. Don't add one-off `fetch`/`axios` calls inline in components.
 
 **Commit conventions:** Follow the AI-assisted workflow in `AI_WORKFLOW.md` — conventional commits (`feat:`, `fix:`, `docs:`, etc.) are expected.
+
+## Task Tracking
+
+Pending and completed work is tracked in `TODO.md` at the project root. Check it at the start of each session to understand current priorities.
