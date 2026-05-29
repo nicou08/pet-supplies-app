@@ -33,11 +33,11 @@ export function SignInForm() {
 
   return (
     <div className="w-full max-w-md rounded-2xl bg-background p-10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.25)]">
-      <div className="mb-10 flex justify-start">
+      <div className="mb-10 flex justify-center">
         <Logo />
       </div>
 
-      <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+      <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
         Sign in
       </h1>
 

@@ -16,13 +16,19 @@ export function Logo() {
     mounted && resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
 
   return (
-    <Image
-      src={src}
-      alt="Pet Supplies"
-      width={140}
-      height={140}
-      priority
-      className="h-auto w-32 select-none"
-    />
+    <div
+      className="relative flex items-center justify-center rounded-full"
+      style={{ width: "204px", height: "204px" }}
+    >
+      <Image
+        src={src}
+        alt="Pet Supplies"
+        width={160}
+        height={160}
+        priority
+        className="h-auto w-36 select-none"
+      />
+      <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-[#FFF1EA]" />
+    </div>
   );
 }

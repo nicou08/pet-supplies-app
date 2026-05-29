@@ -3,7 +3,7 @@ import { SignInForm } from "./components/SignInForm";
 
 export default function SignInPage() {
   return (
-    <div className="grid min-h-screen w-full grid-cols-1 bg-card md:grid-cols-2">
+    <div className="grid min-h-screen w-full grid-cols-1 bg-white dark:bg-card md:grid-cols-2">
       <div className="flex items-center justify-center px-6 py-12 md:px-12">
         <SignInForm />
       </div>
