@@ -309,7 +309,7 @@ export function BookingForm() {
             <Button asChild>
               <Link
                 className="bg-primary text-primary-foreground hover:bg-primary/80"
-                href="/appointments"
+                href="/settings?tab=appointments"
               >
                 View All Appointments
               </Link>

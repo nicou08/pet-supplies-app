@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { isAfter, isBefore, isToday } from "date-fns";
 import {
@@ -103,10 +103,6 @@ export function AppointmentListing() {
     isError: userAppointmentsError,
   } = useAppointments("");
 
-  useEffect(() => {
-    console.log("User appointments loaded:", userAppointments);
-  }, [userAppointments]);
-
   // Filter appointments based on search and filters
   const filteredAppointments = (userAppointments || []).filter(
     (appointment: AppointmentDisplay) => {
@@ -174,30 +170,10 @@ export function AppointmentListing() {
       statusInfo[appointment.appointmentStatus as keyof typeof statusInfo].icon;
     return (
       <div>
-        {/* <div>
-          Appointment for {appointment.petName} type{" "}
-          {appointment.appointmentType} provider{" "}
-          {appointment.appointmentProvider.name} on{" "}
-          {new Date(appointment.appointmentDate).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}{" "}
-          at {appointment.appointmentTime} - {appointment.appointmentStatus}
-        </div> */}
-
         <Card className="hover:shadow-md transition-shadow bg-card">
           <CardHeader className="pb-3">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
-                {/* <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                <Image
-                  src={appointment.petImage || "/placeholder.svg"}
-                  alt={appointment.petName}
-                  fill
-                  className="object-cover"
-                />
-              </div> */}
                 <div>
                   <h3 className="font-semibold text-lg">
                     {appointment.appointmentType}
@@ -297,14 +273,6 @@ export function AppointmentListing() {
               </div>
 
               <div className="flex items-center space-x-2">
-                {/* <div className="relative w-6 h-6 rounded-full overflow-hidden">
-                <Image
-                  src={appointment.provider.image || "/placeholder.svg"}
-                  alt={appointment.appointmentProvider.name}
-                  fill
-                  className="object-cover"
-                />
-              </div> */}
                 <span className="text-sm text-muted-foreground">
                   Performed by: {appointment.appointmentProvider.name}
                 </span>
@@ -313,8 +281,6 @@ export function AppointmentListing() {
               <div className="flex items-start space-x-1 text-muted-foreground">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  {/* <p className="font-medium">{appointment.location}</p>
-                <p className="text-xs">{appointment.address}</p> */}
                   <p className="font-medium">Pet Supplies Inc.</p>
                   <p className="text-xs">123 Guinea Road, Anytown </p>
                 </div>
@@ -328,7 +294,6 @@ export function AppointmentListing() {
               )}
 
               <div className="flex justify-between items-center pt-2 border-t">
-                {/* <span className="font-semibold">${appointment.price.toFixed(2)}</span> */}
                 <div />
                 <div className="flex items-center space-x-2">
                   {appointment.appointmentStatus !== "completed" &&
@@ -361,12 +326,14 @@ export function AppointmentListing() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="space-y-6">
       {/* Header section */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">My Appointments</h1>
-          <p className="text-muted-foreground">Manage your pet&apos;s appointments</p>
+          <h2 className="text-lg font-semibold">My Appointments</h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your pet&apos;s appointments
+          </p>
         </div>
         <Button asChild>
           <Link href="/services">
@@ -377,7 +344,7 @@ export function AppointmentListing() {
       </div>
 
       {/* Filters section */}
-      <div className="mb-6 space-y-4">
+      <div className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />

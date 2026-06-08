@@ -52,51 +52,42 @@ export function HeaderUtilAccBtn({
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>
-            {isLoggedIn ? (
-              <div>
-                <div>{email}</div>
-              </div>
-            ) : (
-              <div>Sign In</div>
-            )}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="p-0" asChild>
-            <Link
-              href="/appointments"
-              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
-            >
-              Appointments
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="p-0" asChild>
-            <Link
-              href="/settings#billing"
-              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
-            >
-              Billing
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="p-0" asChild>
-            <Link
-              href="/settings"
-              className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
-            >
-              Settings
-            </Link>
-          </DropdownMenuItem>
           {isLoggedIn ? (
-            <DropdownMenuItem
-              className="p-0"
-              onClick={handleSignOut}
-            >
-              <div className="bp-0 m-0 cursor-pointer h-full w-full px-2 py-1.5 rounded-sm">
-                Sign Out
-              </div>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuLabel>{email}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="p-0" asChild>
+                <Link
+                  href="/settings?tab=appointments"
+                  className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+                >
+                  Appointments
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="p-0" asChild>
+                <Link
+                  href="/settings#billing"
+                  className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+                >
+                  Billing
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="p-0" asChild>
+                <Link
+                  href="/settings"
+                  className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"
+                >
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="p-0" onClick={handleSignOut}>
+                <div className="m-0 cursor-pointer h-full w-full px-2 py-1.5 rounded-sm">
+                  Sign Out
+                </div>
+              </DropdownMenuItem>
+            </>
           ) : (
-            <DropdownMenuItem className="p-0">
+            <DropdownMenuItem className="p-0" asChild>
               <Link
                 href="/sign-in"
                 className="cursor-pointer h-full w-full px-2 py-1.5 rounded-sm"

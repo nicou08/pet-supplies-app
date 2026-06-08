@@ -11,11 +11,11 @@ Pending tasks for the pet-supplies-app. Check this file at the start of sessions
 - [x] Complete `product/[product_id]` page design
 - [x] Fix appointment service
 - [x] Create sign-in page
+- [x] Add a settings page
+- [x] Create footer
 
 ## Backlog
-- [ ] Add a settings page
 - [ ] Create a new-arrivals page
 - [ ] Create a sales page and implement sale functionality
 - [ ] Add a favourites row on the homepage (signed-in users only)
-- [ ] Create footer
 - [ ] Implement Google and Email sign-in
