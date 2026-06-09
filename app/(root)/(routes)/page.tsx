@@ -5,6 +5,7 @@ import { getFeaturedProducts } from "@/lib/queries/featured-products";
 import { SWRProvider } from "@/components/swr-provider";
 import { HomeCarousel } from "@/components/home-carousel";
 import { ProductRow } from "@/components/product-row";
+import { FavouritesRow } from "@/components/favourites-row";
 import { InteractiveRow } from "@/components/interactive-row";
 import { PetRow } from "@/components/pets-row";
 import { AppointmentRow } from "@/components/appointment-row";
@@ -32,6 +33,13 @@ export default async function HomePage() {
         <div className="h-10" />
 
         <ProductRow />
+
+        {session && (
+          <>
+            <div className="h-10" />
+            <FavouritesRow />
+          </>
+        )}
 
         <div className="h-10" />
 

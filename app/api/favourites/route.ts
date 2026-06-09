@@ -54,18 +54,34 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session?.user?.email) {
-    return NextResponse.json({ favourited: false });
-  }
   const { searchParams } = new URL(request.url);
   const productId = searchParams.get("productId");
-  if (!productId) return NextResponse.json({ favourited: false });
 
-  console.log("GET FAVOURITES");
+  if (!session?.user?.email) {
+    // List request gets an empty array; single-product check gets `false`.
+    return NextResponse.json(productId ? { favourited: false } : []);
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     select: { id: true },
   });
+
+  // No productId: return the user's full list of favourite products.
+  if (!productId) {
+    if (!user) return NextResponse.json([]);
+    const favourites = await prisma.favourite.findMany({
+      where: { userId: user.id },
+      select: {
+        product: {
+          select: { id: true, name: true, price: true, mainImageUrl: true },
+        },
+      },
+      orderBy: { product: { name: "asc" } },
+    });
+    return NextResponse.json(favourites.map((f) => f.product));
+  }
+
   if (!user) return NextResponse.json({ favourited: false });
 
   const fav = await prisma.favourite.findUnique({
