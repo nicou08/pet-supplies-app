@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prismadb";
 import { getFeaturedProducts } from "@/lib/queries/featured-products";
+import { activeSaleSelect, mapActiveSale } from "@/lib/queries/sales";
 import { paginatedProductsSchema } from "@/types/product";
 
 export async function GET(request: NextRequest) {
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
               petType: { select: { id: true, name: true, displayName: true } },
             },
           },
+          sales: activeSaleSelect,
         },
       });
 
@@ -64,6 +66,7 @@ export async function GET(request: NextRequest) {
         brand: p.brand,
         productType: p.productType,
         petTypes: p.petTypes.map((ppt) => ppt.petType),
+        sale: mapActiveSale(p.sales),
       }));
 
       return NextResponse.json(mapped);
@@ -135,6 +138,7 @@ export async function GET(request: NextRequest) {
       petTypes: {
         select: { petType: { select: { id: true, name: true, displayName: true } } },
       },
+      sales: activeSaleSelect,
     };
 
     const [rawProducts, total] = await Promise.all([
@@ -145,6 +149,7 @@ export async function GET(request: NextRequest) {
     const mappedProducts = rawProducts.map((product) => ({
       ...product,
       petTypes: product.petTypes.map((pt) => pt.petType),
+      sale: mapActiveSale(product.sales),
     }));
 
     const result = paginatedProductsSchema.safeParse({

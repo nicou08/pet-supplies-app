@@ -117,12 +117,51 @@ model Product {
   orderItems         OrderItem[]      @relation("ProductToOrderItem")
   reviews            Review[]         @relation("ProductToReview")
   favourites         Favourite[]      @relation("ProductToFavourite")
+  sales              ProductSale[]    @relation("ProductToSale")
   averageRating      Float            @default(0.0)
   numberOfRatings    Int              @default(0)
 
   @@index([productTypeId])
   @@index([petTypeId])
   @@index([brandId])
+}
+
+// Discount type a Sale applies. Extend this when adding new promotion kinds.
+enum SaleType {
+  PERCENTAGE // e.g. 20% off
+  BUY_X_GET_Y // e.g. buy 3 get the 4th free
+}
+
+// A promotion that can be linked to one or more products via ProductSale.
+// Sales are inserted manually (see prisma/seed.ts). Pricing logic lives in lib/pricing.ts.
+model Sale {
+  id           String        @id @default(uuid())
+  name         String
+  type         SaleType
+  // PERCENTAGE only: whole-number percent off, 1–100.
+  percentOff   Int?
+  // BUY_X_GET_Y only: quantity the customer pays for + quantity they get free per group.
+  buyQuantity  Int?
+  freeQuantity Int?
+  active       Boolean       @default(true)
+  startsAt     DateTime?
+  endsAt       DateTime?
+  products     ProductSale[] @relation("SaleToProduct")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// Junction table linking a Sale to the Products it applies to.
+model ProductSale {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation("ProductToSale", fields: [productId], references: [id], onDelete: Cascade)
+  saleId    String
+  sale      Sale    @relation("SaleToProduct", fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, saleId])
+  @@index([productId])
+  @@index([saleId])
 }
 
 // Junction table for many-to-many relationship between Product and PetType

@@ -4,6 +4,11 @@ import Image from "next/image";
 import { Minus, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  computeLinePrice,
+  saleBadgeLabel,
+  type SaleInfo,
+} from "@/lib/pricing";
 
 interface CartItem {
   id: string;
@@ -11,6 +16,7 @@ interface CartItem {
   price: number;
   quantity: number;
   imageUrl: string;
+  sale?: SaleInfo | null;
 }
 
 interface CartItemProps {
@@ -20,6 +26,8 @@ interface CartItemProps {
 }
 
 export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
+  const line = computeLinePrice(item.price, item.quantity, item.sale);
+  const saleLabel = saleBadgeLabel(item.sale);
   return (
     <div className="flex items-center space-x-4 py-4 border-b">
       <div className="relative w-16 h-16 rounded-md overflow-hidden">
@@ -32,7 +40,24 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
       </div>
       <div className="flex-grow">
         <h3 className="font-medium">{item.name}</h3>
-        <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+        {line.discountedUnitPrice !== null ? (
+          <p className="text-sm">
+            <span className="text-gray-400 line-through mr-1">
+              ${item.price.toFixed(2)}
+            </span>
+            <span className="text-green-600 dark:text-green-500 font-medium">
+              ${line.discountedUnitPrice.toFixed(2)}
+            </span>
+          </p>
+        ) : (
+          <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+        )}
+        {saleLabel && (
+          <p className="text-xs text-green-600 dark:text-green-500">
+            {saleLabel}
+            {line.freeUnits > 0 ? ` · ${line.freeUnits} free` : ""}
+          </p>
+        )}
       </div>
       <div className="flex items-center space-x-2">
         <Button

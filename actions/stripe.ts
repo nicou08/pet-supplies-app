@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 
 import { prisma } from "@/lib/prismadb";
 import { stripe } from "@/lib/stripe";
+import { computeLinePrice } from "@/lib/pricing";
+import { activeSaleSelect, mapActiveSale } from "@/lib/queries/sales";
 
 export interface CheckoutItemInput {
   id: string;
@@ -60,6 +62,7 @@ export async function fetchClientSecret(items: CheckoutItemInput[]) {
       price: true,
       inStock: true,
       mainImageUrl: true,
+      sales: activeSaleSelect,
     },
   });
 
@@ -77,8 +80,20 @@ export async function fetchClientSecret(items: CheckoutItemInput[]) {
     }
   }
 
+  // Line items stay at full price; discounts (percentage or buy-x-get-y) are
+  // applied as a single session-level coupon so the customer still sees the
+  // true per-unit price on each line.
+  let totalDiscountCents = 0;
+
   const lineItems = normalizedItems.map((item) => {
     const product = productsById.get(item.id)!;
+    const sale = mapActiveSale(product.sales);
+    const { discountAmount } = computeLinePrice(
+      product.price,
+      item.quantity,
+      sale
+    );
+    totalDiscountCents += Math.round(discountAmount * 100);
 
     return {
       price_data: {
@@ -93,10 +108,29 @@ export async function fetchClientSecret(items: CheckoutItemInput[]) {
     };
   });
 
+  // Stripe coupons must be < the order total, so cap the discount just below it.
+  const subtotalCents = lineItems.reduce(
+    (sum, line) => sum + line.price_data.unit_amount * line.quantity,
+    0
+  );
+  const amountOff = Math.min(totalDiscountCents, Math.max(0, subtotalCents - 1));
+
+  let discounts: Array<{ coupon: string }> | undefined;
+  if (amountOff > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: amountOff,
+      currency: "usd",
+      duration: "once",
+      name: "Sale discount",
+    });
+    discounts = [{ coupon: coupon.id }];
+  }
+
   const session = await stripe.checkout.sessions.create({
     ui_mode: "embedded",
     line_items: lineItems,
     mode: "payment",
+    ...(discounts ? { discounts } : {}),
     return_url: `${origin}/return?session_id={CHECKOUT_SESSION_ID}`,
   });
 

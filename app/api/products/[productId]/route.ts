@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prismadb";
+import { activeSaleSelect, mapActiveSale } from "@/lib/queries/sales";
 import { detailedProductSchema } from "@/types/product";
 
 export async function GET(
@@ -32,6 +33,7 @@ export async function GET(
             petType: true,
           },
         },
+        sales: activeSaleSelect,
       },
     });
 
@@ -39,10 +41,12 @@ export async function GET(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    console.log("Fetched product from database:", product);
+    // Flatten the active sale alongside the product payload.
+    const { sales, ...productData } = product;
+    const payload = { ...productData, sale: mapActiveSale(sales) };
 
     // Validate the data using Zod
-    const result = detailedProductSchema.safeParse(product);
+    const result = detailedProductSchema.safeParse(payload);
 
     //console.log("PRODUCTT:", product);
 

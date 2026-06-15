@@ -14,6 +14,7 @@ import { RecommendationCarousel } from "./RecommendationCarousel";
 import { useProduct } from "@/hooks/useProduct";
 
 import { useCart } from "@/context/CartContext";
+import { computeLinePrice, saleBadgeLabel } from "@/lib/pricing";
 
 export function ProductContent() {
   const params = useParams<{ productId: string }>();
@@ -50,6 +51,10 @@ export function ProductContent() {
     return <div>Error loading product details</div>;
   }
 
+  const sale = product.sale ?? null;
+  const saleLabel = saleBadgeLabel(sale);
+  const { discountedUnitPrice } = computeLinePrice(product.price, 1, sale);
+
   const handleAddToCart = () => {
     addToCart({
       id: product.id,
@@ -57,6 +62,7 @@ export function ProductContent() {
       price: product.price,
       quantity: 1,
       imageUrl: product.mainImageUrl,
+      sale,
     });
   };
 
@@ -148,7 +154,25 @@ export function ProductContent() {
               ({product.numberOfRatings} reviews)
             </span>
           </div>
-          <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
+          <div className="space-y-1">
+            {discountedUnitPrice !== null ? (
+              <div className="flex items-baseline gap-3">
+                <span className="text-2xl font-bold text-green-600 dark:text-green-500">
+                  ${discountedUnitPrice.toFixed(2)}
+                </span>
+                <span className="text-lg text-muted-foreground line-through">
+                  ${product.price.toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
+            )}
+            {saleLabel && (
+              <span className="inline-block rounded-full bg-red-500 px-3 py-1 text-sm font-medium text-white">
+                {saleLabel}
+              </span>
+            )}
+          </div>
           <div className="space-y-4 text-md">
             <div className="flex flex-col sm:flex-row">
               <div className="font-bold text-muted-foreground min-w-[100px]">

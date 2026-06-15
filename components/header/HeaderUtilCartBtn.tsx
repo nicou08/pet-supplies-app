@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
+import { computeLinePrice } from "@/lib/pricing";
 import {
   Sheet,
   SheetContent,
@@ -26,10 +27,19 @@ export function HeaderUtilCartBtn() {
     closeCart,
   } = useCart();
 
-  const totalPrice = cartItems.reduce(
+  const originalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  const totalPrice = cartItems.reduce(
+    (total, item) =>
+      total +
+      computeLinePrice(item.price, item.quantity, item.sale).discountedTotal,
+    0
+  );
+
+  const totalSavings = originalPrice - totalPrice;
 
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -78,9 +88,16 @@ export function HeaderUtilCartBtn() {
           </div>
           <SheetFooter>
             <div className="w-full mt-4 flex flex-col space-y-6">
-              <p className="text-lg font-bold">
-                Total: ${totalPrice.toFixed(2)}
-              </p>
+              <div className="space-y-1">
+                {totalSavings > 0 && (
+                  <p className="text-sm text-green-600 dark:text-green-500 font-medium">
+                    You save ${totalSavings.toFixed(2)}
+                  </p>
+                )}
+                <p className="text-lg font-bold">
+                  Total: ${totalPrice.toFixed(2)}
+                </p>
+              </div>
               <SheetClose asChild>
                 <Link href="/checkout">
                   <Button className="w-full bg-blue-500 text-white py-2 rounded">

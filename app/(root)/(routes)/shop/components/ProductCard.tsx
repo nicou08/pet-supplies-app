@@ -8,6 +8,7 @@ import { Star, StarHalf } from "lucide-react";
 import { Product } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { computeLinePrice, saleBadgeLabel } from "@/lib/pricing";
 
 /**
  * Props for the ProductCard component.
@@ -29,6 +30,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const fullStars = Math.floor(product.averageRating);
   const hasHalfStar = product.averageRating % 1 !== 0;
   const [imageLoaded, setImageLoaded] = useState(false);
+  const sale = product.sale ?? null;
+  const saleLabel = saleBadgeLabel(sale);
+  // Single-unit preview price (percentage shows a per-unit discount; BOGO needs
+  // multiple units, so it keeps full price here and is conveyed by the label).
+  const { discountedUnitPrice } = computeLinePrice(product.price, 1, sale);
   return (
     <Link href={`/products/${product.id}`} className="block h-full">
       <div className="flex flex-col h-[350px] bg-card rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden mb-5">
@@ -48,9 +54,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             priority={priority}
             onLoad={() => setImageLoaded(true)}
           />
-          {product.offersType === "On Sale" && (
-            <Badge className="absolute top-3 left-3 bg-white text-black rounded-full shadow">
-              {product.offersType}
+          {saleLabel && (
+            <Badge className="absolute top-3 left-3 bg-red-500 text-white rounded-full shadow">
+              {saleLabel}
             </Badge>
           )}
         </div>
@@ -95,9 +101,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="flex-1" />
           {/* Price & Stock */}
           <div className="flex justify-between items-center mt-2">
-            <span className="text-2xl font-bold">
-              ${product.price.toFixed(2)}
-            </span>
+            {discountedUnitPrice !== null ? (
+              <span className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-green-600 dark:text-green-500">
+                  ${discountedUnitPrice.toFixed(2)}
+                </span>
+                <span className="text-sm text-muted-foreground line-through">
+                  ${product.price.toFixed(2)}
+                </span>
+              </span>
+            ) : (
+              <span className="text-2xl font-bold">
+                ${product.price.toFixed(2)}
+              </span>
+            )}
             <Badge variant={product.inStock ? "default" : "secondary"}>
               {product.inStock ? "In Stock" : "Sold out"}
             </Badge>

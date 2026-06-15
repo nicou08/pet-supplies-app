@@ -16,6 +16,7 @@ Pending tasks for the pet-supplies-app. Check this file at the start of sessions
 
 ## Backlog
 - [ ] Create a new-arrivals page
-- [ ] Create a sales page and implement sale functionality
+- [x] Implement sale functionality (Sale/ProductSale tables, PERCENTAGE & BUY_X_GET_Y; pricing in `lib/pricing.ts`; insert sales via `npm run db:seed-sales`)
+- [ ] Create a dedicated `/sales` page listing on-sale products
 - [ ] Add a favourites row on the homepage (signed-in users only)
 - [ ] Implement Google and Email sign-in

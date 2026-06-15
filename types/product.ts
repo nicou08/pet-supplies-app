@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+/** Active sale attached to a product, mirrors lib/pricing.ts SaleInfo. */
+export const saleSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  type: z.enum(["PERCENTAGE", "BUY_X_GET_Y"]),
+  percentOff: z.number().int().nullable().optional(),
+  buyQuantity: z.number().int().nullable().optional(),
+  freeQuantity: z.number().int().nullable().optional(),
+});
+
+export type Sale = z.infer<typeof saleSchema>;
+
 export const productSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
@@ -23,6 +35,7 @@ export const productSchema = z.object({
       displayName: z.string().min(1).optional(),
     })
   ),
+  sale: saleSchema.nullable().optional(),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -63,6 +76,7 @@ export const detailedProductSchema = z.object({
       }),
     })
   ),
+  sale: saleSchema.nullable().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

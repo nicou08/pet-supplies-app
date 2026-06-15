@@ -2,12 +2,16 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
+import type { SaleInfo } from "@/lib/pricing";
+
 interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
   imageUrl: string;
+  /** Active sale on the product at add-to-cart time, if any. */
+  sale?: SaleInfo | null;
 }
 
 interface CartContextType {
