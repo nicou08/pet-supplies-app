@@ -9,6 +9,7 @@ import { FavouritesRow } from "@/components/favourites-row";
 import { InteractiveRow } from "@/components/interactive-row";
 import { PetRow } from "@/components/pets-row";
 import { AppointmentRow } from "@/components/appointment-row";
+import { PromoRow } from "@/components/promo-row";
 import { AccordionInfo } from "@/components/accordion-info";
 
 export default async function HomePage() {
@@ -48,6 +49,10 @@ export default async function HomePage() {
         <div className="h-14" />
 
         <AppointmentRow />
+
+        <div className="h-14" />
+
+        <PromoRow />
 
         <div className="h-14" />
 
