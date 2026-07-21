@@ -15,6 +15,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
 export function MainNavigationMenu() {
@@ -82,6 +83,28 @@ export function MainNavigationMenu() {
               <ListItem href="/services" title="Pet+" />
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link
+              href="/new-arrivals"
+              className={cn(navigationMenuTriggerStyle(), "rounded-none")}
+            >
+              New Arrivals
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link
+              href="/sales"
+              className={cn(navigationMenuTriggerStyle(), "rounded-none")}
+            >
+              Sales
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
