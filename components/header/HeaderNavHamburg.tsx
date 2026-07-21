@@ -104,11 +104,11 @@ export function HeaderNavHamburg() {
 
           <div className="px-2 text-lg font-semibold pt-2">Deals</div>
           <Link
-            href="/pets"
+            href="/sales"
             className="px-2 text-gray-400"
             onClick={handleLinkClick}
           >
-            Special Offers
+            Sales
           </Link>
           <Link
             href="/pets"
@@ -118,7 +118,7 @@ export function HeaderNavHamburg() {
             Clearance Items
           </Link>
           <Link
-            href="/"
+            href="/new-arrivals"
             className="px-2 text-gray-400"
             onClick={handleLinkClick}
           >

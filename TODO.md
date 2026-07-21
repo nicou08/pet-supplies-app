@@ -23,7 +23,7 @@ Ordered to build foundational data first, then the pages, then the navigation th
 
 1. [ ] Add more products, probably like 100 more — foundational seed data; makes new-arrivals, sales, and search meaningful
 2. [x] Create a new-arrivals page — needs product data with dates from step 1
-3. [ ] Add new arrivals and sales buttons to header — links to the new-arrivals page (step 2) and the existing `/sales` page
+3. [x] Add new arrivals and sales buttons to header — links to the new-arrivals page (step 2) and the existing `/sales` page
 4. [ ] Add carousel proper redirect links — wire homepage carousel to the now-existing category/sales/new-arrivals destinations
 5. [ ] Fix homepage appointments row design — UI polish, independent
 6. [ ] Implement Google and Email sign-in — extends auth ahead of the signed-in-only homepage row
