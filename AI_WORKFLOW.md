@@ -89,6 +89,7 @@ Use this lightweight cycle for each task:
 
 ## 6) Branch Policy For AI Work
 
-- Continue AI-first development in `ai-copilot-agent-dev`.
+- Do each new feature on its own `feat/*` branch (e.g. `feat/carousel-links`).
 - Keep `main` stable.
-- Open PRs from `ai-copilot-agent-dev` into `main` after validation.
+- Do not commit until the user has reviewed and manually tested the change.
+- Do not merge a `feat/*` branch into `main` without asking the user first.
