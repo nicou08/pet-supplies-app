@@ -44,8 +44,8 @@ export function HomeCarousel() {
   const slides = [
     {
       src: "/carousel-dog-1-v2-2x1.png",
-      href: "/new-arrivals",
-      alt: "Shop new arrivals",
+      href: "/products/d6408ee2-a63e-4f9c-a1e7-32fe4c5958e3",
+      alt: "Shop the featured dog product on sale",
     },
     {
       src: "/carousel-gp-1-v3-2x1.png",
